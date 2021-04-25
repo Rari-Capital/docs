@@ -1,5 +1,7 @@
 # Nova
 
+**Nova is a <u>set of contracts</u> + <u>network of bots</u> that allow users and contracts to seamlessly perform actions on L1 <u>without leaving L2</u> in a trust-free and <u>composable</u> manner.**
+
 <img width="500" style="float: right;" alt="Explainer" src="https://i.imgur.com/TbbAhLd.png">
 
 - Users specify what actions they want run on L1 from L2
