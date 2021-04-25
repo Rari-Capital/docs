@@ -1,6 +1,6 @@
 # Nova
 
-<img width="737" alt="Explainer" src="https://i.imgur.com/MVNxpnv.png">
+<img width="737" alt="Explainer" src="https://i.imgur.com/oPpXqDy.png">
 
 ## Core Concepts
 
