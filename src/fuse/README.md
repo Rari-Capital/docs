@@ -739,105 +739,61 @@ const reserveFactor = (await fToken.methods.reserveFactorMantissa().call()) / 1e
 
 ### Error Codes
 
-| Code | Name                           | Description                                                                                                                                                                    |
-| ---- | ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| 0    | NO_ERROR                       | Not a failure.                                                                                                                                                                 |
-| 1    | UNAUTHORIZED                   | The sender is not authorized to perform this action.                                                                                                                           |
-| 2    | BAD_INPUT                      | An invalid argument was supplied by the caller.                                                                                                                                |
-| 3    | COMPTROLLER_REJECTION          | The action would violate the comptroller policy.                                                                                                                               |
-| 4    | COMPTROLLER_CALCULATION_ERROR  | An internal calculation has failed in the comptroller.                                                                                                                         |
-| 5    | INTEREST_RATE_MODEL_ERROR      | The interest rate model returned an invalid value.                                                                                                                             |
-| 6    | INVALID_ACCOUNT_PAIR           | The specified combination of accounts is invalid.                                                                                                                              |
-| 7    | INVALID_CLOSE_AMOUNT_REQUESTED | The amount to liquidate is invalid.                                                                                                                                            |
-| 8    | INVALID_COLLATERAL_FACTOR      | The collateral factor is invalid.                                                                                                                                              |
-| 9    | MATH_ERROR                     | A math calculation error occurred.                                                                                                                                             |
-| 10   | MARKET_NOT_FRESH               | Interest has not been properly accrued.                                                                                                                                        |
-| 11   | MARKET_NOT_LISTED              | The market is not currently listed by its comptroller.                                                                                                                         |
-| 12   | TOKEN_INSUFFICIENT_ALLOWANCE   | ERC-20 contract must _allow_ Money Market contract to call transferFrom. The current allowance is either 0 or less than the requested supply, repayBorrow or liquidate amount. |
-| 13   | TOKEN_INSUFFICIENT_BALANCE     | Caller does not have sufficient balance in the ERC-20 contract to complete the desired action.                                                                                 |
-| 14   | TOKEN_INSUFFICIENT_CASH        | The market does not have a sufficient cash balance to complete the transaction. You may attempt this transaction again later.                                                  |
-| 15   | TOKEN_TRANSFER_IN_FAILED       | Failure in ERC-20 when transfering token into the market.                                                                                                                      |
-| 16   | TOKEN_TRANSFER_OUT_FAILED      | Failure in ERC-20 when transfering token out of the market.                                                                                                                    |
+```solidity
+enum Error {
+    NO_ERROR,
+    UNAUTHORIZED,
+    COMPTROLLER_MISMATCH,
+    INSUFFICIENT_SHORTFALL,
+    INSUFFICIENT_LIQUIDITY,
+    INVALID_CLOSE_FACTOR,
+    INVALID_COLLATERAL_FACTOR,
+    INVALID_LIQUIDATION_INCENTIVE,
+    MARKET_NOT_ENTERED, // no longer possible
+    MARKET_NOT_LISTED,
+    MARKET_ALREADY_LISTED,
+    MATH_ERROR,
+    NONZERO_BORROW_BALANCE,
+    PRICE_ERROR,
+    REJECTION,
+    SNAPSHOT_ERROR,
+    TOO_MANY_ASSETS,
+    TOO_MUCH_REPAY,
+    SUPPLIER_NOT_WHITELISTED,
+    BORROW_BELOW_MIN,
+    SUPPLY_ABOVE_MAX,
+    NONZERO_TOTAL_SUPPLY
+}
+```
 
 ### Failure Info
 
-| Code | Name                                                       |
-| ---- | ---------------------------------------------------------- |
-| 0    | ACCEPT_ADMIN_PENDING_ADMIN_CHECK                           |
-| 1    | ACCRUE_INTEREST_ACCUMULATED_INTEREST_CALCULATION_FAILED    |
-| 2    | ACCRUE_INTEREST_BORROW_RATE_CALCULATION_FAILED             |
-| 3    | ACCRUE_INTEREST_NEW_BORROW_INDEX_CALCULATION_FAILED        |
-| 4    | ACCRUE_INTEREST_NEW_TOTAL_BORROWS_CALCULATION_FAILED       |
-| 5    | ACCRUE_INTEREST_NEW_TOTAL_RESERVES_CALCULATION_FAILED      |
-| 6    | ACCRUE_INTEREST_SIMPLE_INTEREST_FACTOR_CALCULATION_FAILED  |
-| 7    | BORROW_ACCUMULATED_BALANCE_CALCULATION_FAILED              |
-| 8    | BORROW_ACCRUE_INTEREST_FAILED                              |
-| 9    | BORROW_CASH_NOT_AVAILABLE                                  |
-| 10   | BORROW_FRESHNESS_CHECK                                     |
-| 11   | BORROW_NEW_TOTAL_BALANCE_CALCULATION_FAILED                |
-| 12   | BORROW_NEW_ACCOUNT_BORROW_BALANCE_CALCULATION_FAILED       |
-| 13   | BORROW_MARKET_NOT_LISTED                                   |
-| 14   | BORROW_COMPTROLLER_REJECTION                               |
-| 15   | LIQUIDATE_ACCRUE_BORROW_INTEREST_FAILED                    |
-| 16   | LIQUIDATE_ACCRUE_COLLATERAL_INTEREST_FAILED                |
-| 17   | LIQUIDATE_COLLATERAL_FRESHNESS_CHECK                       |
-| 18   | LIQUIDATE_COMPTROLLER_REJECTION                            |
-| 19   | LIQUIDATE_COMPTROLLER_CALCULATE_AMOUNT_SEIZE_FAILED        |
-| 20   | LIQUIDATE_CLOSE_AMOUNT_IS_UINT_MAX                         |
-| 21   | LIQUIDATE_CLOSE_AMOUNT_IS_ZERO                             |
-| 22   | LIQUIDATE_FRESHNESS_CHECK                                  |
-| 23   | LIQUIDATE_LIQUIDATOR_IS_BORROWER                           |
-| 24   | LIQUIDATE_REPAY_BORROW_FRESH_FAILED                        |
-| 25   | LIQUIDATE_SEIZE_BALANCE_INCREMENT_FAILED                   |
-| 26   | LIQUIDATE_SEIZE_BALANCE_DECREMENT_FAILED                   |
-| 27   | LIQUIDATE_SEIZE_COMPTROLLER_REJECTION                      |
-| 28   | LIQUIDATE_SEIZE_LIQUIDATOR_IS_BORROWER                     |
-| 29   | LIQUIDATE_SEIZE_TOO_MUCH                                   |
-| 30   | MINT_ACCRUE_INTEREST_FAILED                                |
-| 31   | MINT_COMPTROLLER_REJECTION                                 |
-| 32   | MINT_EXCHANGE_CALCULATION_FAILED                           |
-| 33   | MINT_EXCHANGE_RATE_READ_FAILED                             |
-| 34   | MINT_FRESHNESS_CHECK                                       |
-| 35   | MINT_NEW_ACCOUNT_BALANCE_CALCULATION_FAILED                |
-| 36   | MINT_NEW_TOTAL_SUPPLY_CALCULATION_FAILED                   |
-| 37   | MINT_TRANSFER_IN_FAILED                                    |
-| 38   | MINT_TRANSFER_IN_NOT_POSSIBLE                              |
-| 39   | REDEEM_ACCRUE_INTEREST_FAILED                              |
-| 40   | REDEEM_COMPTROLLER_REJECTION                               |
-| 41   | REDEEM_EXCHANGE_TOKENS_CALCULATION_FAILED                  |
-| 42   | REDEEM_EXCHANGE_AMOUNT_CALCULATION_FAILED                  |
-| 43   | REDEEM_EXCHANGE_RATE_READ_FAILED                           |
-| 44   | REDEEM_FRESHNESS_CHECK                                     |
-| 45   | REDEEM_NEW_ACCOUNT_BALANCE_CALCULATION_FAILED              |
-| 46   | REDEEM_NEW_TOTAL_SUPPLY_CALCULATION_FAILED                 |
-| 47   | REDEEM_TRANSFER_OUT_NOT_POSSIBLE                           |
-| 48   | REDUCE_RESERVES_ACCRUE_INTEREST_FAILED                     |
-| 49   | REDUCE_RESERVES_ADMIN_CHECK                                |
-| 50   | REDUCE_RESERVES_CASH_NOT_AVAILABLE                         |
-| 51   | REDUCE_RESERVES_FRESH_CHECK                                |
-| 52   | REDUCE_RESERVES_VALIDATION                                 |
-| 53   | REPAY_BEHALF_ACCRUE_INTEREST_FAILED                        |
-| 54   | REPAY_BORROW_ACCRUE_INTEREST_FAILED                        |
-| 55   | REPAY_BORROW_ACCUMULATED_BALANCE_CALCULATION_FAILED        |
-| 56   | REPAY_BORROW_COMPTROLLER_REJECTION                         |
-| 57   | REPAY_BORROW_FRESHNESS_CHECK                               |
-| 58   | REPAY_BORROW_NEW_ACCOUNT_BORROW_BALANCE_CALCULATION_FAILED |
-| 59   | REPAY_BORROW_NEW_TOTAL_BALANCE_CALCULATION_FAILED          |
-| 60   | REPAY_BORROW_TRANSFER_IN_NOT_POSSIBLE                      |
-| 61   | SET_COLLATERAL_FACTOR_OWNER_CHECK                          |
-| 62   | SET_COLLATERAL_FACTOR_VALIDATION                           |
-| 63   | SET_COMPTROLLER_OWNER_CHECK                                |
-| 64   | SET_INTEREST_RATE_MODEL_ACCRUE_INTEREST_FAILED             |
-| 65   | SET_INTEREST_RATE_MODEL_FRESH_CHECK                        |
-| 66   | SET_INTEREST_RATE_MODEL_OWNER_CHECK                        |
-| 67   | SET_MAX_ASSETS_OWNER_CHECK                                 |
-| 68   | SET_ORACLE_MARKET_NOT_LISTED                               |
-| 69   | SET_PENDING_ADMIN_OWNER_CHECK                              |
-| 70   | SET_RESERVE_FACTOR_ACCRUE_INTEREST_FAILED                  |
-| 71   | SET_RESERVE_FACTOR_ADMIN_CHECK                             |
-| 72   | SET_RESERVE_FACTOR_FRESH_CHECK                             |
-| 73   | SET_RESERVE_FACTOR_BOUNDS_CHECK                            |
-| 74   | TRANSFER_COMPTROLLER_REJECTION                             |
-| 75   | TRANSFER_NOT_ALLOWED                                       |
-| 76   | TRANSFER_NOT_ENOUGH                                        |
-| 77   | TRANSFER_TOO_MUCH                                          |
+```solidity
+enum FailureInfo {
+    ACCEPT_ADMIN_PENDING_ADMIN_CHECK,
+    ACCEPT_PENDING_IMPLEMENTATION_ADDRESS_CHECK,
+    EXIT_MARKET_BALANCE_OWED,
+    EXIT_MARKET_REJECTION,
+    RENOUNCE_ADMIN_RIGHTS_OWNER_CHECK,
+    SET_CLOSE_FACTOR_OWNER_CHECK,
+    SET_CLOSE_FACTOR_VALIDATION,
+    SET_COLLATERAL_FACTOR_OWNER_CHECK,
+    SET_COLLATERAL_FACTOR_NO_EXISTS,
+    SET_COLLATERAL_FACTOR_VALIDATION,
+    SET_COLLATERAL_FACTOR_WITHOUT_PRICE,
+    SET_LIQUIDATION_INCENTIVE_OWNER_CHECK,
+    SET_LIQUIDATION_INCENTIVE_VALIDATION,
+    SET_MAX_ASSETS_OWNER_CHECK,
+    SET_PENDING_ADMIN_OWNER_CHECK,
+    SET_PENDING_IMPLEMENTATION_OWNER_CHECK,
+    SET_PRICE_ORACLE_OWNER_CHECK,
+    SET_WHITELIST_ENFORCEMENT_OWNER_CHECK,
+    SET_WHITELIST_STATUS_OWNER_CHECK,
+    SUPPORT_MARKET_EXISTS,
+    SUPPORT_MARKET_OWNER_CHECK,
+    SET_PAUSE_GUARDIAN_OWNER_CHECK,
+    UNSUPPORT_MARKET_OWNER_CHECK,
+    UNSUPPORT_MARKET_DOES_NOT_EXIST,
+    UNSUPPORT_MARKET_IN_USE
+}
+```
