@@ -168,7 +168,7 @@ Returns all relevant data about a request by its `execHash`.
 function execCompleted(bytes32 execHash, address executor, address rewardRecipient, uint256 gasUsed, bool reverted) external onlyXDomainMessageFromNovaExecutionManager
 ```
 
-::: danger
+::: danger NOT DIRECTLY CALLABLE
 This function can only be called via a message relayed from cross domain messenger with the L1 origin being the `L1_NovaExecutionManager` contract.
 :::
 
@@ -324,7 +324,7 @@ function swapExactTokensForTokens(
 
 ## Future MEV Extraction Mechanism
 
-::: danger Not Implemented
+::: danger NOT IMPLEMENTED (YET)
 The mechanism explained below is not currently implemented, but will be in a future iteration of Nova.
 :::
 
