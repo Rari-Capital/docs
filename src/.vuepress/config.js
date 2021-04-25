@@ -18,14 +18,18 @@ module.exports = {
     docsDir: "/",
     nav: [
       { text: "Home", link: "/" },
-      { text: "Yield Aggregator", link: "/yag/" },
+
       { text: "Fuse", link: "/fuse/" },
+      { text: "Yield Aggregator", link: "/yag/" },
+      { text: "Nova", link: "/nova/" },
+
       { text: "Deployed Contracts", link: "/contracts/" }
     ],
-    sidebarDepth: 3,
+    sidebarDepth: 10,
     sidebar: {
       "/yag/": [""],
       "/fuse/": [""],
+      "/nova/": [""],
       "/contracts/": [""]
     },
     smoothScroll: true
