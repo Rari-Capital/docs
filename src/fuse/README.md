@@ -860,17 +860,17 @@ The Comptroller is implemented as an upgradeable proxy. The Unitroller proxies a
 
 Enter into a list of markets - it is not an error to enter the same market more than once. In order to supply collateral or borrow in a market, it must be entered first.
 
-```
+```solidity
 function enterMarkets(address[] calldata fTokens) returns (uint[] memory)
 ```
 
-- msg.sender: The account which shall enter the given markets.
-- fTokens: The addresses of the fToken markets to enter.
-- RETURN: For each market, returns an error code indicating whether or not it was entered. Each is 0 on success, otherwise an [Error code](https://compound.finance/docs/comptroller#error-codes).
+- `msg.sender`: The account which shall enter the given markets.
+- `fTokens`: The addresses of the fToken markets to enter.
+- `RETURN`: For each market, returns an error code indicating whether or not it was entered. Each is 0 on success, otherwise an [Error code](https://compound.finance/docs/comptroller#error-codes).
 
 #### Solidity
 
-```
+```solidity
 Comptroller troll = Comptroller(0xABCD...);
 
 fToken[] memory fTokens = new fToken[](2);
@@ -884,7 +884,7 @@ uint[] memory errors = troll.enterMarkets(fTokens);
 
 #### Web3 1.0
 
-```
+```js
 const troll = Comptroller.at(0xABCD...);
 
 const fTokens = [fErc20.at(0x3FDA...), fEther.at(0x3FDB...)];
@@ -896,17 +896,17 @@ const errors = await troll.methods.enterMarkets(fTokens).send({from: ...});
 
 Exit a market - it is not an error to exit a market which is not currently entered. Exited markets will not count towards account liquidity calculations.
 
-```
+```solidity
 function exitMarket(address fToken) returns (uint)
 ```
 
-- msg.sender: The account which shall exit the given market.
-- fTokens: The addresses of the fToken market to exit.
-- RETURN: 0 on success, otherwise an [Error code](https://compound.finance/docs/comptroller#error-codes).
+- `msg.sender`: The account which shall exit the given market.
+- `fToken`: The addresses of the fToken market to exit.
+- `RETURN`: 0 on success, otherwise an [Error code](https://compound.finance/docs/comptroller#error-codes).
 
 #### Solidity
 
-```
+```solidity
 Comptroller troll = Comptroller(0xABCD...);
 
 uint error = troll.exitMarket(fToken(0x3FDA...));
@@ -914,7 +914,7 @@ uint error = troll.exitMarket(fToken(0x3FDA...));
 
 #### Web3 1.0
 
-```
+```js
 const troll = Comptroller.at(0xABCD...);
 
 const errors = await troll.methods.exitMarket(fEther.at(0x3FDB...)).send({from: ...});
@@ -924,16 +924,16 @@ const errors = await troll.methods.exitMarket(fEther.at(0x3FDB...)).send({from: 
 
 Get the list of markets an account is currently entered into. In order to supply collateral or borrow in a market, it must be entered first. Entered markets count towards [account liquidity](https://compound.finance/docs/comptroller#account-liquidity) calculations.
 
-```
+```solidity
 function getAssetsIn(address account) view returns (address[] memory)
 ```
 
-- account: The account whose list of entered markets shall be queried.
-- RETURN: The address of each market which is currently entered into.
+- `account`: The account whose list of entered markets shall be queried.
+- `RETURN`: The address of each market which is currently entered into.
 
 #### Solidity
 
-```
+```solidity
 Comptroller troll = Comptroller(0xABCD...);
 
 address[] memory markets = troll.getAssetsIn(0xMyAccount);
@@ -941,7 +941,7 @@ address[] memory markets = troll.getAssetsIn(0xMyAccount);
 
 #### Web3 1.0
 
-```
+```js
 const troll = Comptroller.at(0xABCD...);
 
 const markets = await troll.methods.getAssetsIn(fTokens).call();
@@ -955,16 +955,16 @@ Generally, large or liquid assets have high collateral factors, while small or i
 
 Collateral factors can be increased (or decreased) by the pool creator.
 
-```
+```solidity
 function markets(address fTokenAddress) view returns (bool, uint, bool)
 ```
 
-- fTokenAddress: The address of the fToken to check if listed and get the collateral factor for.
-- RETURN: Tuple of values (isListed, collateralFactorMantissa, isComped); isListed represents whether the comptroller recognizes this fToken; collateralFactorMantissa, scaled by 1e18, is multiplied by a supply balance to determine how much value can be borrowed.
+- `fTokenAddress`: The address of the fToken to check if listed and get the collateral factor for.
+- `RETURN:` Tuple of values (isListed, collateralFactorMantissa, isComped); isListed represents whether the comptroller recognizes this fToken; collateralFactorMantissa, scaled by 1e18, is multiplied by a supply balance to determine how much value can be borrowed.
 
 #### Solidity
 
-```
+```solidity
 Comptroller troll = Comptroller(0xABCD...);
 
 (bool isListed, uint collateralFactorMantissa, bool isComped) = troll.markets(0x3FDA...);
@@ -972,7 +972,7 @@ Comptroller troll = Comptroller(0xABCD...);
 
 #### Web3 1.0
 
-```
+```js
 const troll = Comptroller.at(0xABCD...);
 
 const result = await troll.methods.markets(0x3FDA...).call();
@@ -980,7 +980,7 @@ const result = await troll.methods.markets(0x3FDA...).call();
 const {0: isListed, 1: collateralFactorMantissa, 2: isComped} = result;
 ```
 
-##3 Get Account Liquidity
+### Get Account Liquidity
 
 Account Liquidity represents the USD value borrowable by a user, before it reaches liquidation. Users with a shortfall (negative liquidity) are subject to liquidation, and can’t withdraw or borrow assets until Account Liquidity is positive again.
 
@@ -988,16 +988,16 @@ For each market the user has [entered](https://compound.finance/docs/comptroller
 
 Because the Fuse Protocol exclusively uses unsigned integers, Account Liquidity returns either a surplus or shortfall.
 
-```
+```solidity
 function getAccountLiquidity(address account) view returns (uint, uint, uint)
 ```
 
-- account: The account whose liquidity shall be calculated.
-- RETURN: Tuple of values (error, liquidity, shortfall). The error shall be 0 on success, otherwise an [error code](https://compound.finance/docs/comptroller#error-codes). A non-zero liquidity value indicates the account has available [account liquidity](https://compound.finance/docs/comptroller#account-liquidity). A non-zero shortfall value indicates the account is currently below his/her collateral requirement and is subject to liquidation. At most one of liquidity or shortfall shall be non-zero.
+- `account`: The account whose liquidity shall be calculated.
+- `RETURN`: Tuple of values (error, liquidity, shortfall). The error shall be 0 on success, otherwise an [error code](https://compound.finance/docs/comptroller#error-codes). A non-zero liquidity value indicates the account has available [account liquidity](https://compound.finance/docs/comptroller#account-liquidity). A non-zero shortfall value indicates the account is currently below his/her collateral requirement and is subject to liquidation. At most one of liquidity or shortfall shall be non-zero.
 
 #### Solidity
 
-```
+```solidity
 Comptroller troll = Comptroller(0xABCD...);
 
 (uint error, uint liquidity, uint shortfall) = troll.getAccountLiquidity(msg.caller);
@@ -1011,7 +1011,7 @@ require(liquidity > 0, "account has excess collateral");
 
 #### Web3 1.0
 
-```
+```js
 const troll = Comptroller.at(0xABCD...);
 
 const result = await troll.methods.getAccountLiquidity(0xBorrower).call();
@@ -1023,15 +1023,15 @@ const {0: error, 1: liquidity, 2: shortfall} = result;
 
 The percent, ranging from 0% to 100%, of a liquidatable account's borrow that can be repaid in a single liquidate transaction. If a user has multiple borrowed assets, the closeFactor applies to any single borrowed asset, not the aggregated value of a user’s outstanding borrowing.
 
-```
+```solidity
 function closeFactorMantissa() view returns (uint)
 ```
 
-- RETURN: The closeFactor, scaled by 1e18, is multiplied by an outstanding borrow balance to determine how much could be closed.
+- `RETURN`: The closeFactor, scaled by 1e18, is multiplied by an outstanding borrow balance to determine how much could be closed.
 
 #### Solidity
 
-```
+```solidity
 Comptroller troll = Comptroller(0xABCD...);
 
 uint closeFactor = troll.closeFactorMantissa();
@@ -1039,7 +1039,7 @@ uint closeFactor = troll.closeFactorMantissa();
 
 #### Web3 1.0
 
-```
+```js
 const troll = Comptroller.at(0xABCD...);
 
 const closeFactor = await troll.methods.closeFactorMantissa().call();
@@ -1049,15 +1049,15 @@ const closeFactor = await troll.methods.closeFactorMantissa().call();
 
 The additional collateral given to liquidators as an incentive to perform liquidation of underwater accounts. For example, if the liquidation incentive is 1.1, liquidators receive an extra 10% of the borrowers collateral for every unit they close.
 
-```
+```solidity
 function liquidationIncentiveMantissa() view returns (uint)
 ```
 
-- RETURN: The liquidationIncentive, scaled by 1e18, is multiplied by the closed borrow amount from the liquidator to determine how much collateral can be seized.
+- `RETURN`: The liquidationIncentive, scaled by 1e18, is multiplied by the closed borrow amount from the liquidator to determine how much collateral can be seized.
 
 #### Solidity
 
-```
+```solidity
 Comptroller troll = Comptroller(0xABCD...);
 
 uint closeFactor = troll.liquidationIncentiveMantissa();
@@ -1065,7 +1065,7 @@ uint closeFactor = troll.liquidationIncentiveMantissa();
 
 #### Web3 1.0
 
-```
+```js
 const troll = Comptroller.at(0xABCD...);
 
 const closeFactor = await troll.methods.liquidationIncentiveMantissa().call();
