@@ -1,20 +1,18 @@
 # Nova
 
-<img width="737" alt="Explainer" src="https://i.imgur.com/oPpXqDy.png">
-
-## Core Concepts
+<img width="500" style="float: right;" alt="Explainer" src="https://i.imgur.com/TbbAhLd.png">
 
 - Users specify what actions they want run on L1 from L2
 
 - Users pay a bounty which pays for the gas of execution on L1 + whatever upfront costs a bot executing on L1 needs to have.
 
-- Bots execute requests on L1 by calling the Nova "Execution Manager" contract (on L1) with the calldata users on L2 give them.
+- Bots execute requests on L1 by calling the Nova "Execution Manager" contract with the calldata users on L2 give them.
 
 - The execution manager will call a specific strategy contract which can send tokens up to L2 via a bridge.
 
 - After executing a request, the Nova Execution Manager sends a confirmation up to L2 to unlock the bounty for the bot.
 
-## Core Spec
+## Architecture/Core Specification
 
 ### L1_NovaExecutionManager
 
