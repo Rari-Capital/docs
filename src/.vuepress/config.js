@@ -36,7 +36,5 @@ module.exports = {
       "/fuse/": [""]
     },
     smoothScroll: true
-  },
-
-  plugins: ["@vuepress/plugin-back-to-top", "@vuepress/plugin-medium-zoom"]
+  }
 };

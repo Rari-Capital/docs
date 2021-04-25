@@ -1,8 +1,3 @@
----
-sidebar: auto
-next: /config/
----
-
 # Fuse
 
 The Fuse platform enables anyone to instantly create their own lending and borrowing pool. Below you will find documentation for the Fuse platform. Each Fuse pool is essentially a fork of the Compound protocol.

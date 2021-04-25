@@ -1,7 +1,3 @@
----
-prev: /
----
-
 ## Yield Aggregator
 
 The yield aggregator is Rari's product that enables anyone to instantly deposit a supported asset and receive an interest generating one.
