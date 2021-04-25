@@ -10,11 +10,12 @@ The title for the page and content.
 
 e.g.
 
-```markdown
+````markdown
 ---
 title: Hello World
 ---
-```
+
+````solidity
 
 ## tags
 
@@ -31,11 +32,11 @@ e.g.
 
 ```markdown
 ---
-tags: 
+tags:
   - JavaScript
   - DOM
 ---
-```
+```solidity
 
 ## date
 
@@ -55,7 +56,7 @@ e.g.
 ---
 date: 2016-10-20
 ---
-```
+```solidity
 
 ## author
 
@@ -74,7 +75,7 @@ e.g.
 ---
 author: ULIVZ
 ---
-```
+```solidity
 
 ## location
 
@@ -93,7 +94,7 @@ e.g.
 ---
 location: Hangzhou
 ---
-```
+```solidity
 
 ## summary
 
@@ -111,4 +112,5 @@ e.g.
 ---
 summary: Here's a quick post on what I found.
 ---
-```
+````
+````

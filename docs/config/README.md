@@ -1,6 +1,7 @@
 ---
 prev: /
 ---
+
 # Stable Pool
 
 Welcome to `rari-stable-pool-contracts`, the central repository for the Solidity source code behind the Rari Stable Pool's Ethereum-based smart contracts (with automated tests and documentation).
@@ -83,7 +84,7 @@ The following document contains instructions on common usage of the Rari Stable 
 - See [EIP-20: ERC-20 Token Standard](https://eips.ethereum.org/EIPS/eip-20) for reference on all common functions of ERC20 tokens like RSPT.
 - Smart contract ABIs are available in the `abi` properties of the JSON files in the `build` folder.
 
-*If you're using JavaScript, don't waste your time directly integrating our smart contracts: the [Rari JavaScript SDK](https://github.com/Rari-Capital/rari-sdk) makes programmatic deposits and withdrawals as easy as just one line of code!*
+_If you're using JavaScript, don't waste your time directly integrating our smart contracts: the [Rari JavaScript SDK](https://github.com/Rari-Capital/rari-sdk) makes programmatic deposits and withdrawals as easy as just one line of code!_
 
 ### Stable Pool APY
 
@@ -116,29 +117,30 @@ The following document contains instructions on common usage of the Rari Stable 
 
      - To avoid paying gas, if the user's Ethereum account has no past deposit, the deposit amount is >= 250 USD, and the ETH balance returned by
 
-       ```
+       ````solidity
        RelayHub(0xd216153c06e857cd7f72665e0af1d7d82172f494).balanceOf(0xb6b79d857858004bf475e4a57d4a446da4884866)
-       ```
+       ```solidity
 
        is enough to cover the necessary gas, the user can submit their transaction via the Gas Station Network (GSN):
 
        1. User approves tokens to `RariFundProxy` by calling `approve(address spender, uint256 amount)` on the ERC20 contract of the desired input token where `spender` is `RariFundProxy` (to approve unlimited funds, set `amount` to `uint256(-1)`).
 
-       2. To get the necessary approval data (a signature from our trusted signer allowing the user to use our ETH for gas), POST the JSON body 
+       2. To get the necessary approval data (a signature from our trusted signer allowing the user to use our ETH for gas), POST the JSON body
 
-          ```
+          ```solidity
           { from, to, encodedFunctionCall, txFee, gasPrice, gas, nonce, relayerAddress, relayHubAddress }
-          ```
+          ```solidity
 
           to
 
-          ```
+          ```solidity
           https://app.rari.capital/checkSig.php
-          ```
+          ```solidity
 
           - Note that `checkSig.php` may go offline at some point in the future, in which case the user should deposit normally as described above.
 
        3. User calls `bool RariFundProxy.deposit(string currencyCode, uint256 amount)` via the Gas Station Network (GSN).
+       ````
 
    - If desired deposit currency is not accepted, get exchange data from mStable (preferably) and/or 0x:
 
@@ -161,15 +163,16 @@ The following document contains instructions on common usage of the Rari Stable 
 
        3. User calls
 
-          ```
+          ````solidity
           bool RariFundProxy.exchangeAndDeposit(address inputErc20Contract, uint256 inputAmount, string outputCurrencyCode, LibOrder.Order[] orders, bytes[] signatures, uint256 takerAssetFillAmount)
-          ```
+          ```solidity
 
           where:
 
           - `orders` is the orders array returned by the 0x API
           - `signatures` in an array of signatures from the orders array returned by the 0x API
           - `takerAssetFillAmount` is the input amount sent by the user
+          ````
 
 ### Withdraw
 
@@ -207,7 +210,7 @@ The following document contains instructions on common usage of the Rari Stable 
 
 ### Introduction
 
-Your RSPT (Rari Stable Pool Token) balance is a *token-based representation of your Rari Stable Pool balance.*
+Your RSPT (Rari Stable Pool Token) balance is a _token-based representation of your Rari Stable Pool balance._
 
 - RSPT is minted to you when you deposit to the Stable Pool and redeemed (i.e., burned) when you withdraw from the Stable Pool.
 - Accrued interest is constantly added to your USD balance supplied to the Stable Pool, meaning the USD value of your RSPT increases. However, your RSPT balance itself does not increase: instead, the exchange rate of RSPT increases at the same rate for every user as they accrue interest.
@@ -233,14 +236,14 @@ See [this Notion article](https://www.notion.so/Fees-e4689d7b800f485098548dd9e9d
 
 **Performance Fees**
 
-Rari Capital currently takes a *9.5% performance fee* on all interest accrued by the Rari Stable Pool.
+Rari Capital currently takes a _9.5% performance fee_ on all interest accrued by the Rari Stable Pool.
 
 - This fee is liable to change in the future, but the following method returns its current value at any time.
 - Get interest fee rate: `uint256 RariFundManager.getInterestFeeRate()` returns the fee rate on interest (proportion of raw interest accrued scaled by 1e18).
 
 **Withdrawal Fees**
 
-Rari Capital currently takes a *0.5% withdrawal fee* on all withdrawals from the Rari Yield Pool.
+Rari Capital currently takes a _0.5% withdrawal fee_ on all withdrawals from the Rari Yield Pool.
 
 - This fee is liable to change in the future, but the following method returns its current value at any time.
 - Get withdrawal fee rate: `uint256 RariFundManager.getWithdrawalFeeRate()` returns the withdrawal fee rate (proportion of every withdrawal taken as a service fee scaled by 1e18).
@@ -262,13 +265,13 @@ Welcome to the API docs for `RariFundManager`, `RariFundToken`, and `RariFundPro
 - See [EIP-20: ERC-20 Token Standard](https://eips.ethereum.org/EIPS/eip-20) for reference on all common functions of ERC20 tokens like RSPT.
 - Smart contract ABIs are available in the `abi` properties of the JSON files in the `build` folder.
 
-*If you're using JavaScript, don't waste your time directly integrating our smart contracts: the [Rari JavaScript SDK](https://github.com/Rari-Capital/rari-sdk) makes programmatic deposits and withdrawals as easy as just one line of code!*
+_If you're using JavaScript, don't waste your time directly integrating our smart contracts: the [Rari JavaScript SDK](https://github.com/Rari-Capital/rari-sdk) makes programmatic deposits and withdrawals as easy as just one line of code!_
 
 ### User Balance and Interest
 
-```
+````solidity
 uint256 RariFundManager.balanceOf(address account)
-```
+```solidity
 
 Returns the total balance in USD (scaled by 1e18) supplied to the Rari Stable Pool by `account`.
 
@@ -279,26 +282,26 @@ Returns the total balance in USD (scaled by 1e18) supplied to the Rari Stable Po
 
 ### Deposits
 
-```
+```solidity
 bool RariFundManager.isCurrencyAccepted(string currencyCode)
-```
+```solidity
 
 Returns a boolean indicating if deposits in `currencyCode` are currently accepted.
 
 - Parameters:
   - `currencyCode` (string): The currency code to check.
 
-```
+```solidity
 string[] RariFundManager.getAcceptedCurrencies()
-```
+```solidity
 
 Returns an array of currency codes currently accepted for deposits.
 
 ****
 
-```
+```solidity
 RariFundProxy.deposit(string currencyCode, uint256 amount)
-```
+```solidity
 
 ***For the time being, we are no longer subsidizing gas fees.***
 
@@ -310,9 +313,9 @@ Deposits funds to the Rari Stable Pool in exchange for RSPT (with GSN support).
   - `currencyCode` (string): The currency code of the token to be deposited.
   - `amount` (uint256): The amount of tokens to be deposited.
 
-```
+```solidity
 RariFundManager.deposit(string currencyCode, uint256 amount)
-```
+```solidity
 
 Deposits funds to the Rari Stable Pool in exchange for RSPT.
 
@@ -322,9 +325,9 @@ Deposits funds to the Rari Stable Pool in exchange for RSPT.
   - `currencyCode` (string): The currency code of the token to be deposited.
   - `amount` (uint256): The amount of tokens to be deposited.
 
-```
+```solidity
 RariFundProxy.exchangeAndDeposit(address inputErc20Contract, uint256 inputAmount, string outputCurrencyCode, LibOrder.Order[] orders, bytes[] signatures, uint256 takerAssetFillAmount)
-```
+```solidity
 
 Exchanges and deposits funds to the Rari Stable Pool in exchange for RSPT (via 0x).
 
@@ -341,9 +344,9 @@ Exchanges and deposits funds to the Rari Stable Pool in exchange for RSPT (via 0
 - Development notes:
   - *We should be able to make this function external and use calldata for all parameters, but [Solidity does not support calldata structs](https://github.com/ethereum/solidity/issues/5479).*
 
-```
+```solidity
 RariFundProxy.exchangeAndDeposit(string inputCurrencyCode, uint256 inputAmount, string outputCurrencyCode)
-```
+```solidity
 
 Exchanges and deposits funds to the Rari Stable Pool in exchange for RSPT (no slippage and low fees via mStable, but only supports DAI, USDC, USDT, TUSD, and mUSD).
 
@@ -355,9 +358,9 @@ Exchanges and deposits funds to the Rari Stable Pool in exchange for RSPT (no sl
 
 ### Withdrawals
 
-```
+```solidity
 RariFundManager.withdraw(string currencyCode, uint256 amount)
-```
+```solidity
 
 Withdraws funds from the Rari Stable Pool in exchange for RSPT.
 
@@ -367,9 +370,9 @@ Withdraws funds from the Rari Stable Pool in exchange for RSPT.
   - `currencyCode` (string): The currency code of the token to be withdrawn.
   - `amount` (uint256): The amount of tokens to be withdrawn.
 
-```
+```solidity
 RariFundProxy.withdrawAndExchange(string[] inputCurrencyCodes, uint256[] inputAmounts, address outputErc20Contract, LibOrder.Order[][] orders, bytes[][] signatures, uint256[] makerAssetFillAmounts, uint256[] protocolFees)
-```
+```solidity
 
 Withdraws funds from the Rari Stable Pool in exchange for RSPT and exchanges to them to the desired currency (if no 0x orders are supplied, exchanges DAI, USDC, USDT, TUSD, and mUSD via mStable).
 
@@ -396,9 +399,9 @@ Withdraws funds from the Rari Stable Pool in exchange for RSPT and exchanges to 
 
 See [EIP-20: ERC-20 Token Standard](https://eips.ethereum.org/EIPS/eip-20) for reference on all common functions of ERC20 tokens like RSPT. Here are a few of the most common ones:
 
-```
+```solidity
 uint256 RariFundToken.balanceOf(address account)
-```
+```solidity
 
 Returns the amount of RSPT owned by `account`.
 
@@ -408,20 +411,20 @@ Returns the amount of RSPT owned by `account`.
 - Parameters:
   - `account` (address) - The account whose balance we are retrieving.
 
-```
+```solidity
 bool RariFundToken.transfer(address recipient, uint256 amount)
-```
+```solidity
 
 Transfers the specified `amount` of RSPT to `recipient`.
 
 - Parameters:
   - `recipient` (address): The recipient of the RSPT.
   - `inputAmounts` (uint256[]): The amounts of tokens to be withdrawn and exchanged (including taker fees).
-- Return value: Boolean indicating success.
+- `RETURN` value: Boolean indicating success.
 
-```
+```solidity
 bool RariFundToken.approve(address spender, uint256 amount)
-```
+```solidity
 
 Approve `sender` to spend the specified `amount` of RSPT on behalf of `msg.sender`.
 
@@ -429,11 +432,11 @@ Approve `sender` to spend the specified `amount` of RSPT on behalf of `msg.sende
 - Parameters:
   - `spender` (address) - The account to which we are setting an allowance.
   - `amount` (uint256) - The amount of the allowance to be set.
-- Return value: Boolean indicating success.
+- `RETURN` value: Boolean indicating success.
 
-```
+```solidity
 uint256 RariFundToken.totalSupply()
-```
+```solidity
 
 Returns the total supply of RSPT (scaled by 1e18).
 
@@ -441,18 +444,18 @@ Returns the total supply of RSPT (scaled by 1e18).
 
 ### Total Supply and Interest
 
-```
+```solidity
 uint256 RariFundManager.getFundBalance()
-```
+```solidity
 
 Returns the total balance supplied by users to the Rari Stable Pool (all RSPT holders' funds but not unclaimed fees) in USD (scaled by 1e18).
 
 - Development notes:
   - *Ideally, we can add the `view` modifier, but Compound's `getUnderlyingBalance` function (called by `getRawFundBalance`) potentially modifies the state.*
 
-```
+```solidity
 int256 RariFundManager.getInterestAccrued()
-```
+```solidity
 
 Returns the total amount of interest accrued (excluding the fees paid on interest) by past and current Rari Stable Pool users (i.e., RSPT holders) in USD (scaled by 1e18).
 
@@ -461,41 +464,41 @@ Returns the total amount of interest accrued (excluding the fees paid on interes
 
 ### Fees
 
-```
+```solidity
 uint256 RariFundManager.getInterestFeeRate()
-```
+```solidity
 
 Returns the fee rate on interest (proportion of raw interest accrued scaled by 1e18).
 
-```
+```solidity
 int256 RariFundManager.getInterestFeesGenerated()
-```
+```solidity
 
 Returns the amount of interest fees accrued by beneficiaries in USD (scaled by 1e18).
 
 - Development notes:
   - *Ideally, we can add the `view` modifier, but Compound's `getUnderlyingBalance` function (called by `getRawFundBalance`) potentially modifies the state.*
 
-```
+```solidity
 uint256 RariFundManager.getWithdrawalFeeRate()
-```
+```solidity
 
 Returns the withdrawal fee rate (proportion of every withdrawal taken as a service fee scaled by 1e18).
 
 ### Raw Total Supply, Allocations, and Interest
 
-```
+```solidity
 uint256 RariFundManager.getRawFundBalance()
-```
+```solidity
 
 Returns the raw total balance of the Rari Stable Pool (all RSPT holders' funds + all unclaimed fees) of all currencies in USD (scaled by 1e18).
 
 - Development notes:
   - *Ideally, we can add the `view` modifier, but Compound's `getUnderlyingBalance` function (called by `getRawFundBalance`) potentially modifies the state.*
 
-```
+```solidity
 uint256 RariFundManager.getRawFundBalance(string currencyCode)
-```
+```solidity
 
 Returns the raw total balance of the Rari Stable Pool (all RSPT holders' funds + all unclaimed fees) of the specified currency.
 
@@ -504,19 +507,19 @@ Returns the raw total balance of the Rari Stable Pool (all RSPT holders' funds +
 - Development notes:
   - *Ideally, we can add the `view` modifier, but Compound's `getUnderlyingBalance` function (called by `RariFundController.getPoolBalance`) potentially modifies the state.*
 
-```
+```solidity
 (string[], uint256[], RariFundController.LiquidityPool[][], uint256[][], uint256[]) RariFundProxy.getRawFundBalancesAndPrices()
-```
+```solidity
 
 Returns the fund controller's contract balance of each currency, balance of each pool of each currency (checking `_poolsWithFunds` first to save gas), and price of each currency.
 
-- Return values: An array of currency codes, an array of corresponding fund controller contract balances for each currency code, an array of arrays of pool indexes for each currency code, an array of arrays of corresponding balances at each pool index for each currency code, and an array of prices in USD (scaled by 1e18) for each currency code.
+- `RETURN` values: An array of currency codes, an array of corresponding fund controller contract balances for each currency code, an array of arrays of pool indexes for each currency code, an array of arrays of corresponding balances at each pool index for each currency code, and an array of prices in USD (scaled by 1e18) for each currency code.
 - Development notes:
   - *Ideally, we can add the `view` modifier, but Compound's `getUnderlyingBalance` function (called by `getPoolBalance`) potentially modifies the state.*
 
-```
+```solidity
 int256 RariFundManager.getRawInterestAccrued()
-```
+```solidity
 
 Returns the raw total amount of interest accrued by the Rari Stable Pool (including the fees paid on interest) in USD (scaled by 1e18).
 
@@ -525,14 +528,14 @@ Returns the raw total amount of interest accrued by the Rari Stable Pool (includ
 
 ### Internal Stablecoin Pricing
 
-```
+```solidity
 uint256[] RariFundPriceConsumer.getCurrencyPricesInUsd()
-```
+```solidity
 
 Returns the prices of all supported stablecoins to which funds can be allocated.
 
 - Use these prices to calculate the value added to a user's USD balance due to a direct deposit and the value subtracted from a user's USD balance due to a direct withdrawal.
-- Return value: An array of prices in USD (scaled by 1e18) corresponding to the following list of currencies in the following order: DAI, USDC, USDT, TUSD, BUSD, sUSD, and mUSD.
+- `RETURN` value: An array of prices in USD (scaled by 1e18) corresponding to the following list of currencies in the following order: DAI, USDC, USDT, TUSD, BUSD, sUSD, and mUSD.
 
 ## Installation (for deployment and development)
 
@@ -546,9 +549,9 @@ To install all our dependencies: `npm install`
 
 ## Compiling Contracts
 
-```
+```solidity
 npm run compile
-```
+```solidity
 
 ## Testing Contracts
 
@@ -556,11 +559,11 @@ In `.env`, set `DEVELOPMENT_ADDRESS=0x45D54B22582c79c8Fb8f4c4F2663ef54944f397a` 
 
 If you are upgrading from `v2.4.0` or `v2.4.1`, set `UPGRADE_FROM_LAST_VERSION=1` to enable upgrading and configure the following:
 
-```
+```solidity
 UPGRADE_OLD_FUND_CONTROLLER=0xEe7162bB5191E8EC803F7635dE9A920159F1F40C
 UPGRADE_FUND_MANAGER_ADDRESS=0xC6BF8C8A55f77686720E0a88e2Fd1fEEF58ddf4a
 UPGRADE_FUND_OWNER_ADDRESS=0x10dB6Bce3F2AE1589ec91A872213DAE59697967a
-```
+```solidity
 
 Then, copy the OpenZeppelin artifacts for the official deployed `v2.4.0`/`v2.4.1` contracts from `.openzeppelin/mainnet.json` to `.openzeppelin/unknown-1337.json`. If you decide to disable upgrading by setting restoring `UPGRADE_FROM_LAST_VERSION=0`, make sure to delete `.openzeppelin/unknown-1337.json`.
 
@@ -570,11 +573,11 @@ To deploy the contracts to your private mainnet fork: `truffle migrate --network
 
 To run automated tests on the contracts on your private mainnet fork, run `npm test` (which runs `npm run ganache` in the background for you). If you are upgrading from `v2.4.0` or `v2.4.1`, you must also set the following variables in `.env`:
 
-```
+```solidity
 UPGRADE_FUND_TOKEN_ADDRESS=0x016bf078ABcaCB987f0589a6d3BEAdD4316922B0
 UPGRADE_FUND_PRICE_CONSUMER_ADDRESS=0xFE98A52bCAcC86432E7aa76376751DcFAB202244
 UPGRADE_FUND_PROXY_ADDRESS=0xe4deE94233dd4d7c2504744eE6d34f3875b3B439
-```
+```solidity
 
 If you'd like to test gasless deposits via `RariFundProxy.deposit` via the Gas Station Network:
 
@@ -589,11 +592,11 @@ In `.env`, configure `LIVE_DEPLOYER_ADDRESS`, `LIVE_DEPLOYER_PRIVATE_KEY`, `LIVE
 
 If you are upgrading from `v2.4.0` or `v2.4.1`, set `UPGRADE_FROM_LAST_VERSION=1` to enable upgrading and configure the following:
 
-```
+```solidity
 UPGRADE_OLD_FUND_CONTROLLER=0xEe7162bB5191E8EC803F7635dE9A920159F1F40C
 UPGRADE_FUND_MANAGER_ADDRESS=0xC6BF8C8A55f77686720E0a88e2Fd1fEEF58ddf4a
 UPGRADE_FUND_OWNER_ADDRESS=0x10dB6Bce3F2AE1589ec91A872213DAE59697967a
-```
+```solidity
 
 You must also set `LIVE_UPGRADE_FUND_OWNER_PRIVATE_KEY` and `LIVE_UPGRADE_TIMESTAMP_COMP_CLAIMED` (set to current timestamp after claiming COMP awarded to the `RariFundController`; you should run migrations within 1 hour of this timestamp).
 
@@ -607,4 +610,4 @@ If you'd like to provide gasless deposits via `RariFundProxy.deposit` via the Ga
 ## License
 
 See `LICENSE`.
-
+````

@@ -1,6 +1,7 @@
 ---
 prev: /
 ---
+
 # Fuse
 
 The Fuse platform enables anyone to instantly create their own lending and borrowing pool. Below you will find documentation for the Fuse platform. Each Fuse pool is essentially a fork of the Compound protocol.
@@ -11,29 +12,29 @@ The mint function transfers an asset into the protocol, which begins accumulatin
 
 #### fERC20
 
-```
+```solidity
 function mint(uint mintAmount) returns (uint)
 ```
 
-- msg.sender: The account which shall supply the asset, and own the minted fTokens.
-- mintAmount: The amount of the asset to be supplied, in units of the underlying asset.
-- RETURN: 0 on success, otherwise an [Error code](https://compound.finance/docs/fTokens#error-codes)
+- `msg.sender`: The account which shall supply the asset, and own the minted fTokens.
+- `mintAmount`: The amount of the asset to be supplied, in units of the underlying asset.
+- `RETURN`: 0 on success, otherwise an [Error code](https://compound.finance/docs/fTokens#error-codes)
 
 Before supplying an asset, users must first [approve](https://eips.ethereum.org/EIPS/eip-20#approve) the fToken to access their token balance.
 
 #### fEther
 
-```
+```solidity
 function mint() payable
 ```
 
-- msg.valuepayable: The amount of ether to be supplied, in wei.
-- msg.sender: The account which shall supply the ether, and own the minted fTokens.
-- RETURN: No return, reverts on error.
+- `msg.value`: The amount of ether to be supplied, in wei.
+- `msg.sender`: The account which shall supply the ether, and own the minted fTokens.
+- `RETURN`: No return, reverts on error.
 
 #### Solidity
 
-```
+```solidity
 Erc20 underlying = Erc20(0xToken...);     // get a handle for the underlying asset contract
 
 fERC20 fToken = fERC20(0x3FDA...);        // get a handle for the corresponding fToken contract
@@ -45,7 +46,7 @@ assert(fToken.mint(100) == 0);            // mint the fTokens and assert there i
 
 #### Web3 1.0
 
-```
+```js
 const fToken = fEther.at(0x3FDB...);
 
 await fToken.methods.mint().send({from: myAccount, value: 50});
@@ -57,17 +58,17 @@ The redeem function converts a specified quantity of fTokens into the underlying
 
 #### fERC20 / fEther
 
-```
+```solidity
 function redeem(uint redeemTokens) returns (uint)
 ```
 
-- msg.sender: The account to which redeemed funds shall be transferred.
-- redeemTokens: The number of fTokens to be redeemed.
-- RETURN: 0 on success, otherwise an [Error code](https://compound.finance/docs/fTokens#error-codes)
+- `msg.sender`: The account to which redeemed funds shall be transferred.
+- `redeemTokens`: The number of fTokens to be redeemed.
+- `RETURN`: 0 on success, otherwise an [Error code](https://compound.finance/docs/fTokens#error-codes)
 
 #### Solidity
 
-```
+```solidity
 fEther fToken = fEther(0x3FDB...);
 
 require(fToken.redeem(7) == 0, "something went wrong");
@@ -75,7 +76,7 @@ require(fToken.redeem(7) == 0, "something went wrong");
 
 #### Web3 1.0
 
-```
+```js
 const fToken = fERC20.at(0x3FDA...);
 
 fToken.methods.redeem(1).send({from: ...});
@@ -87,17 +88,17 @@ The redeem underlying function converts fTokens into a specified quantity of the
 
 #### fERC20 / fEther
 
-```
+```solidity
 function redeemUnderlying(uint redeemAmount) returns (uint)
 ```
 
-- msg.sender: The account to which redeemed funds shall be transferred.
-- redeemAmount: The amount of underlying to be redeemed.
-- RETURN: 0 on success, otherwise an [Error code](https://compound.finance/docs/fTokens#error-codes)
+- `msg.sender`: The account to which redeemed funds shall be transferred.
+- `redeemAmount`: The amount of underlying to be redeemed.
+- `RETURN`: 0 on success, otherwise an [Error code](https://compound.finance/docs/fTokens#error-codes)
 
 #### Solidity
 
-```
+```solidity
 fEther fToken = fEther(0x3FDB...);
 
 require(fToken.redeemUnderlying(50) == 0, "something went wrong");
@@ -105,7 +106,7 @@ require(fToken.redeemUnderlying(50) == 0, "something went wrong");
 
 #### Web3 1.0
 
-```
+```js
 const fToken = fERC20.at(0x3FDA...);
 
 fToken.methods.redeemUnderlying(10).send({from: ...});
@@ -119,17 +120,17 @@ To borrow Ether, the borrower must be 'payable' (solidity).
 
 #### fERC20 / fEther
 
-```
+```solidity
 function borrow(uint borrowAmount) returns (uint)
 ```
 
-- msg.sender: The account to which borrowed funds shall be transferred.
-- borrowAmount : The amount of the underlying asset to be borrowed.
-- RETURN: 0 on success, otherwise an [Error code](https://compound.finance/docs/fTokens#error-codes)
+- `msg.sender`: The account to which borrowed funds shall be transferred.
+- `borrowAmount` : The amount of the underlying asset to be borrowed.
+- `RETURN`: 0 on success, otherwise an [Error code](https://compound.finance/docs/fTokens#error-codes)
 
 #### Solidity
 
-```
+```solidity
 fERC20 fToken = fERC20(0x3FDA...);
 
 require(fToken.borrow(100) == 0, "got collateral?");
@@ -137,7 +138,7 @@ require(fToken.borrow(100) == 0, "got collateral?");
 
 #### Web3 1.0
 
-```
+```js
 const fToken = fEther.at(0x3FDB...);
 
 await fToken.methods.borrow(50).send({from: 0xMyAccount});
@@ -149,29 +150,29 @@ The repay function transfers an asset into the protocol, reducing the user's bor
 
 #### fERC20
 
-```
+```solidity
 function repayBorrow(uint repayAmount) returns (uint)
 ```
 
-- msg.sender: The account which borrowed the asset, and shall repay the borrow.
-- repayAmount: The amount of the underlying borrowed asset to be repaid. A value of -1 (i.e. 2256 - 1) can be used to repay the full amount.
-- RETURN: 0 on success, otherwise an [Error code](https://compound.finance/docs/fTokens#error-codes)
+- `msg.sender`: The account which borrowed the asset, and shall repay the borrow.
+- `repayAmount`: The amount of the underlying borrowed asset to be repaid. A value of -1 (i.e. 2256 - 1) can be used to repay the full amount.
+- `RETURN`: 0 on success, otherwise an [Error code](https://compound.finance/docs/fTokens#error-codes)
 
 Before repaying an asset, users must first [approve](https://eips.ethereum.org/EIPS/eip-20#approve) the fToken to access their token balance.
 
 #### fEther
 
-```
+```solidity
 function repayBorrow() payable
 ```
 
-- msg.valuepayable: The amount of ether to be repaid, in wei.
-- msg.sender: The account which borrowed the asset, and shall repay the borrow.
-- RETURN: No return, reverts on error.
+- `msg.value`: The amount of ether to be repaid, in wei.
+- `msg.sender`: The account which borrowed the asset, and shall repay the borrow.
+- `RETURN`: No return, reverts on error.
 
 #### Solidity
 
-```
+```solidity
 fEther fToken = fEther(0x3FDB...);
 
 require(fToken.repayBorrow.value(100)() == 0, "transfer approved?");
@@ -179,7 +180,7 @@ require(fToken.repayBorrow.value(100)() == 0, "transfer approved?");
 
 #### Web3 1.0
 
-```
+```js
 const fToken = fERC20.at(0x3FDA...);
 
 fToken.methods.repayBorrow(10000).send({from: ...});
@@ -191,31 +192,31 @@ The repay function transfers an asset into the protocol, reducing the target use
 
 #### fERC20
 
-```
+```solidity
 function repayBorrowBehalf(address borrower, uint repayAmount) returns (uint)
 ```
 
-- msg.sender: The account which shall repay the borrow.
-- borrower: The account which borrowed the asset to be repaid.
-- repayAmount: The amount of the underlying borrowed asset to be repaid. A value of -1 (i.e. 2256 - 1) can be used to repay the full amount.
-- RETURN: 0 on success, otherwise an [Error code](https://compound.finance/docs/fTokens#error-codes)
+- `msg.sender`: The account which shall repay the borrow.
+- `borrower`: The account which borrowed the asset to be repaid.
+- `repayAmount`: The amount of the underlying borrowed asset to be repaid. A value of -1 (i.e. 2256 - 1) can be used to repay the full amount.
+- `RETURN`: 0 on success, otherwise an [Error code](https://compound.finance/docs/fTokens#error-codes)
 
 Before repaying an asset, users must first [approve](https://eips.ethereum.org/EIPS/eip-20#approve) the fToken to access their token balance.
 
 #### fEther
 
-```
+```solidity
 function repayBorrowBehalf(address borrower) payable
 ```
 
-- msg.valuepayable: The amount of ether to be repaid, in wei.
-- msg.sender: The account which shall repay the borrow.
-- borrower: The account which borrowed the asset to be repaid.
-- RETURN: No return, reverts on error.
+- `msg.value`: The amount of ether to be repaid, in wei.
+- `msg.sender`: The account which shall repay the borrow.
+- `borrower`: The account which borrowed the asset to be repaid.
+- `RETURN`: No return, reverts on error.
 
 #### Solidity
 
-```
+```solidity
 fEther fToken = fEther(0x3FDB...);
 
 require(fToken.repayBorrowBehalf.value(100)(0xBorrower) == 0, "transfer approved?");
@@ -223,7 +224,7 @@ require(fToken.repayBorrowBehalf.value(100)(0xBorrower) == 0, "transfer approved
 
 #### Web3 1.0
 
-```
+```js
 const fToken = fERC20.at(0x3FDA...);
 
 await fToken.methods.repayBorrowBehalf(0xBorrower, 10000).send({from: 0xPayer});
@@ -235,17 +236,17 @@ Transfer is an ERC-20 method that allows accounts to send tokens to other Ethere
 
 #### fERC20 / fEther
 
-```
+```solidity
 function transfer(address recipient, uint256 amount) returns (bool)
 ```
 
-- recipient: The transfer recipient address.
-- amount: The amount of fTokens to transfer.
-- RETURN: Returns a boolean value indicating whether or not the operation succeeded.
+- `recipient`: The transfer recipient address.
+- `amount`: The amount of fTokens to transfer.
+- `RETURN`: Returns a boolean value indicating whether or not the operation succeeded.
 
 #### Solidity
 
-```
+```solidity
 fEther fToken = fEther(0x3FDB...);
 
 fToken.transfer(0xABCD..., 100000000000);
@@ -253,7 +254,7 @@ fToken.transfer(0xABCD..., 100000000000);
 
 #### Web3 1.0
 
-```
+```solidity
 const fToken = fERC20.at(0x3FDA...);
 
 await fToken.methods.transfer(0xABCD..., 100000000000).send({from: 0xSender});
@@ -267,33 +268,33 @@ A liquidator may close up to a certain fixed percentage (i.e. close factor) of a
 
 #### fERC20
 
-```
+```solidity
 function liquidateBorrow(address borrower, uint amount, address collateral) returns (uint)
 ```
 
-- msg.sender: The account which shall liquidate the borrower by repaying their debt and seizing their collateral.
-- borrower: The account with negative [account liquidity](https://compound.finance/docs/comptroller#account-liquidity) that shall be liquidated.
-- repayAmount: The amount of the borrowed asset to be repaid and converted into collateral, specified in units of the underlying borrowed asset.
-- fTokenCollateral: The address of the fToken currently held as collateral by a borrower, that the liquidator shall seize.
-- RETURN: 0 on success, otherwise an [Error code](https://compound.finance/docs/fTokens#error-codes)
+- `msg.sender`: The account which shall liquidate the borrower by repaying their debt and seizing their collateral.
+- `borrower`: The account with negative [account liquidity](https://compound.finance/docs/comptroller#account-liquidity) that shall be liquidated.
+- `repayAmount`: The amount of the borrowed asset to be repaid and converted into collateral, specified in units of the underlying borrowed asset.
+- `collateral`: The address of the fToken currently held as collateral by a borrower, that the liquidator shall seize.
+- `RETURN`: 0 on success, otherwise an [Error code](https://compound.finance/docs/fTokens#error-codes)
 
 Before supplying an asset, users must first [approve](https://eips.ethereum.org/EIPS/eip-20#approve) the fToken to access their token balance.
 
 #### fEther
 
-```
+```solidity
 function liquidateBorrow(address borrower, address fTokenCollateral) payable
 ```
 
-- msg.valuepayable: The amount of ether to be repaid and converted into collateral, in wei.
-- msg.sender: The account which shall liquidate the borrower by repaying their debt and seizing their collateral.
-- borrower: The account with negative [account liquidity](https://compound.finance/docs/comptroller#account-liquidity) that shall be liquidated.
-- fTokenCollateral: The address of the fToken currently held as collateral by a borrower, that the liquidator shall seize.
-- RETURN: No return, reverts on error.
+- `msg.value`: The amount of ether to be repaid and converted into collateral, in wei.
+- `msg.sender`: The account which shall liquidate the borrower by repaying their debt and seizing their collateral.
+- `borrower`: The account with negative [account liquidity](https://compound.finance/docs/comptroller#account-liquidity) that shall be liquidated.
+- `collateral`: The address of the fToken currently held as collateral by a borrower, that the liquidator shall seize.
+- `RETURN`: No return, reverts on error.
 
 #### Solidity
 
-```
+```solidity
 fEther fToken = fEther(0x3FDB...);
 
 fERC20 fTokenCollateral = fERC20(0x3FDA...);
@@ -303,7 +304,7 @@ require(fToken.liquidateBorrow.value(100)(0xBorrower, fTokenCollateral) == 0, "b
 
 #### Web3 1.0
 
-```
+```solidity
 const fToken = fERC20.at(0x3FDA...);
 
 const fTokenCollateral = fEther.at(0x3FDB...);
@@ -313,35 +314,35 @@ await fToken.methods.liquidateBorrow(0xBorrower, 33, fTokenCollateral).send({fro
 
 ## Key Events
 
-| Event                                                        | Description                                                  |
-| ------------------------------------------------------------ | ------------------------------------------------------------ |
-| Mint(address minter, uint mintAmount, uint mintTokens)       | Emitted upon a successful [Mint](https://compound.finance/docs/fTokens#mint). |
-| Redeem(address redeemer, uint redeemAmount, uint redeemTokens) | Emitted upon a successful [Redeem](https://compound.finance/docs/fTokens#redeem). |
-| Borrow(address borrower, uint borrowAmount, uint accountBorrows, uint totalBorrows) | Emitted upon a successful [Borrow](https://compound.finance/docs/fTokens#borrow). |
-| RepayBorrow(address payer, address borrower, uint repayAmount, uint accountBorrows, uint totalBorrows) | Emitted upon a successful [Repay Borrow](https://compound.finance/docs/fTokens#repay-borrow). |
+| Event                                                                                                               | Description                                                                                           |
+| ------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| Mint(address minter, uint mintAmount, uint mintTokens)                                                              | Emitted upon a successful [Mint](https://compound.finance/docs/fTokens#mint).                         |
+| Redeem(address redeemer, uint redeemAmount, uint redeemTokens)                                                      | Emitted upon a successful [Redeem](https://compound.finance/docs/fTokens#redeem).                     |
+| Borrow(address borrower, uint borrowAmount, uint accountBorrows, uint totalBorrows)                                 | Emitted upon a successful [Borrow](https://compound.finance/docs/fTokens#borrow).                     |
+| RepayBorrow(address payer, address borrower, uint repayAmount, uint accountBorrows, uint totalBorrows)              | Emitted upon a successful [Repay Borrow](https://compound.finance/docs/fTokens#repay-borrow).         |
 | LiquidateBorrow(address liquidator, address borrower, uint repayAmount, address fTokenCollateral, uint seizeTokens) | Emitted upon a successful [Liquidate Borrow](https://compound.finance/docs/fTokens#liquidate-borrow). |
 
 ## Error Codes
 
-| Code | Name                           | Description                                                  |
-| ---- | ------------------------------ | ------------------------------------------------------------ |
-| 0    | NO_ERROR                       | Not a failure.                                               |
-| 1    | UNAUTHORIZED                   | The sender is not authorized to perform this action.         |
-| 2    | BAD_INPUT                      | An invalid argument was supplied by the caller.              |
-| 3    | COMPTROLLER_REJECTION          | The action would violate the comptroller policy.             |
-| 4    | COMPTROLLER_CALCULATION_ERROR  | An internal calculation has failed in the comptroller.       |
-| 5    | INTEREST_RATE_MODEL_ERROR      | The interest rate model returned an invalid value.           |
-| 6    | INVALID_ACCOUNT_PAIR           | The specified combination of accounts is invalid.            |
-| 7    | INVALID_CLOSE_AMOUNT_REQUESTED | The amount to liquidate is invalid.                          |
-| 8    | INVALID_COLLATERAL_FACTOR      | The collateral factor is invalid.                            |
-| 9    | MATH_ERROR                     | A math calculation error occurred.                           |
-| 10   | MARKET_NOT_FRESH               | Interest has not been properly accrued.                      |
-| 11   | MARKET_NOT_LISTED              | The market is not currently listed by its comptroller.       |
-| 12   | TOKEN_INSUFFICIENT_ALLOWANCE   | ERC-20 contract must *allow* Money Market contract to call transferFrom. The current allowance is either 0 or less than the requested supply, repayBorrow or liquidate amount. |
-| 13   | TOKEN_INSUFFICIENT_BALANCE     | Caller does not have sufficient balance in the ERC-20 contract to complete the desired action. |
-| 14   | TOKEN_INSUFFICIENT_CASH        | The market does not have a sufficient cash balance to complete the transaction. You may attempt this transaction again later. |
-| 15   | TOKEN_TRANSFER_IN_FAILED       | Failure in ERC-20 when transfering token into the market.    |
-| 16   | TOKEN_TRANSFER_OUT_FAILED      | Failure in ERC-20 when transfering token out of the market.  |
+| Code | Name                           | Description                                                                                                                                                                    |
+| ---- | ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 0    | NO_ERROR                       | Not a failure.                                                                                                                                                                 |
+| 1    | UNAUTHORIZED                   | The sender is not authorized to perform this action.                                                                                                                           |
+| 2    | BAD_INPUT                      | An invalid argument was supplied by the caller.                                                                                                                                |
+| 3    | COMPTROLLER_REJECTION          | The action would violate the comptroller policy.                                                                                                                               |
+| 4    | COMPTROLLER_CALCULATION_ERROR  | An internal calculation has failed in the comptroller.                                                                                                                         |
+| 5    | INTEREST_RATE_MODEL_ERROR      | The interest rate model returned an invalid value.                                                                                                                             |
+| 6    | INVALID_ACCOUNT_PAIR           | The specified combination of accounts is invalid.                                                                                                                              |
+| 7    | INVALID_CLOSE_AMOUNT_REQUESTED | The amount to liquidate is invalid.                                                                                                                                            |
+| 8    | INVALID_COLLATERAL_FACTOR      | The collateral factor is invalid.                                                                                                                                              |
+| 9    | MATH_ERROR                     | A math calculation error occurred.                                                                                                                                             |
+| 10   | MARKET_NOT_FRESH               | Interest has not been properly accrued.                                                                                                                                        |
+| 11   | MARKET_NOT_LISTED              | The market is not currently listed by its comptroller.                                                                                                                         |
+| 12   | TOKEN_INSUFFICIENT_ALLOWANCE   | ERC-20 contract must _allow_ Money Market contract to call transferFrom. The current allowance is either 0 or less than the requested supply, repayBorrow or liquidate amount. |
+| 13   | TOKEN_INSUFFICIENT_BALANCE     | Caller does not have sufficient balance in the ERC-20 contract to complete the desired action.                                                                                 |
+| 14   | TOKEN_INSUFFICIENT_CASH        | The market does not have a sufficient cash balance to complete the transaction. You may attempt this transaction again later.                                                  |
+| 15   | TOKEN_TRANSFER_IN_FAILED       | Failure in ERC-20 when transfering token into the market.                                                                                                                      |
+| 16   | TOKEN_TRANSFER_OUT_FAILED      | Failure in ERC-20 when transfering token out of the market.                                                                                                                    |
 
 ## Failure Info
 
@@ -430,21 +431,21 @@ await fToken.methods.liquidateBorrow(0xBorrower, 33, fTokenCollateral).send({fro
 
 Each fToken is convertible into an ever increasing quantity of the underlying asset, as interest accrues in the market. The exchange rate between a fToken and the underlying asset is equal to:
 
-```
+```solidity
 exchangeRate = (getCash() + totalBorrows() - totalReserves()) / totalSupply()
 ```
 
 #### fERC20 / fEther
 
-```
+```solidity
 function exchangeRateCurrent() returns (uint)
 ```
 
-- RETURN: The current exchange rate as an unsigned integer, scaled by 1e18.
+- `RETURN`: The current exchange rate as an unsigned integer, scaled by 1e18.
 
 #### Solidity
 
-```
+```solidity
 fERC20 fToken = fToken(0x3FDA...);
 
 uint exchangeRateMantissa = fToken.exchangeRateCurrent();
@@ -452,7 +453,7 @@ uint exchangeRateMantissa = fToken.exchangeRateCurrent();
 
 #### Web3 1.0
 
-```
+```js
 const fToken = fEther.at(0x3FDB...);
 
 const exchangeRate = (await fToken.methods.exchangeRateCurrent().call()) / 1e18;
@@ -466,15 +467,15 @@ Cash is the amount of underlying balance owned by this fToken contract. One may 
 
 #### fERC20 / fEther
 
-```
+```solidity
 function getCash() returns (uint)
 ```
 
-- RETURN: The quantity of underlying asset owned by the contract.
+- `RETURN`: The quantity of underlying asset owned by the contract.
 
 #### Solidity
 
-```
+```solidity
 fERC20 fToken = fToken(0x3FDA...);
 
 uint cash = fToken.getCash();
@@ -482,7 +483,7 @@ uint cash = fToken.getCash();
 
 #### Web3 1.0
 
-```
+```js
 const fToken = fEther.at(0x3FDB...);
 
 const cash = (await fToken.methods.getCash().call());
@@ -494,15 +495,15 @@ Total Borrows is the amount of underlying currently loaned out by the market, an
 
 #### fERC20 / fEther
 
-```
+```solidity
 function totalBorrowsCurrent() returns (uint)
 ```
 
-- RETURN: The total amount of borrowed underlying, with interest.
+- `RETURN`: The total amount of borrowed underlying, with interest.
 
 #### Solidity
 
-```
+```solidity
 fERC20 fToken = fToken(0x3FDA...);
 
 uint borrows = fToken.totalBorrowsCurrent();
@@ -510,7 +511,7 @@ uint borrows = fToken.totalBorrowsCurrent();
 
 #### Web3 1.0
 
-```
+```js
 const fToken = fEther.at(0x3FDB...);
 
 const borrows = (await fToken.methods.totalBorrowsCurrent().call());
@@ -522,16 +523,16 @@ A user who borrows assets from the protocol is subject to accumulated interest b
 
 #### fERC20 / fEther
 
-```
+```solidity
 function borrowBalanceCurrent(address account) returns (uint)
 ```
 
-- account: The account which borrowed the assets.
-- RETURN: The user's current borrow balance (with interest) in units of the underlying asset.
+- `account`: The account which borrowed the assets.
+- `RETURN`: The user's current borrow balance (with interest) in units of the underlying asset.
 
 #### Solidity
 
-```
+```solidity
 fERC20 fToken = fToken(0x3FDA...);
 
 uint borrows = fToken.borrowBalanceCurrent(msg.caller);
@@ -539,7 +540,7 @@ uint borrows = fToken.borrowBalanceCurrent(msg.caller);
 
 #### Web3 1.0
 
-```
+```js
 const fToken = fEther.at(0x3FDB...);
 
 const borrows = await fToken.methods.borrowBalanceCurrent(account).call();
@@ -551,15 +552,15 @@ At any point in time one may query the contract to get the current borrow rate p
 
 #### fERC20 / fEther
 
-```
+```solidity
 function borrowRatePerBlock() returns (uint)
 ```
 
-- RETURN: The current borrow rate as an unsigned integer, scaled by 1e18.
+- `RETURN`: The current borrow rate as an unsigned integer, scaled by 1e18.
 
 #### Solidity
 
-```
+```solidity
 fERC20 fToken = fToken(0x3FDA...);
 
 uint borrowRateMantissa = fToken.borrowRatePerBlock();
@@ -567,7 +568,7 @@ uint borrowRateMantissa = fToken.borrowRatePerBlock();
 
 #### Web3 1.0
 
-```
+```js
 const fToken = fEther.at(0x3FDB...);
 
 const borrowRate = (await fToken.methods.borrowRatePerBlock().call()) / 1e18;
@@ -579,15 +580,15 @@ Total Supply is the number of tokens currently in circulation in this fToken mar
 
 #### fERC20 / fEther
 
-```
+```solidity
 function totalSupply() returns (uint)
 ```
 
-- RETURN: The total number of tokens in circulation for the market.
+- `RETURN`: The total number of tokens in circulation for the market.
 
 #### Solidity
 
-```
+```solidity
 fERC20 fToken = fToken(0x3FDA...);
 
 uint tokens = fToken.totalSupply();
@@ -595,7 +596,7 @@ uint tokens = fToken.totalSupply();
 
 #### Web3 1.0
 
-```
+```js
 const fToken = fEther.at(0x3FDB...);
 
 const tokens = (await fToken.methods.totalSupply().call());
@@ -607,16 +608,16 @@ The user's underlying balance, representing their assets in the protocol, is equ
 
 #### fERC20 / fEther
 
-```
+```solidity
 function balanceOfUnderlying(address account) returns (uint)
 ```
 
-- account: The account to get the underlying balance of.
-- RETURN: The amount of underlying currently owned by the account.
+- `account`: The account to get the underlying balance of.
+- `RETURN`: The amount of underlying currently owned by the account.
 
 #### Solidity
 
-```
+```solidity
 fERC20 fToken = fToken(0x3FDA...);
 
 uint tokens = fToken.balanceOfUnderlying(msg.caller);
@@ -624,7 +625,7 @@ uint tokens = fToken.balanceOfUnderlying(msg.caller);
 
 #### Web3 1.0
 
-```
+```js
 const fToken = fEther.at(0x3FDB...);
 
 const tokens = await fToken.methods.balanceOfUnderlying(account).call();
@@ -636,15 +637,15 @@ At any point in time one may query the contract to get the current supply rate p
 
 #### fERC20 / fEther
 
-```
+```solidity
 function supplyRatePerBlock() returns (uint)
 ```
 
-- RETURN: The current supply rate as an unsigned integer, scaled by 1e18.
+- `RETURN`: The current supply rate as an unsigned integer, scaled by 1e18.
 
 #### Solidity
 
-```
+```solidity
 fERC20 fToken = fToken(0x3FDA...);
 
 uint supplyRateMantissa = fToken.supplyRatePerBlock();
@@ -652,7 +653,7 @@ uint supplyRateMantissa = fToken.supplyRatePerBlock();
 
 #### Web3 1.0
 
-```
+```js
 const fToken = fEther.at(0x3FDB...);
 
 const supplyRate = (await fToken.methods.supplyRatePerBlock().call()) / 1e18;
@@ -664,15 +665,15 @@ Reserves are an accounting entry in each fToken contract that represents a porti
 
 #### fERC20 / fEther
 
-```
+```solidity
 function totalReserves() returns (uint)
 ```
 
-- RETURN: The total amount of reserves held in the market.
+- `RETURN`: The total amount of reserves held in the market.
 
 #### Solidity
 
-```
+```solidity
 fERC20 fToken = fToken(0x3FDA...);
 
 uint reserves = fToken.totalReserves();
@@ -680,7 +681,7 @@ uint reserves = fToken.totalReserves();
 
 #### Web3 1.0
 
-```
+```js
 const fToken = fEther.at(0x3FDB...);
 
 const reserves = (await fToken.methods.totalReserves().call());
@@ -692,15 +693,15 @@ The reserve factor defines the portion of borrower interest that is converted in
 
 #### fERC20 / fEther
 
-```
+```solidity
 function reserveFactorMantissa() returns (uint)
 ```
 
-- RETURN: The current reserve factor as an unsigned integer, scaled by 1e18.
+- `RETURN`: The current reserve factor as an unsigned integer, scaled by 1e18.
 
 #### Solidity
 
-```
+```solidity
 fERC20 fToken = fToken(0x3FDA...);
 
 uint reserveFactorMantissa = fToken.reserveFactorMantissa();
@@ -708,7 +709,7 @@ uint reserveFactorMantissa = fToken.reserveFactorMantissa();
 
 #### Web3 1.0
 
-```
+```js
 const fToken = fEther.at(0x3FDB...);
 
 const reserveFactor = (await fToken.methods.reserveFactorMantissa().call()) / 1e18;
@@ -718,36 +719,37 @@ const reserveFactor = (await fToken.methods.reserveFactorMantissa().call()) / 1e
 
 The fToken [Exchange Rate](https://compound.finance/docs/fTokens#exchange-rate) is scaled by the difference in decimals between the fToken and the underlying asset.
 
-```
-onefTokenInUnderlying = exchangeRateCurrent / (1 * 10 ^ (18 + underlyingDecimals - fTokenDecimals))
+```js
+const onefTokenInUnderlying =
+  exchangeRateCurrent / ((1 * 10) ^ (18 + underlyingDecimals - fTokenDecimals))
 ```
 
 Here is an example of finding the value of 1 fBAT in BAT with Web3.js JavaScript.
 
-```
-const fTokenDecimals = 8; // all fTokens have 8 decimal places
+```js
+const fTokenDecimals = 8 // all fTokens have 8 decimal places
 
-const underlying = new web3.eth.Contract(erc20Abi, batAddress);
+const underlying = new web3.eth.Contract(erc20Abi, batAddress)
 
-const fToken = new web3.eth.Contract(fTokenAbi, fBATAddress);
+const fToken = new web3.eth.Contract(fTokenAbi, fBATAddress)
 
-const underlyingDecimals = await underlying.methods.decimals().call();
+const underlyingDecimals = await underlying.methods.decimals().call()
 
-const exchangeRateCurrent = await fToken.methods.exchangeRateCurrent().call();
+const exchangeRateCurrent = await fToken.methods.exchangeRateCurrent().call()
 
-const mantissa = 18 + parseInt(underlyingDecimals) - fTokenDecimals;
+const mantissa = 18 + parseInt(underlyingDecimals) - fTokenDecimals
 
-const onefTokenInUnderlying = exchangeRateCurrent / Math.pow(10, mantissa);
+const onefTokenInUnderlying = exchangeRateCurrent / Math.pow(10, mantissa)
 
-console.log('1 fBAT can be redeemed for', onefTokenInUnderlying, 'BAT');
+console.log('1 fBAT can be redeemed for', onefTokenInUnderlying, 'BAT')
 ```
 
 There is no underlying contract for ETH, so to do this with fETH, set underlyingDecimals to 18.
 
 To find the number of underlying tokens that can be redeemed for fTokens, multiply the number of fTokens by the above value onefTokenInUnderlying.
 
-```
-underlyingTokens = fTokenAmount * onefTokenInUnderlying
+```js
+const underlyingTokens = fTokenAmount * onefTokenInUnderlying
 ```
 
 ## Calculating Accrued Interest
@@ -768,7 +770,7 @@ Alice supplies 1 ETH to the Fuse protocol. At the time of supply, the supplyRate
 
 The Annual Percentage Yield (APY) for supplying or borrowing in each market can be calculated using the value of supplyRatePerBlock (for supply APY) or borrowRatePerBlock (for borrow APY) in this formula:
 
-```
+```js
 Rate = fToken.supplyRatePerBlock(); // Integer
 
 Rate = 37893566
@@ -784,26 +786,38 @@ APY = ((((Rate / ETH Mantissa * Blocks Per Day + 1) ^ Days Per Year)) - 1) * 100
 
 Here is an example of calculating the supply and borrow APY with Web3.js JavaScript:
 
-```
-const ethMantissa = 1e18;
+```js
+const ethMantissa = 1e18
 
-const blocksPerDay = 4 * 60 * 24;
+const blocksPerDay = 4 * 60 * 24
 
-const daysPerYear = 365;
+const daysPerYear = 365
 
-const fToken = new web3.eth.Contract(fETHAbi, fETHAddress);
+const fToken = new web3.eth.Contract(fETHAbi, fETHAddress)
 
-const supplyRatePerBlock = await fToken.methods.supplyRatePerBlock().call();
+const supplyRatePerBlock = await fToken.methods.supplyRatePerBlock().call()
 
-const borrowRatePerBlock = await fToken.methods.borrowRatePerBlock().call();
+const borrowRatePerBlock = await fToken.methods.borrowRatePerBlock().call()
 
-const supplyApy = (((Math.pow((supplyRatePerBlock / ethMantissa * blocksPerDay) + 1, daysPerYear))) - 1) * 100;
+const supplyApy =
+  (Math.pow(
+    (supplyRatePerBlock / ethMantissa) * blocksPerDay + 1,
+    daysPerYear
+  ) -
+    1) *
+  100
 
-const borrowApy = (((Math.pow((borrowRatePerBlock / ethMantissa * blocksPerDay) + 1, daysPerYear))) - 1) * 100;
+const borrowApy =
+  (Math.pow(
+    (borrowRatePerBlock / ethMantissa) * blocksPerDay + 1,
+    daysPerYear
+  ) -
+    1) *
+  100
 
-console.log(`Supply APY for ETH ${supplyApy} %`);
+console.log(`Supply APY for ETH ${supplyApy} %`)
 
-console.log(`Borrow APY for ETH ${borrowApy} %`);
+console.log(`Borrow APY for ETH ${borrowApy} %`)
 ```
 
 ## Gas Costs
