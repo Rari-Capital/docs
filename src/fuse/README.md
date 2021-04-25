@@ -739,66 +739,112 @@ const reserveFactor = (await fToken.methods.reserveFactorMantissa().call()) / 1e
 
 ### Error Codes
 
-```solidity
-enum Error {
-    NO_ERROR,
-    UNAUTHORIZED,
-    COMPTROLLER_MISMATCH,
-    INSUFFICIENT_SHORTFALL,
-    INSUFFICIENT_LIQUIDITY,
-    INVALID_CLOSE_FACTOR,
-    INVALID_COLLATERAL_FACTOR,
-    INVALID_LIQUIDATION_INCENTIVE,
-    MARKET_NOT_ENTERED, // no longer possible
-    MARKET_NOT_LISTED,
-    MARKET_ALREADY_LISTED,
-    MATH_ERROR,
-    NONZERO_BORROW_BALANCE,
-    PRICE_ERROR,
-    REJECTION,
-    SNAPSHOT_ERROR,
-    TOO_MANY_ASSETS,
-    TOO_MUCH_REPAY,
-    SUPPLIER_NOT_WHITELISTED,
-    BORROW_BELOW_MIN,
-    SUPPLY_ABOVE_MAX,
-    NONZERO_TOTAL_SUPPLY
-}
-```
+| Code | Name                           | Description                                                                                                                                                                    |
+| ---- | ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 0    | NO_ERROR                       | Not a failure.                                                                                                                                                                 |
+| 1    | UNAUTHORIZED                   | The sender is not authorized to perform this action.                                                                                                                           |
+| 2    | BAD_INPUT                      | An invalid argument was supplied by the caller.                                                                                                                                |
+| 3    | COMPTROLLER_REJECTION          | The action would violate the comptroller policy.                                                                                                                               |
+| 4    | COMPTROLLER_CALCULATION_ERROR  | An internal calculation has failed in the comptroller.                                                                                                                         |
+| 5    | INTEREST_RATE_MODEL_ERROR      | The interest rate model returned an invalid value.                                                                                                                             |
+| 6    | INVALID_ACCOUNT_PAIR           | The specified combination of accounts is invalid.                                                                                                                              |
+| 7    | INVALID_CLOSE_AMOUNT_REQUESTED | The amount to liquidate is invalid.                                                                                                                                            |
+| 8    | INVALID_COLLATERAL_FACTOR      | The collateral factor is invalid.                                                                                                                                              |
+| 9    | MATH_ERROR                     | A math calculation error occurred.                                                                                                                                             |
+| 10   | MARKET_NOT_FRESH               | Interest has not been properly accrued.                                                                                                                                        |
+| 11   | MARKET_NOT_LISTED              | The market is not currently listed by its comptroller.                                                                                                                         |
+| 12   | TOKEN_INSUFFICIENT_ALLOWANCE   | ERC-20 contract must _allow_ Money Market contract to call transferFrom. The current allowance is either 0 or less than the requested supply, repayBorrow or liquidate amount. |
+| 13   | TOKEN_INSUFFICIENT_BALANCE     | Caller does not have sufficient balance in the ERC-20 contract to complete the desired action.                                                                                 |
+| 14   | TOKEN_INSUFFICIENT_CASH        | The market does not have a sufficient cash balance to complete the transaction. You may attempt this transaction again later.                                                  |
+| 15   | TOKEN_TRANSFER_IN_FAILED       | Failure in ERC-20 when transfering token into the market.                                                                                                                      |
+| 16   | TOKEN_TRANSFER_OUT_FAILED      | Failure in ERC-20 when transfering token out of the market.                                                                                                                    |
+| 17   | UTILIZATION_ABOVE_MAX          | No more of this token can be borrowed right now.                                                                                                                               |
 
 ### Failure Info
 
-```solidity
-enum FailureInfo {
-    ACCEPT_ADMIN_PENDING_ADMIN_CHECK,
-    ACCEPT_PENDING_IMPLEMENTATION_ADDRESS_CHECK,
-    EXIT_MARKET_BALANCE_OWED,
-    EXIT_MARKET_REJECTION,
-    RENOUNCE_ADMIN_RIGHTS_OWNER_CHECK,
-    SET_CLOSE_FACTOR_OWNER_CHECK,
-    SET_CLOSE_FACTOR_VALIDATION,
-    SET_COLLATERAL_FACTOR_OWNER_CHECK,
-    SET_COLLATERAL_FACTOR_NO_EXISTS,
-    SET_COLLATERAL_FACTOR_VALIDATION,
-    SET_COLLATERAL_FACTOR_WITHOUT_PRICE,
-    SET_LIQUIDATION_INCENTIVE_OWNER_CHECK,
-    SET_LIQUIDATION_INCENTIVE_VALIDATION,
-    SET_MAX_ASSETS_OWNER_CHECK,
-    SET_PENDING_ADMIN_OWNER_CHECK,
-    SET_PENDING_IMPLEMENTATION_OWNER_CHECK,
-    SET_PRICE_ORACLE_OWNER_CHECK,
-    SET_WHITELIST_ENFORCEMENT_OWNER_CHECK,
-    SET_WHITELIST_STATUS_OWNER_CHECK,
-    SUPPORT_MARKET_EXISTS,
-    SUPPORT_MARKET_OWNER_CHECK,
-    SET_PAUSE_GUARDIAN_OWNER_CHECK,
-    UNSUPPORT_MARKET_OWNER_CHECK,
-    UNSUPPORT_MARKET_DOES_NOT_EXIST,
-    UNSUPPORT_MARKET_IN_USE
-}
-```
-
-
+| Code | Name                                                       |
+| ---- | ---------------------------------------------------------- |
+| 0    | ACCEPT_ADMIN_PENDING_ADMIN_CHECK                           |
+| 1    | ACCRUE_INTEREST_ACCUMULATED_INTEREST_CALCULATION_FAILED    |
+| 2    | ACCRUE_INTEREST_BORROW_RATE_CALCULATION_FAILED             |
+| 3    | ACCRUE_INTEREST_NEW_BORROW_INDEX_CALCULATION_FAILED        |
+| 4    | ACCRUE_INTEREST_NEW_TOTAL_BORROWS_CALCULATION_FAILED       |
+| 5    | ACCRUE_INTEREST_NEW_TOTAL_RESERVES_CALCULATION_FAILED      |
+| 6    | ACCRUE_INTEREST_SIMPLE_INTEREST_FACTOR_CALCULATION_FAILED  |
+| 7    | BORROW_ACCUMULATED_BALANCE_CALCULATION_FAILED              |
+| 8    | BORROW_ACCRUE_INTEREST_FAILED                              |
+| 9    | BORROW_CASH_NOT_AVAILABLE                                  |
+| 10   | BORROW_FRESHNESS_CHECK                                     |
+| 11   | BORROW_NEW_TOTAL_BALANCE_CALCULATION_FAILED                |
+| 12   | BORROW_NEW_ACCOUNT_BORROW_BALANCE_CALCULATION_FAILED       |
+| 13   | BORROW_MARKET_NOT_LISTED                                   |
+| 14   | BORROW_COMPTROLLER_REJECTION                               |
+| 15   | LIQUIDATE_ACCRUE_BORROW_INTEREST_FAILED                    |
+| 16   | LIQUIDATE_ACCRUE_COLLATERAL_INTEREST_FAILED                |
+| 17   | LIQUIDATE_COLLATERAL_FRESHNESS_CHECK                       |
+| 18   | LIQUIDATE_COMPTROLLER_REJECTION                            |
+| 19   | LIQUIDATE_COMPTROLLER_CALCULATE_AMOUNT_SEIZE_FAILED        |
+| 20   | LIQUIDATE_CLOSE_AMOUNT_IS_UINT_MAX                         |
+| 21   | LIQUIDATE_CLOSE_AMOUNT_IS_ZERO                             |
+| 22   | LIQUIDATE_FRESHNESS_CHECK                                  |
+| 23   | LIQUIDATE_LIQUIDATOR_IS_BORROWER                           |
+| 24   | LIQUIDATE_REPAY_BORROW_FRESH_FAILED                        |
+| 25   | LIQUIDATE_SEIZE_BALANCE_INCREMENT_FAILED                   |
+| 26   | LIQUIDATE_SEIZE_BALANCE_DECREMENT_FAILED                   |
+| 27   | LIQUIDATE_SEIZE_COMPTROLLER_REJECTION                      |
+| 28   | LIQUIDATE_SEIZE_LIQUIDATOR_IS_BORROWER                     |
+| 29   | LIQUIDATE_SEIZE_TOO_MUCH                                   |
+| 30   | MINT_ACCRUE_INTEREST_FAILED                                |
+| 31   | MINT_COMPTROLLER_REJECTION                                 |
+| 32   | MINT_EXCHANGE_CALCULATION_FAILED                           |
+| 33   | MINT_EXCHANGE_RATE_READ_FAILED                             |
+| 34   | MINT_FRESHNESS_CHECK                                       |
+| 35   | MINT_NEW_ACCOUNT_BALANCE_CALCULATION_FAILED                |
+| 36   | MINT_NEW_TOTAL_SUPPLY_CALCULATION_FAILED                   |
+| 37   | MINT_TRANSFER_IN_FAILED                                    |
+| 38   | MINT_TRANSFER_IN_NOT_POSSIBLE                              |
+| 39   | REDEEM_ACCRUE_INTEREST_FAILED                              |
+| 40   | REDEEM_COMPTROLLER_REJECTION                               |
+| 41   | REDEEM_EXCHANGE_TOKENS_CALCULATION_FAILED                  |
+| 42   | REDEEM_EXCHANGE_AMOUNT_CALCULATION_FAILED                  |
+| 43   | REDEEM_EXCHANGE_RATE_READ_FAILED                           |
+| 44   | REDEEM_FRESHNESS_CHECK                                     |
+| 45   | REDEEM_NEW_ACCOUNT_BALANCE_CALCULATION_FAILED              |
+| 46   | REDEEM_NEW_TOTAL_SUPPLY_CALCULATION_FAILED                 |
+| 47   | REDEEM_TRANSFER_OUT_NOT_POSSIBLE                           |
+| 48   | REDUCE_RESERVES_ACCRUE_INTEREST_FAILED                     |
+| 49   | REDUCE_RESERVES_ADMIN_CHECK                                |
+| 50   | REDUCE_RESERVES_CASH_NOT_AVAILABLE                         |
+| 51   | REDUCE_RESERVES_FRESH_CHECK                                |
+| 52   | REDUCE_RESERVES_VALIDATION                                 |
+| 53   | REPAY_BEHALF_ACCRUE_INTEREST_FAILED                        |
+| 54   | REPAY_BORROW_ACCRUE_INTEREST_FAILED                        |
+| 55   | REPAY_BORROW_ACCUMULATED_BALANCE_CALCULATION_FAILED        |
+| 56   | REPAY_BORROW_COMPTROLLER_REJECTION                         |
+| 57   | REPAY_BORROW_FRESHNESS_CHECK                               |
+| 58   | REPAY_BORROW_NEW_ACCOUNT_BORROW_BALANCE_CALCULATION_FAILED |
+| 59   | REPAY_BORROW_NEW_TOTAL_BALANCE_CALCULATION_FAILED          |
+| 60   | REPAY_BORROW_TRANSFER_IN_NOT_POSSIBLE                      |
+| 61   | SET_COLLATERAL_FACTOR_OWNER_CHECK                          |
+| 62   | SET_COLLATERAL_FACTOR_VALIDATION                           |
+| 63   | SET_COMPTROLLER_OWNER_CHECK                                |
+| 64   | SET_INTEREST_RATE_MODEL_ACCRUE_INTEREST_FAILED             |
+| 65   | SET_INTEREST_RATE_MODEL_FRESH_CHECK                        |
+| 66   | SET_INTEREST_RATE_MODEL_OWNER_CHECK                        |
+| 67   | SET_MAX_ASSETS_OWNER_CHECK                                 |
+| 68   | SET_ORACLE_MARKET_NOT_LISTED                               |
+| 69   | SET_PENDING_ADMIN_OWNER_CHECK                              |
+| 70   | SET_RESERVE_FACTOR_ACCRUE_INTEREST_FAILED                  |
+| 71   | SET_RESERVE_FACTOR_ADMIN_CHECK                             |
+| 72   | SET_RESERVE_FACTOR_FRESH_CHECK                             |
+| 73   | SET_RESERVE_FACTOR_BOUNDS_CHECK                            |
+| 74   | TRANSFER_COMPTROLLER_REJECTION                             |
+| 75   | TRANSFER_NOT_ALLOWED                                       |
+| 76   | TRANSFER_NOT_ENOUGH                                        |
+| 77   | TRANSFER_TOO_MUCH                                          |
+| 78   | ADD_RESERVES_ACCRUE_INTEREST_FAILED                        |
+| 79   | ADD_RESERVES_FRESH_CHECK,                                  |
+| 80   | ADD_RESERVES_TRANSFER_IN_NOT_POSSIBLE                      |
 
 ## Comptroller
 
@@ -806,15 +852,13 @@ The Comptroller is the risk management layer of the Fuse protocol; it determines
 
 The Comptroller maps user balances to prices (via the Price Oracle) to risk weights (called [Collateral Factors](https://compound.finance/docs/comptroller#collateral-factor)) to make its determinations. Users explicitly list which assets they would like included in their risk scoring, by calling [Enter Markets](https://compound.finance/docs/comptroller#enter-markets) and [Exit Market](https://compound.finance/docs/comptroller#exit-market).
 
-## Architecture
+### Architecture
 
 The Comptroller is implemented as an upgradeable proxy. The Unitroller proxies all logic to the Comptroller implementation, but storage values are set on the Unitroller. To call Comptroller functions, use the Comptroller ABI on the Unitroller address.
 
-## Enter Markets
+### Enter Markets
 
 Enter into a list of markets - it is not an error to enter the same market more than once. In order to supply collateral or borrow in a market, it must be entered first.
-
-#### Comptroller
 
 ```
 function enterMarkets(address[] calldata fTokens) returns (uint[] memory)
@@ -848,11 +892,9 @@ const fTokens = [fErc20.at(0x3FDA...), fEther.at(0x3FDB...)];
 const errors = await troll.methods.enterMarkets(fTokens).send({from: ...});
 ```
 
-## Exit Market
+### Exit Market
 
 Exit a market - it is not an error to exit a market which is not currently entered. Exited markets will not count towards account liquidity calculations.
-
-#### Comptroller
 
 ```
 function exitMarket(address fToken) returns (uint)
@@ -878,11 +920,9 @@ const troll = Comptroller.at(0xABCD...);
 const errors = await troll.methods.exitMarket(fEther.at(0x3FDB...)).send({from: ...});
 ```
 
-## Get Assets In
+### Get Assets In
 
 Get the list of markets an account is currently entered into. In order to supply collateral or borrow in a market, it must be entered first. Entered markets count towards [account liquidity](https://compound.finance/docs/comptroller#account-liquidity) calculations.
-
-#### Comptroller
 
 ```
 function getAssetsIn(address account) view returns (address[] memory)
@@ -907,7 +947,7 @@ const troll = Comptroller.at(0xABCD...);
 const markets = await troll.methods.getAssetsIn(fTokens).call();
 ```
 
-## Collateral Factor
+### Collateral Factor
 
 A fToken's collateral factor can range from 0-90%, and represents the proportionate increase in liquidity (borrow limit) that an account receives by minting the fToken.
 
@@ -915,14 +955,12 @@ Generally, large or liquid assets have high collateral factors, while small or i
 
 Collateral factors can be increased (or decreased) by the pool creator.
 
-#### Comptroller
-
 ```
 function markets(address fTokenAddress) view returns (bool, uint, bool)
 ```
 
 - fTokenAddress: The address of the fToken to check if listed and get the collateral factor for.
-- RETURN: Tuple of values (isListed, collateralFactorMantissa, isComped); isListed represents whether the comptroller recognizes this fToken; collateralFactorMantissa, scaled by 1e18, is multiplied by a supply balance to determine how much value can be borrowed. 
+- RETURN: Tuple of values (isListed, collateralFactorMantissa, isComped); isListed represents whether the comptroller recognizes this fToken; collateralFactorMantissa, scaled by 1e18, is multiplied by a supply balance to determine how much value can be borrowed.
 
 #### Solidity
 
@@ -942,15 +980,13 @@ const result = await troll.methods.markets(0x3FDA...).call();
 const {0: isListed, 1: collateralFactorMantissa, 2: isComped} = result;
 ```
 
-## Get Account Liquidity
+##3 Get Account Liquidity
 
 Account Liquidity represents the USD value borrowable by a user, before it reaches liquidation. Users with a shortfall (negative liquidity) are subject to liquidation, and can’t withdraw or borrow assets until Account Liquidity is positive again.
 
 For each market the user has [entered](https://compound.finance/docs/comptroller#enter-markets) into, their supplied balance is multiplied by the market’s [collateral factor](https://compound.finance/docs/comptroller#collateral-factor), and summed; borrow balances are then subtracted, to equal Account Liquidity. Borrowing an asset reduces Account Liquidity for each USD borrowed; withdrawing an asset reduces Account Liquidity by the asset’s collateral factor times each USD withdrawn.
 
 Because the Fuse Protocol exclusively uses unsigned integers, Account Liquidity returns either a surplus or shortfall.
-
-#### Comptroller
 
 ```
 function getAccountLiquidity(address account) view returns (uint, uint, uint)
@@ -983,11 +1019,9 @@ const result = await troll.methods.getAccountLiquidity(0xBorrower).call();
 const {0: error, 1: liquidity, 2: shortfall} = result;
 ```
 
-## Close Factor
+### Close Factor
 
 The percent, ranging from 0% to 100%, of a liquidatable account's borrow that can be repaid in a single liquidate transaction. If a user has multiple borrowed assets, the closeFactor applies to any single borrowed asset, not the aggregated value of a user’s outstanding borrowing.
-
-#### Comptroller
 
 ```
 function closeFactorMantissa() view returns (uint)
@@ -1011,11 +1045,9 @@ const troll = Comptroller.at(0xABCD...);
 const closeFactor = await troll.methods.closeFactorMantissa().call();
 ```
 
-## Liquidation Incentive
+### Liquidation Incentive
 
 The additional collateral given to liquidators as an incentive to perform liquidation of underwater accounts. For example, if the liquidation incentive is 1.1, liquidators receive an extra 10% of the borrowers collateral for every unit they close.
-
-#### Comptroller
 
 ```
 function liquidationIncentiveMantissa() view returns (uint)
@@ -1039,37 +1071,43 @@ const troll = Comptroller.at(0xABCD...);
 const closeFactor = await troll.methods.liquidationIncentiveMantissa().call();
 ```
 
-## Key Events
+### Key Events
 
-| Event                                         | Description                                                  |
-| --------------------------------------------- | ------------------------------------------------------------ |
+| Event                                         | Description                                                                                        |
+| --------------------------------------------- | -------------------------------------------------------------------------------------------------- |
 | MarketEntered(fToken fToken, address account) | Emitted upon a successful [Enter Market](https://compound.finance/docs/comptroller#enter-markets). |
-| MarketExited(fToken fToken, address account)  | Emitted upon a successful [Exit Market](https://compound.finance/docs/comptroller#exit-market). |
+| MarketExited(fToken fToken, address account)  | Emitted upon a successful [Exit Market](https://compound.finance/docs/comptroller#exit-market).    |
 
-## Error Codes
+### Error Codes
 
-| Code | Name                          | Description                                                  |
-| ---- | ----------------------------- | ------------------------------------------------------------ |
-| 0    | NO_ERROR                      | Not a failure.                                               |
-| 1    | UNAUTHORIZED                  | The sender is not authorized to perform this action.         |
-| 2    | COMPTROLLER_MISMATCH          | Liquidation cannot be performed in markets with different comptrollers. |
-| 3    | INSUFFICIENT_SHORTFALL        | The account does not have sufficient shortfall to perform this action. |
-| 4    | INSUFFICIENT_LIQUIDITY        | The account does not have sufficient liquidity to perform this action. |
-| 5    | INVALID_CLOSE_FACTOR          | The close factor is not valid.                               |
-| 6    | INVALID_COLLATERAL_FACTOR     | The collateral factor is not valid.                          |
-| 7    | INVALID_LIQUIDATION_INCENTIVE | The liquidation incentive is invalid.                        |
-| 8    | MARKET_NOT_ENTERED            | The market has not been entered by the account.              |
-| 9    | MARKET_NOT_LISTED             | The market is not currently listed by the comptroller.       |
-| 10   | MARKET_ALREADY_LISTED         | An admin tried to list the same market more than once.       |
-| 11   | MATH_ERROR                    | A math calculation error occurred.                           |
-| 12   | NONZERO_BORROW_BALANCE        | The action cannot be performed since the account carries a borrow balance. |
-| 13   | PRICE_ERROR                   | The comptroller could not obtain a required price of an asset. |
-| 14   | REJECTION                     | The comptroller rejects the action requested by the market.  |
+| Code | Name                          | Description                                                                          |
+| ---- | ----------------------------- | ------------------------------------------------------------------------------------ |
+| 0    | NO_ERROR                      | Not a failure.                                                                       |
+| 1    | UNAUTHORIZED                  | The sender is not authorized to perform this action.                                 |
+| 2    | COMPTROLLER_MISMATCH          | Liquidation cannot be performed in markets with different comptrollers.              |
+| 3    | INSUFFICIENT_SHORTFALL        | The account does not have sufficient shortfall to perform this action.               |
+| 4    | INSUFFICIENT_LIQUIDITY        | The account does not have sufficient liquidity to perform this action.               |
+| 5    | INVALID_CLOSE_FACTOR          | The close factor is not valid.                                                       |
+| 6    | INVALID_COLLATERAL_FACTOR     | The collateral factor is not valid.                                                  |
+| 7    | INVALID_LIQUIDATION_INCENTIVE | The liquidation incentive is invalid.                                                |
+| 8    | MARKET_NOT_ENTERED            | The market has not been entered by the account.                                      |
+| 9    | MARKET_NOT_LISTED             | The market is not currently listed by the comptroller.                               |
+| 10   | MARKET_ALREADY_LISTED         | An admin tried to list the same market more than once.                               |
+| 11   | MATH_ERROR                    | A math calculation error occurred.                                                   |
+| 12   | NONZERO_BORROW_BALANCE        | The action cannot be performed since the account carries a borrow balance.           |
+| 13   | PRICE_ERROR                   | The comptroller could not obtain a required price of an asset.                       |
+| 14   | REJECTION                     | The comptroller rejects the action requested by the market.                          |
 | 15   | SNAPSHOT_ERROR                | The comptroller could not get the account borrows and exchange rate from the market. |
-| 16   | TOO_MANY_ASSETS               | Attempted to enter more markets than are currently supported. |
-| 17   | TOO_MUCH_REPAY                | Attempted to repay more than is allowed by the protocol.     |
+| 16   | TOO_MANY_ASSETS               | Attempted to enter more markets than are currently supported.                        |
+| 17   | TOO_MUCH_REPAY                | Attempted to repay more than is allowed by the protocol.                             |
+| 15   | SNAPSHOT_ERROR                | The comptroller could not get the account borrows and exchange rate from the market. |
+| 16   | TOO_MANY_ASSETS               | Attempted to enter more markets than are currently supported.                        |
+| 17   | TOO_MUCH_REPAY                | Attempted to repay more than is allowed by the protocol.                             |
+| 18   | SUPPLIER_NOT_WHITELISTED      | The comptroller could not get the account borrows and exchange rate from the market. |
+| 19   | BORROW_BELOW_MIN              | Attempted to enter borrow less than the maximum allowed amount.                      |
+| 20   | SUPPLY_ABOVE_MAX              | Attempted to supply more than the maximum allowed amount.                            |
 
-## Failure Info
+### Failure Info
 
 | Code | Name                                        |
 | ---- | ------------------------------------------- |
@@ -1092,3 +1130,7 @@ const closeFactor = await troll.methods.liquidationIncentiveMantissa().call();
 | 16   | SET_PRICE_ORACLE_OWNER_CHECK                |
 | 17   | SUPPORT_MARKET_EXISTS                       |
 | 18   | SUPPORT_MARKET_OWNER_CHECK                  |
+| 19   | SET_PAUSE_GUARDIAN_OWNER_CHECK              |
+| 20   | UNSUPPORT_MARKET_OWNER_CHECK                |
+| 21   | UNSUPPORT_MARKET_DOES_NOT_EXIST             |
+| 22   | UNSUPPORT_MARKET_IN_USE                     |
