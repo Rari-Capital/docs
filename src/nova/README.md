@@ -324,11 +324,11 @@ function swapExactTokensForTokens(
 
 ## Future MEV Extraction Mechanism
 
-### Background
-
 ::: danger Not Implemented
 The mechanism explained below is not currently implemented, but will be in a future iteration of Nova.
 :::
+
+### Background
 
 An important property of Nova is that it is censorship resistant. There is no single "operator" who can execute requests, anyone is free to. Having a competitive landscape of different bots filling orders is important to ensure users can always get their execution requests filled and they are never censored.
 
