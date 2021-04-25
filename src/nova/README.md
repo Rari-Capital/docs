@@ -14,9 +14,9 @@
 
 ## L2_NovaRegistry
 
-This is the "user facing" contract of Nova. Users can use this contract to request execution different strategies, cancel their requests, withdraw their tokens, and bump the gas price of their requests.
+This is the "user facing" contract of Nova. Users can use this contract to [request execution of different strategies](#request-execution), [cancel their requests](#cancel-execution-request), [withdraw their tokens](#withdraw-bounties-input-tokens), and [bump the gas price of their requests](#bump-request-gas-price).
 
-Bots also will use this contract to view the latest requests and receive bounties for executing requests.
+Bots also will use this contract to [view the latest requests](#get-all-request-information) and [receive bounties for executing requests](#complete-execution-request).
 
 ### Request execution
 
