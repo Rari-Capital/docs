@@ -4,21 +4,23 @@ prev: /
 
 ## Yield Aggregator
 
-### RSPT (Rari Stable Pool Token)
+The yield aggregator is Rari's product that enables anyone to instantly deposit a supported asset and receive an interest generating one. 
 
-Each user's share of the Rari Stable Pool is represented by their RSPT (Rari Stable Pool Token) balance. When you deposit funds to the Stable Pool, an equivalent amount of RSPT is minted to your account. When you withdraw funds from the Stable Pool, the equivalent amount of RSPT is burned from your account. As soon as you deposit, you start earning yield. Essentially, Rari Stable Pool holdings and yield are split up across RSPT holders proportionally to their balances.
+### R(X)PT (Rari (X) Pool Tokens)
+
+Each user's share of a Rari Pool is represented by their R(X)PT (Rari (X) Pool Token) balance, an example being the Rari Stable Pool being represented by RSPT aka Rari Stable Pool Token. When you deposit funds to a Rari Pool, an equivalent amount (value-wise) of pool tokens is minted to your account. When you withdraw funds from the pool, the equivalent amount of value in the pool token is burned from your account. As soon as you deposit, you start earning yield. Essentially, Rari pool tokens holdings and yield are split up across the pool token holders proportionally to their balances.
 
 ### Deposits
 
 Only certain stablecoins are accepted for direct deposits (direct meaning without exchange to an accepted currency). To deposit another currency, you must exchange your funds before depositing. Fortunately, Rari can exchange and deposit your funds in the same transaction via [0x](https://0x.org/) and/or [mStable](https://mstable.org/) (please be aware that exchanges via 0x are subject to slippage due to price spread as well as an ETH protocol fee, and exchanges via mStable are subject to a small denominational percentage fee, but can avoid slippage and even get you a bonus).
 
-See [`USAGE.md`](https://github.com/Rari-Capital/rari-stable-pool-contracts/blob/master/USAGE.md) for more information on how to deposit via the smart contracts and [`API.md`](https://github.com/Rari-Capital/rari-stable-pool-contracts/blob/master/API.md) for a detailed reference on the smart contract methods involved. See the Rari SDK for easy implementation and the web client for easy usage.
+See Contract Usage section below for more information on how to deposit via the smart contracts and API section below for a detailed reference on the smart contract methods involved. See the Rari SDK for easy implementation and the web client for easy usage.
 
 ### Withdrawals
 
 Only the stablecoins currently held by the Rari Stable Pool are available for direct withdrawals. To withdraw another currency, you must exchange your funds after withdrawing. Fortunately, Rari can withdraw and exchange your funds in the same transaction via [0x](https://0x.org/) and/or [mStable](https://mstable.org/) (please be aware that exchanges via 0x are subject to slippage due to price spread as well as an ETH protocol fee, and exchanges via mStable are subject to a small denominational percentage fee, but can avoid slippage and even get you a bonus).
 
-See [`USAGE.md`](https://github.com/Rari-Capital/rari-stable-pool-contracts/blob/master/USAGE.md) for more information on how to withdraw via the smart contracts and [`API.md`](https://github.com/Rari-Capital/rari-stable-pool-contracts/blob/master/API.md) for a detailed reference on the smart contract methods involved. See the Rari SDK for easy implementation and the web client for easy usage.
+See the Contract Usage section belowfor more information on how to withdraw via the smart contracts and API section below for a detailed reference on the smart contract methods involved. See the Rari SDK for easy implementation and the web client for easy usage.
 
 ### Structure
 
@@ -30,7 +32,7 @@ The Rari Stable Pool is composed of 5 user-facing **smart contracts** in total (
 - `RariFundPriceConsumer` retrieves stablecoin prices from Chainlink's public price feeds (used by `RariFundManager` and `RariFundController`).
 - `RariFundProxy` includes wrapper functions built on top of `RariFundManager`: exchange and deposit, withdraw and exchange, and deposit without paying gas via the Gas Station Network (GSN).
 
-A centralized (but soon to be decentralized) **rebalancer** controls which pools hold which currencies at any given time but only has permission to move funds between pools and exchange currencies, not withdraw funds elsewhere.
+A **rebalancer** controls which pools hold which currencies at any given time but only has permission to move funds between pools and exchange currencies, not withdraw funds elsewhere.
 
 ### Security
 
@@ -46,7 +48,7 @@ Please note that using our web client online at [app.rari.capital](https://app.r
 
 The following document contains instructions on common usage of the Rari Stable Pool smart contracts' APIs.
 
-- See [`API.md`](https://github.com/Rari-Capital/rari-stable-pool-contracts/blob/master/API.md) for a more detailed API reference on `RariFundController`, `RariFundManager`, `RariFundToken`, `RariFundPriceConsumer`, and `RariFundProxy`.
+- See API section below for a more detailed API reference on `RariFundController`, `RariFundManager`, `RariFundToken`, `RariFundPriceConsumer`, and `RariFundProxy`.
 - See [EIP-20: ERC-20 Token Standard](https://eips.ethereum.org/EIPS/eip-20) for reference on all common functions of ERC20 tokens like RSPT.
 - Smart contract ABIs are available in the `abi` properties of the JSON files in the `build` folder.
 
@@ -206,18 +208,14 @@ Your RSPT (Rari Stable Pool Token) balance is a _token-based representation of y
 
 ### Fees
 
-See [this Notion article](https://www.notion.so/Fees-e4689d7b800f485098548dd9e9d0a69f) for more information about fees and where they go.
+See [this Notion article](https://www.notion.so/Fees-e4689d7b800f485098548dd9e9d0a69f) for the latest fee-related information.
 
 **Performance Fees**
-
-Rari Capital currently takes a _9.5% performance fee_ on all interest accrued by the Rari Stable Pool.
 
 - This fee is liable to change in the future, but the following method returns its current value at any time.
 - Get interest fee rate: `uint256 RariFundManager.getInterestFeeRate()` returns the fee rate on interest (proportion of raw interest accrued scaled by 1e18).
 
 **Withdrawal Fees**
-
-Rari Capital currently takes a _0.5% withdrawal fee_ on all withdrawals from the Rari Yield Pool.
 
 - This fee is liable to change in the future, but the following method returns its current value at any time.
 - Get withdrawal fee rate: `uint256 RariFundManager.getWithdrawalFeeRate()` returns the withdrawal fee rate (proportion of every withdrawal taken as a service fee scaled by 1e18).
@@ -232,14 +230,6 @@ Rari Capital currently takes a _0.5% withdrawal fee_ on all withdrawals from the
   - Use these prices to calculate the value added to a user's USD balance due to a direct deposit and the value subtracted from a user's USD balance due to a direct withdrawal.
 
 ## API
-
-Welcome to the API docs for `RariFundManager`, `RariFundToken`, and `RariFundProxy`, the smart contracts behind the Rari Stable Pool.
-
-- See [`USAGE.md`](https://github.com/Rari-Capital/rari-stable-pool-contracts/blob/master/USAGE.md) for instructions on common usage of the smart contracts' APIs.
-- See [EIP-20: ERC-20 Token Standard](https://eips.ethereum.org/EIPS/eip-20) for reference on all common functions of ERC20 tokens like RSPT.
-- Smart contract ABIs are available in the `abi` properties of the JSON files in the `build` folder.
-
-_If you're using JavaScript, don't waste your time directly integrating our smart contracts: the [Rari JavaScript SDK](https://github.com/Rari-Capital/rari-sdk) makes programmatic deposits and withdrawals as easy as just one line of code!_
 
 ### User Balance and Interest
 
@@ -305,7 +295,7 @@ RariFundProxy.exchangeAndDeposit(address inputErc20Contract, uint256 inputAmount
 
 Exchanges and deposits funds to the Rari Stable Pool in exchange for RSPT (via 0x).
 
-- You can retrieve order data from the [0x swap API](https://0x.org/docs/api#get-swapv0quote). See [`USAGE.md`](https://github.com/Rari-Capital/rari-stable-pool-contracts/blob/master/USAGE.md), the SDK, or the web client for implementation.
+- You can retrieve order data from the [0x swap API](https://0x.org/docs/api#get-swapv0quote). See the Contract Usage section above, the SDK, or the web client for implementation.
 - Please note that you must approve RariFundProxy to transfer at least `inputAmount` unless you are inputting ETH.
 - You also must input at least enough ETH to cover the protocol fee (and enough to cover `orders` if you are inputting ETH).
 - Parameters:
@@ -350,7 +340,7 @@ RariFundProxy.withdrawAndExchange(string[] inputCurrencyCodes, uint256[] inputAm
 
 Withdraws funds from the Rari Stable Pool in exchange for RSPT and exchanges to them to the desired currency (if no 0x orders are supplied, exchanges DAI, USDC, USDT, TUSD, and mUSD via mStable).
 
-- You can retrieve order data from the [0x swap API](https://0x.org/docs/api#get-swapv0quote). See [`USAGE.md`](https://github.com/Rari-Capital/rari-stable-pool-contracts/blob/master/USAGE.md), the SDK, or the web client for implementation.
+- You can retrieve order data from the [0x swap API](https://0x.org/docs/api#get-swapv0quote). See the Contract Usage section above, the SDK, or the web client for implementation.
 - Please note that you must approve RariFundManager to burn of the necessary amount of RSPT. You also must input at least enough ETH to cover the protocol fees.
 - Parameters:
   - `inputCurrencyCodes` (string[]): The currency codes of the tokens to be withdrawn and exchanged.
