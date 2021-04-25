@@ -201,7 +201,7 @@ After all the bounties/inputs have been paid out it will mark `execHash` as exec
 
 Users on L2 never need to interact with this contract. This contract is to facilitate the execution of requests and send messages to unlock input tokens/bounties for bots/executors (post-execution).
 
-Strategy contracts may wish to call back into this contract to trigger a [hard revert](#core-spec), [get the current execHash](#get-the-current-exechash) or [transfer tokens from the executor/bot](#transfer-tokens-from-the-executor).
+Strategy contracts may wish to call back into this contract to trigger a [hard revert](#trigger-hard-revert), [get the current execHash](#get-the-current-exechash) or [transfer tokens from the executor/bot](#transfer-tokens-from-the-executor).
 
 ### Execute Request
 
