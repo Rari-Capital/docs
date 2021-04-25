@@ -359,9 +359,9 @@ The strategy's sequencer is given a Y (configurable) minute window where **only 
 After the Y minute window expires for the request any bot is free to execute requests and receive the full bounty.
 :::
 
-### Sequencer Extractable Value
-
 Users will be able to opt out of giving the strategy sequencer priority when requesting an execution (but will pay a small penalty).
+
+### Sequencer Extractable Value
 
 This system not only extracts PGA profits that would have gone to miners, but they are also able to **extract other frontrunning profits** that would have gone to sandwich bots, etc.
 
