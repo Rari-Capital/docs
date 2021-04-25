@@ -16,24 +16,17 @@ module.exports = {
   themeConfig: {
     repo: "Rari-Capital/docs",
     docsDir: "/",
-    editLinks: true,
-    editLinkText: "Edit this page on GitHub",
     nav: [
       { text: "Home", link: "/" },
       { text: "Yield Aggregator", link: "/yag/" },
-      { text: "Fuse", link: "/fuse/" }
+      { text: "Fuse", link: "/fuse/" },
+      { text: "Deployed Contracts", link: "/contracts/" }
     ],
     sidebarDepth: 3,
     sidebar: {
-      // '/': [
-      //   ''
-      // ],
-      "/yag/": [
-        ""
-        // 'front-matter',qq
-        // 'palette'
-      ],
-      "/fuse/": [""]
+      "/yag/": [""],
+      "/fuse/": [""],
+      "/contracts/": [""]
     },
     smoothScroll: true
   }

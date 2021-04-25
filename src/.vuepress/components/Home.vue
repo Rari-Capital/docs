@@ -16,9 +16,10 @@
 
       <h2>Yield for the people!</h2>
 
-      <!--<a class="action-button" href="/tldr">read the <u>tl;dr</u></a>-->
       <a class="action-button" href="/fuse/"><u>Fuse</u> Docs</a>
       <a class="action-button" href="/yag/"><u>Yield Aggregator</u> Docs</a>
+      <br />
+      <a class="action-button" href="/contracts/"><u>Deployed Contracts</u></a>
       <br />
       <a class="action-button" href="https://discord.gg/mtb6W57Ap6">
         Get help on <u>Discord</u>

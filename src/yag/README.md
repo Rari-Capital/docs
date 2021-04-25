@@ -1,6 +1,8 @@
-## Yield Aggregator
+# Yield Aggregator
 
 The yield aggregator is Rari's product that enables anyone to instantly deposit a supported asset and receive an interest generating one.
+
+## Overview
 
 ### R(X)PT (Rari (X) Pool Tokens)
 
@@ -48,7 +50,7 @@ The following document contains instructions on common usage of the Rari Stable 
 - See [EIP-20: ERC-20 Token Standard](https://eips.ethereum.org/EIPS/eip-20) for reference on all common functions of ERC20 tokens like RSPT.
 - Smart contract ABIs are available in the `abi` properties of the JSON files in the `build` folder.
 
-_If you're using JavaScript, don't waste your time directly integrating our smart contracts: the [Rari JavaScript SDK](https://github.com/Rari-Capital/rari-sdk) makes programmatic deposits and withdrawals as easy as just one line of code!_
+_If you're using JavaScript, don't waste your time directly integrating our smart contracts: the [Rari JavaScript SDK](https://github.com/Rari-Capital/rari-dApp/tree/master/src/rari-sdk) makes programmatic deposits and withdrawals as easy as just one line of code!_
 
 ### Stable Pool APY
 
