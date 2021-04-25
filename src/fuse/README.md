@@ -6,7 +6,7 @@ The Fuse platform enables anyone to instantly create their own lending and borro
 
 ### Interpreting Exchange Rates
 
-The fToken [Exchange Rate](https://compound.finance/docs/fTokens#exchange-rate) is scaled by the difference in decimals between the fToken and the underlying asset.
+The fToken exchange rate is scaled by the difference in decimals between the fToken and the underlying asset.
 
 ```js
 const onefTokenInUnderlying =
@@ -360,7 +360,7 @@ function liquidateBorrow(address borrower, uint amount, address collateral) retu
 - `msg.sender`: The account which shall liquidate the borrower by repaying their debt and seizing their collateral.
 - `borrower`: The account with negative account liquidity that shall be liquidated.
 - `repayAmount`: The amount of the borrowed asset to be repaid and converted into collateral, specified in units of the underlying borrowed asset.
-- `cTokenCollateral`: The address of the cToken currently held as collateral by a borrower, that the liquidator shall seize.
+- `fTokenCollateral`: The address of the fToken currently held as collateral by a borrower, that the liquidator shall seize.
 - `RETURN`: 0 on success, otherwise an Error code
 
 ### Transfer
@@ -797,3 +797,298 @@ enum FailureInfo {
     UNSUPPORT_MARKET_IN_USE
 }
 ```
+
+
+
+## Comptroller
+
+The Comptroller is the risk management layer of the Fuse protocol; it determines how much collateral a user is required to maintain, and whether (and by how much) a user can be liquidated. Each time a user interacts with a fToken, the Comptroller is asked to approve or deny the transaction.
+
+The Comptroller maps user balances to prices (via the Price Oracle) to risk weights (called [Collateral Factors](https://compound.finance/docs/comptroller#collateral-factor)) to make its determinations. Users explicitly list which assets they would like included in their risk scoring, by calling [Enter Markets](https://compound.finance/docs/comptroller#enter-markets) and [Exit Market](https://compound.finance/docs/comptroller#exit-market).
+
+## Architecture
+
+The Comptroller is implemented as an upgradeable proxy. The Unitroller proxies all logic to the Comptroller implementation, but storage values are set on the Unitroller. To call Comptroller functions, use the Comptroller ABI on the Unitroller address.
+
+## Enter Markets
+
+Enter into a list of markets - it is not an error to enter the same market more than once. In order to supply collateral or borrow in a market, it must be entered first.
+
+#### Comptroller
+
+```
+function enterMarkets(address[] calldata fTokens) returns (uint[] memory)
+```
+
+- msg.sender: The account which shall enter the given markets.
+- fTokens: The addresses of the fToken markets to enter.
+- RETURN: For each market, returns an error code indicating whether or not it was entered. Each is 0 on success, otherwise an [Error code](https://compound.finance/docs/comptroller#error-codes).
+
+#### Solidity
+
+```
+Comptroller troll = Comptroller(0xABCD...);
+
+fToken[] memory fTokens = new fToken[](2);
+
+fTokens[0] = fErc20(0x3FDA...);
+
+fTokens[1] = fEther(0x3FDB...);
+
+uint[] memory errors = troll.enterMarkets(fTokens);
+```
+
+#### Web3 1.0
+
+```
+const troll = Comptroller.at(0xABCD...);
+
+const fTokens = [fErc20.at(0x3FDA...), fEther.at(0x3FDB...)];
+
+const errors = await troll.methods.enterMarkets(fTokens).send({from: ...});
+```
+
+## Exit Market
+
+Exit a market - it is not an error to exit a market which is not currently entered. Exited markets will not count towards account liquidity calculations.
+
+#### Comptroller
+
+```
+function exitMarket(address fToken) returns (uint)
+```
+
+- msg.sender: The account which shall exit the given market.
+- fTokens: The addresses of the fToken market to exit.
+- RETURN: 0 on success, otherwise an [Error code](https://compound.finance/docs/comptroller#error-codes).
+
+#### Solidity
+
+```
+Comptroller troll = Comptroller(0xABCD...);
+
+uint error = troll.exitMarket(fToken(0x3FDA...));
+```
+
+#### Web3 1.0
+
+```
+const troll = Comptroller.at(0xABCD...);
+
+const errors = await troll.methods.exitMarket(fEther.at(0x3FDB...)).send({from: ...});
+```
+
+## Get Assets In
+
+Get the list of markets an account is currently entered into. In order to supply collateral or borrow in a market, it must be entered first. Entered markets count towards [account liquidity](https://compound.finance/docs/comptroller#account-liquidity) calculations.
+
+#### Comptroller
+
+```
+function getAssetsIn(address account) view returns (address[] memory)
+```
+
+- account: The account whose list of entered markets shall be queried.
+- RETURN: The address of each market which is currently entered into.
+
+#### Solidity
+
+```
+Comptroller troll = Comptroller(0xABCD...);
+
+address[] memory markets = troll.getAssetsIn(0xMyAccount);
+```
+
+#### Web3 1.0
+
+```
+const troll = Comptroller.at(0xABCD...);
+
+const markets = await troll.methods.getAssetsIn(fTokens).call();
+```
+
+## Collateral Factor
+
+A fToken's collateral factor can range from 0-90%, and represents the proportionate increase in liquidity (borrow limit) that an account receives by minting the fToken.
+
+Generally, large or liquid assets have high collateral factors, while small or illiquid assets have low collateral factors. If an asset has a 0% collateral factor, it can't be used as collateral (or seized in liquidation), though it can still be borrowed.
+
+Collateral factors can be increased (or decreased) by the pool creator.
+
+#### Comptroller
+
+```
+function markets(address fTokenAddress) view returns (bool, uint, bool)
+```
+
+- fTokenAddress: The address of the fToken to check if listed and get the collateral factor for.
+- RETURN: Tuple of values (isListed, collateralFactorMantissa, isComped); isListed represents whether the comptroller recognizes this fToken; collateralFactorMantissa, scaled by 1e18, is multiplied by a supply balance to determine how much value can be borrowed. 
+
+#### Solidity
+
+```
+Comptroller troll = Comptroller(0xABCD...);
+
+(bool isListed, uint collateralFactorMantissa, bool isComped) = troll.markets(0x3FDA...);
+```
+
+#### Web3 1.0
+
+```
+const troll = Comptroller.at(0xABCD...);
+
+const result = await troll.methods.markets(0x3FDA...).call();
+
+const {0: isListed, 1: collateralFactorMantissa, 2: isComped} = result;
+```
+
+## Get Account Liquidity
+
+Account Liquidity represents the USD value borrowable by a user, before it reaches liquidation. Users with a shortfall (negative liquidity) are subject to liquidation, and can’t withdraw or borrow assets until Account Liquidity is positive again.
+
+For each market the user has [entered](https://compound.finance/docs/comptroller#enter-markets) into, their supplied balance is multiplied by the market’s [collateral factor](https://compound.finance/docs/comptroller#collateral-factor), and summed; borrow balances are then subtracted, to equal Account Liquidity. Borrowing an asset reduces Account Liquidity for each USD borrowed; withdrawing an asset reduces Account Liquidity by the asset’s collateral factor times each USD withdrawn.
+
+Because the Fuse Protocol exclusively uses unsigned integers, Account Liquidity returns either a surplus or shortfall.
+
+#### Comptroller
+
+```
+function getAccountLiquidity(address account) view returns (uint, uint, uint)
+```
+
+- account: The account whose liquidity shall be calculated.
+- RETURN: Tuple of values (error, liquidity, shortfall). The error shall be 0 on success, otherwise an [error code](https://compound.finance/docs/comptroller#error-codes). A non-zero liquidity value indicates the account has available [account liquidity](https://compound.finance/docs/comptroller#account-liquidity). A non-zero shortfall value indicates the account is currently below his/her collateral requirement and is subject to liquidation. At most one of liquidity or shortfall shall be non-zero.
+
+#### Solidity
+
+```
+Comptroller troll = Comptroller(0xABCD...);
+
+(uint error, uint liquidity, uint shortfall) = troll.getAccountLiquidity(msg.caller);
+
+require(error == 0, "join the Discord");
+
+require(shortfall == 0, "account underwater");
+
+require(liquidity > 0, "account has excess collateral");
+```
+
+#### Web3 1.0
+
+```
+const troll = Comptroller.at(0xABCD...);
+
+const result = await troll.methods.getAccountLiquidity(0xBorrower).call();
+
+const {0: error, 1: liquidity, 2: shortfall} = result;
+```
+
+## Close Factor
+
+The percent, ranging from 0% to 100%, of a liquidatable account's borrow that can be repaid in a single liquidate transaction. If a user has multiple borrowed assets, the closeFactor applies to any single borrowed asset, not the aggregated value of a user’s outstanding borrowing.
+
+#### Comptroller
+
+```
+function closeFactorMantissa() view returns (uint)
+```
+
+- RETURN: The closeFactor, scaled by 1e18, is multiplied by an outstanding borrow balance to determine how much could be closed.
+
+#### Solidity
+
+```
+Comptroller troll = Comptroller(0xABCD...);
+
+uint closeFactor = troll.closeFactorMantissa();
+```
+
+#### Web3 1.0
+
+```
+const troll = Comptroller.at(0xABCD...);
+
+const closeFactor = await troll.methods.closeFactorMantissa().call();
+```
+
+## Liquidation Incentive
+
+The additional collateral given to liquidators as an incentive to perform liquidation of underwater accounts. For example, if the liquidation incentive is 1.1, liquidators receive an extra 10% of the borrowers collateral for every unit they close.
+
+#### Comptroller
+
+```
+function liquidationIncentiveMantissa() view returns (uint)
+```
+
+- RETURN: The liquidationIncentive, scaled by 1e18, is multiplied by the closed borrow amount from the liquidator to determine how much collateral can be seized.
+
+#### Solidity
+
+```
+Comptroller troll = Comptroller(0xABCD...);
+
+uint closeFactor = troll.liquidationIncentiveMantissa();
+```
+
+#### Web3 1.0
+
+```
+const troll = Comptroller.at(0xABCD...);
+
+const closeFactor = await troll.methods.liquidationIncentiveMantissa().call();
+```
+
+## Key Events
+
+| Event                                         | Description                                                  |
+| --------------------------------------------- | ------------------------------------------------------------ |
+| MarketEntered(fToken fToken, address account) | Emitted upon a successful [Enter Market](https://compound.finance/docs/comptroller#enter-markets). |
+| MarketExited(fToken fToken, address account)  | Emitted upon a successful [Exit Market](https://compound.finance/docs/comptroller#exit-market). |
+
+## Error Codes
+
+| Code | Name                          | Description                                                  |
+| ---- | ----------------------------- | ------------------------------------------------------------ |
+| 0    | NO_ERROR                      | Not a failure.                                               |
+| 1    | UNAUTHORIZED                  | The sender is not authorized to perform this action.         |
+| 2    | COMPTROLLER_MISMATCH          | Liquidation cannot be performed in markets with different comptrollers. |
+| 3    | INSUFFICIENT_SHORTFALL        | The account does not have sufficient shortfall to perform this action. |
+| 4    | INSUFFICIENT_LIQUIDITY        | The account does not have sufficient liquidity to perform this action. |
+| 5    | INVALID_CLOSE_FACTOR          | The close factor is not valid.                               |
+| 6    | INVALID_COLLATERAL_FACTOR     | The collateral factor is not valid.                          |
+| 7    | INVALID_LIQUIDATION_INCENTIVE | The liquidation incentive is invalid.                        |
+| 8    | MARKET_NOT_ENTERED            | The market has not been entered by the account.              |
+| 9    | MARKET_NOT_LISTED             | The market is not currently listed by the comptroller.       |
+| 10   | MARKET_ALREADY_LISTED         | An admin tried to list the same market more than once.       |
+| 11   | MATH_ERROR                    | A math calculation error occurred.                           |
+| 12   | NONZERO_BORROW_BALANCE        | The action cannot be performed since the account carries a borrow balance. |
+| 13   | PRICE_ERROR                   | The comptroller could not obtain a required price of an asset. |
+| 14   | REJECTION                     | The comptroller rejects the action requested by the market.  |
+| 15   | SNAPSHOT_ERROR                | The comptroller could not get the account borrows and exchange rate from the market. |
+| 16   | TOO_MANY_ASSETS               | Attempted to enter more markets than are currently supported. |
+| 17   | TOO_MUCH_REPAY                | Attempted to repay more than is allowed by the protocol.     |
+
+## Failure Info
+
+| Code | Name                                        |
+| ---- | ------------------------------------------- |
+| 0    | ACCEPT_ADMIN_PENDING_ADMIN_CHECK            |
+| 1    | ACCEPT_PENDING_IMPLEMENTATION_ADDRESS_CHECK |
+| 2    | EXIT_MARKET_BALANCE_OWED                    |
+| 3    | EXIT_MARKET_REJECTION                       |
+| 4    | SET_CLOSE_FACTOR_OWNER_CHECK                |
+| 5    | SET_CLOSE_FACTOR_VALIDATION                 |
+| 6    | SET_COLLATERAL_FACTOR_OWNER_CHECK           |
+| 7    | SET_COLLATERAL_FACTOR_NO_EXISTS             |
+| 8    | SET_COLLATERAL_FACTOR_VALIDATION            |
+| 9    | SET_COLLATERAL_FACTOR_WITHOUT_PRICE         |
+| 10   | SET_IMPLEMENTATION_OWNER_CHECK              |
+| 11   | SET_LIQUIDATION_INCENTIVE_OWNER_CHECK       |
+| 12   | SET_LIQUIDATION_INCENTIVE_VALIDATION        |
+| 13   | SET_MAX_ASSETS_OWNER_CHECK                  |
+| 14   | SET_PENDING_ADMIN_OWNER_CHECK               |
+| 15   | SET_PENDING_IMPLEMENTATION_OWNER_CHECK      |
+| 16   | SET_PRICE_ORACLE_OWNER_CHECK                |
+| 17   | SUPPORT_MARKET_EXISTS                       |
+| 18   | SUPPORT_MARKET_OWNER_CHECK                  |
