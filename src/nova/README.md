@@ -263,10 +263,18 @@ Convenience function that simply runs `revert("__NOVA__HARD__REVERT__")`.
 ### Get The Current ExecHash
 
 ```solidity
-function getCurrentExecHash() external view returns (bytes32)
+function currentExecHash() external view returns (bytes32)
 ```
 
 This function returns the execHash computed from the current call to `exec`. Strategy contracts may wish to call this function to send messages up to L2 with and tag them with the current execHash.
+
+### Get The Current Executor
+
+```solidity
+function currentExecutor() external view returns (address)
+```
+
+This function returns the current "executor" (address that made the current call to `exec`). Strategy contrats may wish to call this function to ensure only a trusted party is able to execute the strategy or to release additional rewards for the executor, etc.
 
 ### Transfer Tokens From The Executor
 
