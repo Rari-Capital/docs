@@ -214,10 +214,10 @@ This function calls the `strategy` address with the specified `l1calldata`.
 The call to `strategy` is wrapped in a try-catch block:
 
 - If the call reverts and the revert message is `__NOVA__HARD__REVERT__`, **`exec` will revert immediately (no message to L2 will be sent).**
-  - [This is called a HARD REVERT.](#core-spec)
+  - [This is called a HARD REVERT.](#execute-request)
   - Strategy contracts should only **hard revert** if the bot has not properly set up the execution context (like not approving the right amount input of tokens, etc)
 - If the call reverts and the revert message is empty or is not `__NOVA__HARD__REVERT__`, **`exec` will continue with sending a message to L2.**
-  - [This is called a SOFT REVERT.](#core-spec)
+  - [This is called a SOFT REVERT.](#execute-request)
   - If a strategy **soft reverts**, the `inputTokens` for the request will **not be sent** to the bot and **only 70% of the bounty** will be sent (instead of the usual 100%). The **30% bounty penalty** is to prevent bots from attempting to cause or wait for soft reverts and **act in good faith** instead.
 
 The `nonce` argument is used to compute the `execHash` needed to unlock the bounty for this strategy on L2.
@@ -288,7 +288,7 @@ This function transfers tokens the calling bot (the account that called `execute
 Only the currently executing `strategy` can call this function.
 :::
 
-This function will trigger a [HARD REVERT](#core-spec) if the bot executing the current strategy has not approved at least `amount` of `token` to the `L1_NovaExecutionManager` (like `safeTransferFrom`).
+This function will trigger a [HARD REVERT](#execute-request) if the bot executing the current strategy has not approved at least `amount` of `token` to the `L1_NovaExecutionManager` (like `safeTransferFrom`).
 
 ## Example Integration(s)
 
