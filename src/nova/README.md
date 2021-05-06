@@ -186,14 +186,14 @@ After all the bounties/inputs have been paid out it will mark `execHash` as exec
 
 ## L1_NovaExecutionManager
 
-Users on L2 never need to interact with this contract. This contract is to facilitate the execution of requests and send messages to unlock input tokens/bounties for bots/executors (post-execution).
+Users on L2 never need to interact with this contract. This contract is to facilitate the execution of requests and send messages to unlock input tokens/tip for bots/executors (post-execution).
 
 Strategy contracts may wish to call back into this contract to trigger a [hard revert](#trigger-hard-revert), [get the current execHash](#get-the-current-exechash) or [transfer tokens from the executor/bot](#transfer-tokens-from-the-executor).
 
 ### Execute Request
 
 ```solidity
-function exec(uint72 nonce, address strategy, bytes memory l1calldata, uint256 xDomainMessageGasLimit) public
+function exec(uint72 nonce, address strategy, bytes memory l1calldata) public
 ```
 
 This function calls the `strategy` address with the specified `l1calldata`.
@@ -213,31 +213,15 @@ The `nonce` argument is used to compute the `execHash` needed to unlock the inpu
 Bots cannot call `exec` with arguments that produce an `execHash` which has previously been successfuly executed.
 :::
 
-The `xDomainMessageGasLimit` is used to determine the gas limit used for the cross domain call to `execCompleted`. [A fraction of this gas limit (currently 1/32nd) is consumed by the call to `sendMessage`](https://github.com/ethereum-optimism/contracts/blob/master/contracts/optimistic-ethereum/OVM/chain/OVM_CanonicalTransactionChain.sol#L42)
+All computation in the function leading up to the cross domain message is sandwiched between calls to `gasLeft()`. These are used to calculate how many gas units the bot had to pay for (so the registry can **release the proper payment** on L2). However, we are not able to account for refunds so users may end up over-paying their executors (depending on the strategy).
 
-All computation in the function leading up to the cross domain message is sandwiched between calls to `gasLeft()`. These are used to calculate how many gas units the bot had to pay for (so the registry can **release the proper payment** on L2). Calculating `gasUsed` is not as simple as the difference between the starting gasLeft value and the final one as we **have to account for constant function-call gas and the costs associated with sending a cross domain message.** Psuedocode for implementing these gas calculations is shown below:
-
-```solidity
-uint256 startGas = gasleft();
-
-... call the strategy, etc ...
-
-// Psuedocode estimates for computing how much the `sendMessage` call will cost.
-uint256 xDomainMessageGas = (48 * xDomainCalldata.length) + (xDomainMessageGasLimit / 32) + 74000;
-
-// (Constant function call gas) + (Gas diff after calls) + (the amount of gas that will be burned via enqueue + storage/other message overhead)
-gasUsed = 21396 + (startGas - gasleft()) + xDomainMessageGas;
-
-... send cross domain message ...
-```
-
-After the call to `strategy` is completed, the EM will compute the `execHash` it needs (using the arguments passed into `exec` along with the `tx.gasprice`) and **send a cross domain message** to call the `L2_NovaRegistry`'s `execCompleted` with the neccessary arguments. This will send the `inputTokens`/`bounties` to the caller of `exec` on L2.
+After the call to `strategy` is completed, the EM will compute the `execHash` it needs (using the arguments passed into `exec` along with the `tx.gasprice`) and **send a cross domain message** to call the `L2_NovaRegistry`'s `execCompleted` with the neccessary arguments. This will send the `inputTokens`/`tip` to the caller of `exec` on L2.
 
 ```solidity
-function execWithRecipient(uint72 nonce, address strategy, bytes calldata l1calldata, uint256 xDomainMessageGasLimit, address l2Recipient) external
+function execWithRecipient(uint72 nonce, address strategy, bytes calldata l1calldata, address l2Recipient) external
 ```
 
-Behaves like `exec` but tells the `L2_NovaRegistry` contract to send the `inputTokens`/`bounties` to the `l2Recipient` on L2 (instead of specifically the bot who calls the function).
+Behaves like `exec` but tells the `L2_NovaRegistry` contract to send the `inputTokens`/`tip` to the `l2Recipient` on L2 (instead of specifically the bot who calls the function).
 
 ### Trigger Hard Revert
 
