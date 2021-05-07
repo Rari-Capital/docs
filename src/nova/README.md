@@ -24,7 +24,6 @@ Bots also will use this contract to [view the latest requests](#get-all-request-
 
 ```solidity
 struct InputToken {
-    address l1Token;
     address l2Token;
     uint256 amount;
 }
@@ -34,7 +33,7 @@ struct InputToken {
 /// @param gasLimit The gas limit a bot should use on L1.
 /// @param gasPrice The gas price a bot should use on L1.
 /// @param tip The additional wei to pay as a tip for any bot that executes this request.
-/// @param inputTokens An array of token amounts that a bot will need on L1 to execute the request (`l1Token`s) along with the equivalent tokens that will be returned on L2 (`l2Token`s). `inputTokens` will not be awarded if the `strategy` reverts on L1.
+/// @param inputTokens An array of 5 or less token/amount pairs that a bot will need on L1 to execute the request (and will be returned to them on L2). `inputTokens` will not be awarded if the `strategy` reverts on L1.
 function requestExec(address strategy, bytes calldata l1calldata, uint256 gasLimit, uint256 gasPrice, uint256 tip, InputToken[] calldata inputTokens) public returns (bytes32 execHash)
 ```
 
