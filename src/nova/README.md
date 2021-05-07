@@ -23,8 +23,13 @@ Bots also will use this contract to [view the latest requests](#get-all-request-
 ### Request execution
 
 ```solidity
+/// @notice A token/amount pair that a bot will need on L1 to execute the request (and will be returned to them on L2).
+/// @param l2Token The token on L2 to transfer to the executor upon a successful execution.
+/// @param amount The amount of the `l2Token` to the executor upon a successful execution (scaled by the `l2Token`'s decimals).
+/// @dev Bots may have to reference a registry/list of some sort to determine the equivalent L1 token they will need.
+/// @dev The decimal scheme may not align between the L1 and L2 tokens, a bot should check via off-chain logic.
 struct InputToken {
-    address l2Token;
+    IERC20 l2Token;
     uint256 amount;
 }
 
