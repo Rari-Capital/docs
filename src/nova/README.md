@@ -1,44 +1,44 @@
 # Nova
 
-**Nova is a <u>set of contracts</u> & <u>network of bots</u> that empowers users/contracts to seamlessly interact with L1 contracts + liquidity <u>without leaving L2</u> in a trustless and <u>composable</u> manner.**
+**Nova is a <u>set of contracts</u> & <u>network of relayers</u> that empowers users/contracts to seamlessly interact with L1 contracts + liquidity <u>without leaving L2</u> in a trustless and <u>composable</u> manner.**
 
 <img width="500" style="float: right;" alt="Explainer" src="https://i.imgur.com/TbbAhLd.png">
 
 - Users specify what actions they want run on L1 from L2
 
-- Users pay a bounty which pays for the gas of execution on L1 + whatever upfront costs a bot executing on L1 needs to have.
+- Users pay a bounty which pays for the gas of execution on L1 + whatever upfront costs a relayer executing on L1 needs to have.
 
-- Bots execute requests on L1 by calling the Nova "Execution Manager" contract with the calldata users on L2 give them.
+- Relayers execute requests on L1 by calling the Nova "Execution Manager" contract with the calldata users on L2 give them.
 
 - The execution manager will call a specific strategy contract which can send tokens up to L2 via a bridge.
 
-- After executing a request, the Nova Execution Manager sends a confirmation up to L2 to unlock the bounty for the bot.
+- After executing a request, the Nova Execution Manager sends a confirmation up to L2 to unlock the bounty for the relayer.
 
 ## L2_NovaRegistry
 
 This is the "user facing" contract of Nova. Users can use this contract to [request execution of different strategies](#request-execution), [cancel their requests](#cancel-execution-request), [withdraw their tokens](#withdraw-tip-input-tokens), and [bump the gas price of their requests](#bump-request-gas-price).
 
-Bots also will use this contract to [view the latest requests](#get-all-request-information) and [receive tips for executing requests](#complete-execution-request).
+Relayers also will use this contract to [view the latest requests](#get-all-request-information) and [receive tips for executing requests](#complete-execution-request).
 
 ### Request execution
 
 ```solidity
-/// @notice A token/amount pair that a bot will need on L1 to execute the request (and will be returned to them on L2).
+/// @notice A token/amount pair that a relayer will need on L1 to execute the request (and will be returned to them on L2).
 /// @param l2Token The token on L2 to transfer to the executor upon a successful execution.
 /// @param amount The amount of the `l2Token` to the executor upon a successful execution (scaled by the `l2Token`'s decimals).
-/// @dev Bots may have to reference a registry/list of some sort to determine the equivalent L1 token they will need.
-/// @dev The decimal scheme may not align between the L1 and L2 tokens, a bot should check via off-chain logic.
+/// @dev Relayers may have to reference a registry/list of some sort to determine the equivalent L1 token they will need.
+/// @dev The decimal scheme may not align between the L1 and L2 tokens, a relayer should check via off-chain logic.
 struct InputToken {
     IERC20 l2Token;
     uint256 amount;
 }
 
-/// @param strategy The address of the "strategy" contract on L1 a bot should call with `l1calldata`.
-/// @param l1calldata The abi encoded calldata a bot should call the `strategy` with on L1.
-/// @param gasLimit The gas limit a bot should use on L1.
-/// @param gasPrice The gas price a bot should use on L1.
-/// @param tip The additional wei to pay as a tip for any bot that executes this request.
-/// @param inputTokens An array of 5 or less token/amount pairs that a bot will need on L1 to execute the request (and will be returned to them on L2). `inputTokens` will not be awarded if the `strategy` reverts on L1.
+/// @param strategy The address of the "strategy" contract on L1 a relayer should call with `l1calldata`.
+/// @param l1calldata The abi encoded calldata a relayer should call the `strategy` with on L1.
+/// @param gasLimit The gas limit a relayer should use on L1.
+/// @param gasPrice The gas price a relayer should use on L1.
+/// @param tip The additional wei to pay as a tip for any relayer that executes this request.
+/// @param inputTokens An array of 5 or less token/amount pairs that a relayer will need on L1 to execute the request (and will be returned to them on L2). `inputTokens` will not be awarded if the `strategy` reverts on L1.
 function requestExec(address strategy, bytes calldata l1calldata, uint256 gasLimit, uint256 gasPrice, uint256 tip, InputToken[] calldata inputTokens) public returns (bytes32 execHash)
 ```
 
@@ -47,7 +47,7 @@ This function allows a user to request a strategy to be executed.
 It will first increment the contract's nonce (which is to prevent duplicate execution requests from having the same `execHash`) then transfer in all the `InputToken`s (**all must be approved to the registry by the caller**), and the amount of ETH neccessary to pay for the max amount of gas used + the tip.
 
 ::: warning
-The inputs are not checked to be sufficient by the registry, it is up to Nova bots to determine which requests are profitable via `getRequestData`.
+The inputs are not checked to be sufficient by the registry, it is up to Nova relayers to determine which requests are profitable via `getRequestData`.
 :::
 
 It will then compute the `execHash` (unique identifier of this specific execution request) like so: `keccak256(abi.encodePacked(nonce, strategy, l1calldata, gasPrice))` and store it in in a mapping and assigned to all of the arguments this function was passed.
@@ -82,7 +82,7 @@ After `cancel` is called the user must wait `withdrawDelaySeconds` before callin
 `withdrawDelaySeconds` must be >=300 (5 minutes).
 :::
 
-A bot can still execute the request associated with the `execHash` up until the withdraw delay has passed.
+A relayer can still execute the request associated with the `execHash` up until the withdraw delay has passed.
 
 A user may call may not call `cancel` a second time on the same `execHash`.
 
@@ -105,10 +105,10 @@ function bumpGas(bytes32 execHash, uint256 gasPrice) external returns (bytes32 n
 `bumpGas` allows a user to increase the gas price for their execution request without having to `cancel`, `withdraw` and call `requestExec` again. Calling this function will initiate a 5 minute delay before disabling the request associated with `execHash` (this is known as the "uncled" request) and enabling an updated version of the request (this is known as the resubmitted request which can be found under `newExecHash`).
 
 ::: danger
-A bot can still execute the uncled request associated with the `execHash` up until the delay has passed.
+A relayer can still execute the uncled request associated with the `execHash` up until the delay has passed.
 :::
 
-If a bot executes the uncled request before the delay has passed the resubmitted request will not be executable after the delay.
+If a relayer executes the uncled request before the delay has passed the resubmitted request will not be executable after the delay.
 
 ### Check if request is executable
 
@@ -119,7 +119,7 @@ function isExecutable(bytes32 execHash) public view returns (bool executable, ui
 Returns if the request is executable (`executeable`) along with a timestamp of when that may change (`changeTimestamp`).
 
 ::: tip
-Bots should call this function before trying to execute a request in the registry.
+Relayers should call this function before trying to execute a request in the registry.
 :::
 
 The `changeTimestamp` will be timestamp indicating when the request might switch from being executable to unexecutable (or vice-versa):
@@ -175,7 +175,7 @@ Once the registry verifies that the `execHash` was previously registered (meanin
 
 - It will find this `execHash` in the registry's storage and retrieve the `gasPrice` and tip/inputToken information associated with this execHash.
 
-- It will first pay for the gas cost of L1 execution by calculating the ETH to send to the `bot` using `(gasLimit > gasUsed ? gasUsed : gasLimit) * gasPrice`. Any remaining ETH will be sent back to the user who requested execution (just like how gas is refunded on L1 if the gas limit exceeds gas used).
+- It will first pay for the gas cost of L1 execution by calculating the ETH to send to the `relayer` using `(gasLimit > gasUsed ? gasUsed : gasLimit) * gasPrice`. Any remaining ETH will be sent back to the user who requested execution (just like how gas is refunded on L1 if the gas limit exceeds gas used).
 
 - It will then loop over all the `inputTokens` and transfer the `amount` of each `l2Token` to either:
 
@@ -190,9 +190,9 @@ After all the bounties/inputs have been paid out it will mark `execHash` as exec
 
 ## L1_NovaExecutionManager
 
-Users on L2 never need to interact with this contract. This contract is to facilitate the execution of requests and send messages to unlock input tokens/tip for bots/executors (post-execution).
+Users on L2 never need to interact with this contract. This contract is to facilitate the execution of requests and send messages to unlock input tokens/tip for relayers/executors (post-execution).
 
-Strategy contracts may wish to call back into this contract to trigger a [hard revert](#trigger-hard-revert), [get the current execHash](#get-the-current-exechash) or [transfer tokens from the executor/bot](#transfer-tokens-from-the-executor).
+Strategy contracts may wish to call back into this contract to trigger a [hard revert](#trigger-hard-revert), [get the current execHash](#get-the-current-exechash) or [transfer tokens from the executor/relayer](#transfer-tokens-from-the-executor).
 
 ### Execute Request
 
@@ -206,18 +206,18 @@ The call to `strategy` is wrapped in a try-catch block:
 
 - If the call reverts and the revert message is `__NOVA__HARD__REVERT__`, **`exec` will revert immediately (no message to L2 will be sent).**
   - [This is called a HARD REVERT.](#execute-request)
-  - Strategy contracts should only **hard revert** if the bot has not properly set up the execution context (like not approving the right amount input of tokens, etc)
+  - Strategy contracts should only **hard revert** if the relayer has not properly set up the execution context (like not approving the right amount input of tokens, etc)
 - If the call reverts and the revert message is empty or is not `__NOVA__HARD__REVERT__`, **`exec` will continue with sending a message to L2.**
   - [This is called a SOFT REVERT.](#execute-request)
-  - If a strategy **soft reverts**, the `inputTokens` for the request will **not be sent** to the bot and **only 70% of the tip** will be sent (instead of the usual 100%). The **30% tip penalty** is to prevent bots from attempting to cause or wait for soft reverts and **act in good faith** instead.
+  - If a strategy **soft reverts**, the `inputTokens` for the request will **not be sent** to the relayer and **only 70% of the tip** will be sent (instead of the usual 100%). The **30% tip penalty** is to prevent relayers from attempting to cause or wait for soft reverts and **act in good faith** instead.
 
 The `nonce` argument is used to compute the `execHash` needed to unlock the inputs/tip for this strategy on L2.
 
 ::: tip
-Bots cannot call `exec` with arguments that produce an `execHash` which has previously been successfuly executed.
+Relayers cannot call `exec` with arguments that produce an `execHash` which has previously been successfuly executed.
 :::
 
-All computation in the function leading up to the cross domain message is sandwiched between calls to `gasLeft()`. These are used to calculate how many gas units the bot had to pay for (so the registry can **release the proper payment** on L2). However, we are not able to account for refunds so users may end up over-paying their executors (depending on the strategy).
+All computation in the function leading up to the cross domain message is sandwiched between calls to `gasLeft()`. These are used to calculate how many gas units the relayer had to pay for (so the registry can **release the proper payment** on L2). However, we are not able to account for refunds so users may end up over-paying their executors (depending on the strategy).
 
 After the call to `strategy` is completed, the EM will compute the `execHash` it needs (using the arguments passed into `exec` along with the `tx.gasprice`) and **send a cross domain message** to call the `L2_NovaRegistry`'s `execCompleted` with the neccessary arguments. This will send the `inputTokens`/`tip` to the caller of `exec` on L2.
 
@@ -225,7 +225,7 @@ After the call to `strategy` is completed, the EM will compute the `execHash` it
 function execWithRecipient(uint72 nonce, address strategy, bytes calldata l1calldata, address l2Recipient) external
 ```
 
-Behaves like `exec` but tells the `L2_NovaRegistry` contract to send the `inputTokens`/`tip` to the `l2Recipient` on L2 (instead of specifically the bot who calls the function).
+Behaves like `exec` but tells the `L2_NovaRegistry` contract to send the `inputTokens`/`tip` to the `l2Recipient` on L2 (instead of specifically the relayer who calls the function).
 
 ### Trigger Hard Revert
 
@@ -257,13 +257,13 @@ This function returns the current "executor" (address that made the current call
 function transferFromExecutor(address token, uint256 amount) external
 ```
 
-This function transfers tokens the calling bot (the account that called `execute`) has approved to the execution manager to the currently executing `strategy`.
+This function transfers tokens the calling relayer (the account that called `execute`) has approved to the execution manager to the currently executing `strategy`.
 
 ::: danger
 Only the currently executing `strategy` can call this function.
 :::
 
-This function will trigger a [HARD REVERT](#execute-request) if the bot executing the current strategy has not approved at least `amount` of `token` to the `L1_NovaExecutionManager` (like `safeTransferFrom`).
+This function will trigger a [HARD REVERT](#execute-request) if the relayer executing the current strategy has not approved at least `amount` of `token` to the `L1_NovaExecutionManager` (like `safeTransferFrom`).
 
 ## Example Integration(s)
 
@@ -275,8 +275,8 @@ To integrate **Uniswap/Sushiswap** we only need to write one custom contract (a 
 - The `to` parameter of the strategy's methods would be hijacked and not passed into the Uniswap router.
   - The `to` param will be used as the recipient of the tokens on L2.
   - The Uniswap router will be told to send the output tokens back to the `Nova_UniswapStrategy` contract (so it can send them up to L2 via the bridge)
-- Each of the methods would require that a bot approve the tokens necessary for the swap to the `L1_NovaExecutionManager`
-- The method would call `transferFromBot` to get the input tokens from the bot and then perform the corresponding method call on the Uniswap router.
+- Each of the methods would require that a relayer approve the tokens necessary for the swap to the `L1_NovaExecutionManager`
+- The method would call `transferFromRelayer` to get the input tokens from the relayer and then perform the corresponding method call on the Uniswap router.
 - The method would then send the output tokens through an Optimism token bridge to the `to` address.
 
 **Here's what one of those wrapped router functions in the Strategy contract would look like:**
@@ -292,8 +292,8 @@ function swapExactTokensForTokens(
   ERC20 input = ERC20(path[0]);
   ERC20 output = ERC20(path[path.length - 1]);
 
-  // Transfer in tokens from the bot.
-  L1_NovaExecutionManager(msg.sender).transferFromBot(input, amountIn);
+  // Transfer in tokens from the relayer.
+  L1_NovaExecutionManager(msg.sender).transferFromRelayer(input, amountIn);
 
   // Approve the input tokens to the uniswapRouter
   input.approve(address(uniswapRouter), amountIn);
@@ -324,15 +324,15 @@ The mechanism explained below is not currently implemented, but will be in a fut
 
 ### Background
 
-An important property of Nova is that it is censorship resistant. There is no single "operator" who can execute requests, anyone is free to. Having a competitive landscape of different bots filling orders is important to ensure users can always get their execution requests filled and they are never censored.
+An important property of Nova is that it is censorship resistant. There is no single "operator" who can execute requests, anyone is free to. Having a competitive landscape of different relayers filling orders is important to ensure users can always get their execution requests filled and they are never censored.
 
-However, considering that many of these requests will come with a tip that makes the request profitable beyond the maximum gas it takes to execute them, it is natural for multiple bots to engage in PGAs to extract profit from as many strategies that they can.
+However, considering that many of these requests will come with a tip that makes the request profitable beyond the maximum gas it takes to execute them, it is natural for multiple relayers to engage in PGAs to extract profit from as many strategies that they can.
 
 The profits from these PGAs don't go to the Nova platform or users who request execution, they go to **miners** who contribute no value to the protocol.
 
 ### MEV Auctions (MEVA)
 
-We can extract the value that would have gone to miners by auctioning off "priority rights" to execute requests for specific strategies (this is also known as a [MEVA](https://ethresear.ch/t/mev-auction-auctioning-transaction-ordering-rights-as-a-solution-to-miner-extractable-value/6788)). Each strategy will have its own sequencer (bot with priority rights) to prevent a sequencer from potentially ignoring a strategy that their bot is not capable of fulfilling executions for. The auctions will function like so:
+We can extract the value that would have gone to miners by auctioning off "priority rights" to execute requests for specific strategies (this is also known as a [MEVA](https://ethresear.ch/t/mev-auction-auctioning-transaction-ordering-rights-as-a-solution-to-miner-extractable-value/6788)). Each strategy will have its own sequencer (relayer with priority rights) to prevent a sequencer from potentially ignoring a strategy that their relayer is not capable of fulfilling executions for. The auctions will function like so:
 
 - Every X hours (configurable) anyone would be able to call `function triggerAuction(address strategy)` on the `L2_NovaRegistry`.
 - From there a 5-minute auction would be initiated
@@ -347,21 +347,21 @@ We can extract the value that would have gone to miners by auctioning off "prior
 The owner of the priority key for each strategy will from here on be referred to as a strategy's "sequencer".
 :::
 
-The strategy's sequencer is given a Y (configurable) minute window where **only they** can execute that specific strategy. Any other bot performing an execution for a strategy during its "sequencer window" will not receive the execution request's tips (the strategy's sequencer will).
+The strategy's sequencer is given a Y (configurable) minute window where **only they** can execute that specific strategy. Any other relayer performing an execution for a strategy during its "sequencer window" will not receive the execution request's tips (the strategy's sequencer will).
 
 ::: tip
-After the Y minute window expires for the request any bot is free to execute requests and receive the full tip.
+After the Y minute window expires for the request any relayer is free to execute requests and receive the full tip.
 :::
 
 Users will be able to opt out of giving the strategy sequencer priority when requesting an execution (but will pay a small penalty).
 
 ### Sequencer Extractable Value
 
-This system not only extracts PGA profits that would have gone to miners, but they are also able to **extract other frontrunning profits** that would have gone to sandwich bots, etc.
+This system not only extracts PGA profits that would have gone to miners, but they are also able to **extract other frontrunning profits** that would have gone to sandwich relayers, etc.
 
 - The sequencer effectively has the rights to **reorder transactions** within that 1 minute window
 - Importantly, **they can insert their own transactions** inbetween/around them as part of an atomic bundle (via something like a DSProxy).
-- Atomic insertion and reoreding rights allow them to take advantage of frontrunning schemes like sandwich attacks without miner/other bot competition.
-- Bots bidding in auctions for different strategies will price-in the frontrunning profits they estimate they can extract and adjust their bid accordingly.
-  - **Since the profits from these auctions go to the protocol, we have effectively extracted MEV profits that miners/frontrunning bots could have made off of Nova users and brought it back to the protocol instead.**
+- Atomic insertion and reoreding rights allow them to take advantage of frontrunning schemes like sandwich attacks without miner/other relayer competition.
+- Relayers bidding in auctions for different strategies will price-in the frontrunning profits they estimate they can extract and adjust their bid accordingly.
+  - **Since the profits from these auctions go to the protocol, we have effectively extracted MEV profits that miners/frontrunning relayers could have made off of Nova users and brought it back to the protocol instead.**
   - _We can even redistribute the profits we earn from MEVA back to users as a way to reduce costs!_
