@@ -213,10 +213,6 @@ The call to `strategy` is wrapped in a try-catch block:
 
 The `nonce` argument is used to compute the `execHash` needed to unlock the inputs/tip for this strategy on L2.
 
-::: tip
-Relayers cannot call `exec` with arguments that produce an `execHash` which has previously been successfuly executed.
-:::
-
 All computation in the function leading up to the cross domain message is sandwiched between calls to `gasLeft()`. These are used to calculate how many gas units the relayer had to pay for (so the registry can **release the proper payment** on L2). However, we are not able to account for refunds so users may end up over-paying their executors (depending on the strategy).
 
 After the call to `strategy` is completed, the EM will compute the `execHash` it needs (using the arguments passed into `exec` along with the `tx.gasprice`) and **send a cross domain message** to call the `L2_NovaRegistry`'s `execCompleted` with the neccessary arguments. This will send the `inputTokens`/`tip` to the caller of `exec` on L2.
