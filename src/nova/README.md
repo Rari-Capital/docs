@@ -142,7 +142,7 @@ function getRequestData(bytes32 execHash)
         uint256 tip,
         InputToken[] memory inputTokens,
         // Other data:
-        uint72 nonce,
+        uint256 nonce,
         address creator,
         bytes32 uncle,
         // Can be fetched via `isExecutable`:
@@ -197,7 +197,7 @@ Strategy contracts may wish to call back into this contract to trigger a [hard r
 ### Execute Request
 
 ```solidity
-function exec(uint72 nonce, address strategy, bytes memory l1calldata) public
+function exec(uint256 nonce, address strategy, bytes memory l1calldata) public
 ```
 
 This function calls the `strategy` address with the specified `l1calldata`.
@@ -218,7 +218,7 @@ All computation in the function leading up to the cross domain message is sandwi
 After the call to `strategy` is completed, the EM will compute the `execHash` it needs (using the arguments passed into `exec` along with the `tx.gasprice`) and **send a cross domain message** to call the `L2_NovaRegistry`'s `execCompleted` with the neccessary arguments. This will send the `inputTokens`/`tip` to the caller of `exec` on L2.
 
 ```solidity
-function execWithRecipient(uint72 nonce, address strategy, bytes calldata l1calldata, address l2Recipient) external
+function execWithRecipient(uint256 nonce, address strategy, bytes calldata l1calldata, address l2Recipient) external
 ```
 
 Behaves like `exec` but tells the `L2_NovaRegistry` contract to send the `inputTokens`/`tip` to the `l2Recipient` on L2 (instead of specifically the relayer who calls the function).
