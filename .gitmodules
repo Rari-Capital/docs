@@ -1,0 +1,3 @@
+[submodule "src/nova/nova"]
+	path = src/nova/nova
+	url = https://github.com/rari-capital/nova
