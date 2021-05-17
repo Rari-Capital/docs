@@ -1,0 +1,19 @@
+name: Update Nova Docs
+on:
+  schedule:
+    - cron: "5 * * * *"
+
+jobs:
+  get-version:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Commit latest release version
+        if: steps.git-check.outputs.modified == 'true'
+        run: |
+          git config --global user.name 'Nova Docs'
+          git config --global user.email 'transmissionsdev@users.noreply.github.com'
+          git submodule update --remote --merge
+          git commit -am "Update Nova Docs"
+          git push
