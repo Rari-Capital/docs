@@ -12,11 +12,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Config
-        run: |
-          git config --global user.name 'Nova Docs'
-          git config --global user.email 'transmissionsdev@users.noreply.github.com'
-
       - name: Checkout submodules
         run: git submodule update --init --recursive
 
