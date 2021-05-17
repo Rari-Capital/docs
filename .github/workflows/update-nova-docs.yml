@@ -1,11 +1,14 @@
 name: Update Nova Docs
 on:
+  workflow_dispatch
   schedule:
     - cron: "0/5 * * * *"
+  
 
 jobs:
   latest-nova:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v2
 
