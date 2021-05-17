@@ -1,5 +1,6 @@
 name: Update Nova Docs
 on:
+  push:
   workflow_dispatch:
   schedule:
     - cron: "0/5 * * * *"
@@ -18,6 +19,9 @@ jobs:
 
       - name: Update submodules
         run: git submodule update --remote --merge
+
+      - name: Version
+        run: git version
 
       - name: Commit and push
         run: |
