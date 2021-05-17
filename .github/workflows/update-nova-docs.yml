@@ -1,7 +1,7 @@
 name: Update Nova Docs
 on:
   schedule:
-    - cron: "5 * * * *"
+    - cron: "0/5 * * * *"
 
 jobs:
   latest-nova:
