@@ -11,10 +11,15 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Commit latest release version
+      - name: Config
         run: |
           git config --global user.name 'Nova Docs'
           git config --global user.email 'transmissionsdev@users.noreply.github.com'
-          git submodule update --remote --merge
+
+      - name: Update submodules
+        run: git submodule update --remote --merge
+
+      - name: Commit and push
+        run: |
           git commit -am "Update Nova Docs"
           git push
