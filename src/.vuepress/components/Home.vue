@@ -18,7 +18,7 @@
 
       <a class="action-button" href="/fuse/"><u>Fuse</u> Docs</a>
       <a class="action-button" href="/yag/"><u>Yield Aggregator</u> Docs</a>
-      <a class="action-button" href="/nova/"><u>Nova</u> (WIP) Docs</a>
+      <a class="action-button" href="/nova/"><u>Nova</u> Docs</a>
       <br />
       <a class="action-button" href="/contracts/"><u>Deployed Contracts</u></a>
       <br />
