@@ -1363,7 +1363,7 @@ const usrs = await lens.methods.getPublicPoolUsersWithData(101010...);
 
 ### getPoolUsersWithData()
 Gets users and their data in a fuse pool under a given account health
-```js
+```solidity
   getPoolUsersWithData(address Comptroller, uint256 maxHealth) returns (tuple[], uint256, uint256)
 ```
 
