@@ -1134,3 +1134,436 @@ const closeFactor = await troll.methods.liquidationIncentiveMantissa().call();
 | 20   | UNSUPPORT_MARKET_OWNER_CHECK                |
 | 21   | UNSUPPORT_MARKET_DOES_NOT_EXIST             |
 | 22   | UNSUPPORT_MARKET_IN_USE                     |
+
+## Fuse Pool Lens
+address: 0x8dA38681826f4ABBe089643D2B3fE4C6e4730493
+questions:
+1) for a fusePoolAsset, what does membership represent as the parameters include a specific user? does this mean the token is active in the pool?
+2) is supplyBalance for a fusePoolAsset denominated in USD or ETH?
+3) determine what total borrow and total supply is denominated in. 
+4) determine denomination of totalCollateral
+5) link fTokens (dont use htpp use relative)
+6) get return values of getPublicPoolsWithData from a rari member 
+7) determine if tuple[][] return values are appropriate for uint256[], tuple[]
+8) determine fuse pool asset liquidity DENOMination
+ 
+### Return Value Glossary:
+
+-  <h5>fusePool</h5>
+  <details close>
+  <summary>returns []</summary>
+  -[0] string <code>name</code>: Name of the fuse pool
+  <br>
+  -[1] address <code>creator</code>: Creator of the fuse pool 
+  <br>
+  -[2] address <a href="https://docs.rari.capital/fuse/#comptroller" ><code>comptroller</code></a>: Comptroller of the fuse pool
+  <br>
+  -[3] uint256 <code>blockPosted</code>:  Block pool created
+  <br>
+  -[4] uint256 <code>timestampPosted</code>: Timestamp pool created
+  </details>
+- <h5>fusePoolAsset</h5>
+  <details close>
+  <summary>returns []</summary>
+  -[0] address <a href="https://docs.rari.capital/fuse/#ftoken-s" ><code>fToken</code></a>: Pool token address
+  <br>
+  -[1] address <code>underlyingToken</code>: ERC20 deposited/withdrawn from this pool token 
+  <br>
+  -[2] string <code>underlyingName</code>: Name of the token
+  <br>
+  -[3] string <code>underlyingSymbol</code>: Symbol of the token
+  <br>
+  -[4] uint256 <code>underlyingDecimals</code>: Decimals of token ($ETH is 18)
+  <br>
+  -[5] uint256 <code>underlyingBalance</code>: Supply of underlying ERC20
+  <br>
+  -[6] uint256 <code>supplyRatePerBlock</code>: Supply interest in current block of token for the pool. Derived from borrow rate, reserve factor, and total borrows
+  <br>
+  -[7] uint256 <code>borrowRatePerBlock</code>: Borrow interest rate of the current block
+  <br>
+  -[8] uint256 <code>totalSupply</code>: Number of cToken in circulation 
+  <br>
+  -[9] uint256 <code>totalBorrow</code>: Amount of underlying token loaned out by the market TODO determine if this is for the pool 
+  <br>
+  -[10] uint256 <code>supplyBalance</code>: Total supply balance in pool TODO determine if this is in USD
+  <br>
+  -[11] uint256 <code>borrowBalance</code>: Total borrow users in pool must repay including interest
+  <br>
+  -[12] uint256 <code>liquidity</code>: (TODO determine denomination) USD value borrowable in pool 
+  <br>
+  -[13] bool <code>membership</code>: TODO: True if token is active in the pool
+  <br>
+  -[14] uint256 <a href="https://docs.rari.capital/fuse/#exchange-rate" ><code>exchangeRate</code></a>: Price of cTokens in terms of underlying tokens (a form of slippage) TODO: double check this is right!
+  <br>
+  -[15] uint256 <code>underlyingPrice</code>: Price of underlying tokens denominated in ETH 
+  <br>
+  -[16] address <code>oracle</code>: Oracle from which this asset's price is fetched 
+  <br>
+  -[17] unt256 <a href="https://docs.rari.capital/fuse/#collateral-factor" ><code>collareralFactor</code></a>: Represents the proportional(0-90%) increase in liquidity(borrow limit) that a supplying user gets for depositing this token
+  <br>
+  -[18] uint256 <a href="https://docs.rari.capital/fuse/#reserve-factor" ><code>reserveFactor</code></a>: TODO determine what this is  
+  <br>
+  -[19] uint256 <code>adminFee</code>: Fee the pool admin takes TODO determine if this is on top of interest or base fee  
+  <br>
+  -[20] uint256 <code>fuseFee</code>: Fee the DAO takes TODO determine above 
+  </details>
+- <h5>fusePoolUser</h5>
+  <details close>
+  <summary>returns []</summary>
+  -[0] address <code>account</code>: 
+  <br>
+  -[1]: uint256 <a href="https://docs.rari.capital/fuse/#total-borrow" ><code>totalBorrow</code></a>: Total borrow balance in the pool of the user 
+  <br>
+  -[2] uint256 <code>totalCollateral</code>: Total collateral of the user in the pool (TODO: determine this is correct)
+  <br>
+  -[3] uint256 <code>health</code>: Total health of account in pool(TODO: Determine this)
+  <br>
+  -[4] tuple[] <code>assets</code>: <a href="https://docs.rari.capital/fuse/#ftoken-s" >fTokens</a> supplied/borrowed by user in pool
+  </details>
+
+### fusePoolLens contract (TODO remove this )
+- Calling the view functions of fuse pool lens returns returns a variety of structures for the all of the fuse pools' data. There are __ functions in total, and __ main data types. 
+
+
+
+
+### Parameters:
+
+`uint256: maxHealth`- The maximum collateral health of Accounts to parse for. If you are running a liquidation bot, you may want to only parse low health accounts. 
+
+`address: Comptroller`- Acts as address for a fuse pool when parsing
+
+`address: Account`- is used for accessing a variety of data depending on the function (see )  
+
+### Return Values
+
+
+### getPublicPoolsWithData()
+Gets all public fuse pools and metadata
+```js
+  getPublicPoolsWithData() returns (uint256[], FusePool[], uint256[], uint256[], address[][], string[][], bool[])
+```
+`RETURN`: [TODO: figure this out]
+#### Solidity
+~~~js
+fusePoolLens lens = fusePoolLens(0xABCD...);
+
+fusePool[] userPools = lens.getPublicPoolsWithData()
+~~~
+
+#### Web3 1.0
+~~~js
+const lens = new Web3.eth.Contract(FUSE_POOL_LENS_ABI, 0xABCD...);
+
+const Pools = await lens.methods.getPoolsByAccountWithData(0xEFGH);
+~~~
+
+### getPoolsByAccountWithData()
+
+~~~js
+  getPoolsByAccountWithData(address account) retruns (uint256[], tuple[], uint256[], uint256[], address[][], string[][], bool[])
+~~~
+
+- `account`: User address to parse for 
+- `RETURN`: [ [indexes[]](), [accountPools[]](), [totalSupply[]](), [totalBorrow[]](), [errored]() ]
+
+#### Solidity
+
+~~~js
+fusePoolLens lens = fusePoolLens(0xABCD...);
+
+poolData[] userPools = lens.getPoolsByAccountWithData(0xEFGH...) 
+~~~
+
+#### Web3 1.0
+
+~~~js
+const lens = new Web3.eth.Contract(FUSE_POOL_LENS_ABI, 0xABCD...);
+
+const usrPools = await lens.methods.getPoolsByAccountWithData(0xEFGH);
+~~~
+
+
+
+### getPoolSummary
+
+Gets metadata of a pool
+```js
+  getPoolSummary(address comptroller) returns (uint256, uint256, address[], string[])
+```
+
+- `Comptroller`: Pool to parse
+- `RETURN`: [ totalSupply, totalBorrow, underlyingTokens[], underlyingSymbol[]]
+
+#### Solidity
+
+```js
+fusePoolLens lens = fusePoolLens(0xABCD...);
+
+tuple[] poolInfo = lens.getPoolSummary(0xEFGH...); TODO
+```
+
+#### Web3 1.0
+
+```js 
+const lens = new Web3.eth.Contract(FUSE_POOL_LENS_ABI, 0xABCD...);
+
+const poolInfo = await lens.methods.getPoolSummary(0xEFGH...)
+```
+
+### getPoolAssetsWithData()
+Gets the tokens in a fuse pool
+```js
+  getPoolAssetsWithData(address Comptroller) returns (tuple[])
+```
+
+- `Comptroller`: Pool to parse
+- `RETURN`: [ [fusePoolAsset[]]()]
+
+#### Solidity
+
+```js
+fusePoolLens lens = fusePoolLens(0xABCD...);
+
+FuseAsset[] assets = lens.getPoolAssetsWithData(0xEFGH...);
+```
+
+#### Web3 1.0
+
+```js 
+const lens = new Web3.eth.Contract(FUSE_POOL_LENS_ABI, 0xABCD...);
+
+const assets = await lens.methods.getPoolAssetsWithData(0xEFGH...);
+```
+
+### getPublicPoolUsersWithData()
+Gets users and their data in a fuse pool under a given account health
+```js
+  getPoolUsersWithData(uint256 maxHealth) returns (address[], tuple[][], uint256[], uint256[], bool)
+```
+
+- `maxHealth`: maximum account health to parse for
+- `RETURN`: [ comptroller[], user[][], closeFactor[], liquidationIncentive[], error]
+
+#### Solidity
+
+```js
+fusePoolLens lens = fusePoolLens(0xABCD...);
+
+poolUser[] usrs = lens.getPublicPoolUsersWithData(101010...);
+```
+
+#### Web3 1.0
+
+```js 
+const lens = new Web3.eth.Contract(FUSE_POOL_LENS_ABI, 0xABCD...);
+
+const usrs = await lens.methods.getPublicPoolUsersWithData(101010...);
+```
+
+### getPoolUsersWithData()
+Gets users and their data in a fuse pool under a given account health
+```js
+  getPoolUsersWithData(address Comptroller, uint256 maxHealth) returns (tuple[], uint256, uint256)
+```
+
+- `Comptroller`: Pool to parse
+- `maxHealth`: maximum account health to parse for
+- `RETURN`: [  [FusePoolUser[]]("docs.rari.capital/fuse#General"), closeFactor, liquidationIncentive ]
+
+#### Solidity
+TODO: see if a solidity markdown header works (its this way in docs)
+```solidity
+fusePoolLens lens = fusePoolLens(0xABCD...);
+
+poolUsers usrs = lens.getPoolUsersWithData(0xEFGH..., 101010101010101010);
+```
+
+#### Web3 1.0
+
+```js 
+const lens = new Web3.eth.Contract(FUSE_POOL_LENS_ABI, 0xABCD...);
+
+const usrs = await lens.methods.getPoolUsersWithData(0xEFGH..., 101010101010101010);
+```
+
+### getPoolsBySupplier()
+gets pools that an address is supplying
+~~~js
+  getPoolsBySupplier(address account) returns (uint256[], tuple[])
+~~~
+
+- `account`: supplier account to parse pools for
+- `RETURN`: [index[], fusePool[]]
+
+#### Solidity 
+
+~~~js
+fusePoolLens lens = fusePoolLens(0xABCD...);
+
+tuple[][] pools = lens.getPoolsBysupplier(0xEFGH...);
+~~~
+
+#### Web3 1.0
+
+~~~js
+const lens = new Web3.eth.Contract(FUSE_POOL_LENS_ABI, 0xABCD...);
+
+const pools = await lens.methods.getPoolsBySupplier(0xEFGH...);
+~~~
+
+### getPoolsBySupplierWithData()
+gets pools that an address is supplying
+~~~js
+  getPoolsBySupplier(address account) returns (uint256[], tuple[], uint256[], uint256[], address[][], string[][], bool[])
+~~~
+
+- `account`: supplier account to parse pools for
+- `RETURN`: [indexes, pools, totalSupply, totalBorrow, underlyingTokens, underlyingSymbols, errored]
+
+#### Solidity 
+
+~~~js
+fusePoolLens lens = fusePoolLens(0xABCD...);
+
+tuple[][] pools = lens.getPoolsBysupplierWithData(0xEFGH...);
+~~~
+
+#### Web3 1.0
+
+~~~js
+const lens = new Web3.eth.Contract(FUSE_POOL_LENS_ABI, 0xABCD...);
+
+const usrs = await lens.methods.getPoolsBySupplierWithData(0xEFGH...);
+~~~
+
+### getUserSummary()
+Gets supply and borrow metadata for a user/account
+~~~js
+  getUserSummary(address account) returns (uint256, uint256, bool)
+~~~
+
+- `account`: account to parse for
+- `RETURN`: [supplyBalance, borrowBalance, error]
+
+#### Solidity
+
+~~~js
+fusePoolLens lens = fusePoolLens(0xABCD...);
+
+tuple usr = lens.getUserSummary(0xEFGH...);
+~~~
+
+#### Web3 1.0
+
+~~~js
+const lens = new Web3.eth.Contract(FUSE_POOL_LENS_ABI, 0xABCD...);
+
+const usr = await lens.methods.getUserSummary(0xEFGH...);
+~~~
+
+### getPoolUserSummary()
+Gets supply and borrow metadata for a user/account in a pool
+~~~js
+  getPoolUserSummary(address comptroller, address account) returns (uint256, uint256)
+~~~
+
+- `comptroller`: pool comptroller address to parse for
+- `account`: user to parse for
+- `RETURN`: [supplyBalance, borrowBalance]
+
+#### Solidity
+
+~~~js
+fusePoolLens lens = fusePoolLens(0xABCD...);
+
+tuple usr = lens.getPoolUserSummary(0xEFGH..., 0xIJKL...);
+~~~
+
+#### Web3 1.0
+
+~~~js
+const lens = new Web3.eth.Contract(FUSE_POOL_LENS_ABI, 0xABCD...);
+
+const usr = await lens.methods.getPoolUserSummary(0xEFGH..., 0xIJKL...);
+~~~
+
+### getWhitelistedPoolsByAccount()
+
+~~~js
+  getWhitelistedPoolsByAccount(address account) returns (uint256[], tuple[])
+~~~
+
+- `account` : user to parse pools for 
+- `RETURN`: [indexes, accountPools]
+
+#### Solidity
+
+```js
+fusePoolLens lens = fusePoolLens(0xABCD...);
+
+tuple[] pools = lens.getWhitelistedPoolsByAccount(0xEFGH...);
+```
+
+#### Web3 1.0
+
+~~~js
+const lens = new Web3.eth.Contract(FUSE_POOL_LENS_ABI, 0xABCD...);
+
+const pools = await lens.methods.getWhitelistedPoolsByAccount(0xEFGH...);
+~~~
+
+### getWhitelistedPoolsByAccountWithData()
+
+~~~js 
+  getWhitelistedPoolsByAccountWithData(address account) returns ()
+~~~
+
+- `account`: use to parse pools for
+- `RETURN`: [indexes, pools, totalSupply, totalBorrow, underlyingTokens, underlyingSymbols, errored]
+
+#### Solidity
+
+~~~js
+fusePoolLens lens = fusePoolLens(0xABCD...);
+
+tuple[] pools = lens.getWhitelistedPoolsByAccountWithData(0xEFGH...);
+
+~~~
+
+#### Web3 1.0
+
+~~~js
+const lens = new Web3.eth.Contract(FUSE_POOL_LENS_ABI, 0xABCD...);
+
+const pools = await lens.methods.getWhitelistedPoolsByAccountWithData(0xEFGH...);
+~~~
+
+
+### getPoolOwnership()
+~~~js
+  getPoolOwnership(address Comptroller) returns (address, bool, bool, CTokenOwnership[])
+~~~
+
+- `comptroller`: pool comptroller address to parse for 
+- `RETURN`: [compAdmin, compAdminHasRights, compFuseAdminHasRights, outliers]
+
+#### Solidity
+
+~~~js
+fusePoolLens lens = fusePoolLens(0xABCD...);
+
+ownerInfo = lens.getPoolOwnership(0xEFGH...);
+
+~~~
+
+#### Web3 1.0
+
+~~~js
+const lens = new Web3.eth.Contract(FUSE_POOL_LENS_ABI, 0xABCD...);
+
+const pools = await lens.methods.getPoolOwnership(0xEFGH...);
+~~~
+
+
+
