@@ -1209,7 +1209,7 @@ questions:
   <br></li><li>
   [20] <code>uint256 fuseFee</code>: Fee the DAO takes TODO determine above 
   </li>
-  
+  </details>
 - <h5>fusePoolUser</h5>
   <details close>
   <summary>values []</summary>
