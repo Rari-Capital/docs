@@ -1167,8 +1167,9 @@ questions:
 - <h5>fusePoolAsset</h5>
   <details close>
   <summary>values []</summary>
+  <li>
   [0] <code>address <a href="https://docs.rari.capital/fuse/#ftoken-s" >fToken</code></a>: Pool token address
-  <br><li>
+  <br></li><li>
   [1] <code>address underlyingToken</code>: ERC20 deposited/withdrawn from this pool token 
   <br></li><li>
   [2] <code>string underlyingName</code>: Name of the token
