@@ -26,12 +26,7 @@ module.exports = {
       { text: "Deployed Contracts", link: "/contracts/" }
     ],
     sidebarDepth: 10,
-    sidebar: {
-      "/yag/": [""],
-      "/fuse/": [""],
-      "/nova/": [""],
-      "/contracts/": [""]
-    },
+    sidebar: "auto",
     smoothScroll: true
   }
 };
