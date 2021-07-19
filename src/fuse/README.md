@@ -1151,76 +1151,79 @@ questions:
 
 -  <h5>fusePool</h5>
   <details close>
-  <summary>returns []</summary>
-  -[0] string <code>name</code>: Name of the fuse pool
-  <br>
-  -[1] address <code>creator</code>: Creator of the fuse pool 
-  <br>
-  -[2] address <a href="https://docs.rari.capital/fuse/#comptroller" ><code>comptroller</code></a>: Comptroller of the fuse pool
-  <br>
-  -[3] uint256 <code>blockPosted</code>:  Block pool created
-  <br>
-  -[4] uint256 <code>timestampPosted</code>: Timestamp pool created
+  <summary>values[]</summary>
+  <ul><li>
+  [0] <code>string name</code>: Name of the fuse pool
+  <br></li><li>
+  [1] <code>address creator</code>: Creator of the fuse pool 
+  <br></li><li>
+  [2] <code>address <a href="https://docs.rari.capital/fuse/#comptroller" >comptroller</code></a>: Comptroller of the fuse pool
+  <br></li><li>
+  [3] <code>uint256 blockPosted</code>:  Block pool created
+  <br></li><li>
+  [4] <code>uint256 timestampPosted</code>: Timestamp pool created
+    </li></ul>
   </details>
 - <h5>fusePoolAsset</h5>
   <details close>
-  <summary>returns []</summary>
-  -[0] address <a href="https://docs.rari.capital/fuse/#ftoken-s" ><code>fToken</code></a>: Pool token address
-  <br>
-  -[1] address <code>underlyingToken</code>: ERC20 deposited/withdrawn from this pool token 
-  <br>
-  -[2] string <code>underlyingName</code>: Name of the token
-  <br>
-  -[3] string <code>underlyingSymbol</code>: Symbol of the token
-  <br>
-  -[4] uint256 <code>underlyingDecimals</code>: Decimals of token ($ETH is 18)
-  <br>
-  -[5] uint256 <code>underlyingBalance</code>: Supply of underlying ERC20
-  <br>
-  -[6] uint256 <code>supplyRatePerBlock</code>: Supply interest in current block of token for the pool. Derived from borrow rate, reserve factor, and total borrows
-  <br>
-  -[7] uint256 <code>borrowRatePerBlock</code>: Borrow interest rate of the current block
-  <br>
-  -[8] uint256 <code>totalSupply</code>: Number of cToken in circulation 
-  <br>
-  -[9] uint256 <code>totalBorrow</code>: Amount of underlying token loaned out by the market TODO determine if this is for the pool 
-  <br>
-  -[10] uint256 <code>supplyBalance</code>: Total supply balance in pool TODO determine if this is in USD
-  <br>
-  -[11] uint256 <code>borrowBalance</code>: Total borrow users in pool must repay including interest
-  <br>
-  -[12] uint256 <code>liquidity</code>: (TODO determine denomination) USD value borrowable in pool 
-  <br>
-  -[13] bool <code>membership</code>: TODO: True if token is active in the pool
-  <br>
-  -[14] uint256 <a href="https://docs.rari.capital/fuse/#exchange-rate" ><code>exchangeRate</code></a>: Price of cTokens in terms of underlying tokens (a form of slippage) TODO: double check this is right!
-  <br>
-  -[15] uint256 <code>underlyingPrice</code>: Price of underlying tokens denominated in ETH 
-  <br>
-  -[16] address <code>oracle</code>: Oracle from which this asset's price is fetched 
-  <br>
-  -[17] unt256 <a href="https://docs.rari.capital/fuse/#collateral-factor" ><code>collareralFactor</code></a>: Represents the proportional(0-90%) increase in liquidity(borrow limit) that a supplying user gets for depositing this token
-  <br>
-  -[18] uint256 <a href="https://docs.rari.capital/fuse/#reserve-factor" ><code>reserveFactor</code></a>: TODO determine what this is  
-  <br>
-  -[19] uint256 <code>adminFee</code>: Fee the pool admin takes TODO determine if this is on top of interest or base fee  
-  <br>
-  -[20] uint256 <code>fuseFee</code>: Fee the DAO takes TODO determine above 
-  </details>
+  <summary>values []</summary>
+  [0] <code>address <a href="https://docs.rari.capital/fuse/#ftoken-s" >fToken</code></a>: Pool token address
+  <br><li>
+  [1] <code>address underlyingToken</code>: ERC20 deposited/withdrawn from this pool token 
+  <br></li><li>
+  [2] <code>string underlyingName</code>: Name of the token
+  <br></li><li>
+  [3] <code>string underlyingSymbol</code>: Symbol of the token
+  <br></li><li>
+  [4] <code>uint256 underlyingDecimals</code>: Decimals of token ($ETH is 18)
+  <br></li><li>
+  [5] <code>uint256 underlyingBalance</code>: Supply of underlying ERC20
+  <br></li><li>
+  [6] <code>uint256 <a href="https://docs.rari.capital/fuse/#supply-rate" >supplyRatePerBlock</code></a>: Supply interest in current block of token for the pool. Derived from borrow rate, reserve factor, and total borrows
+  <br></li><li>
+  [7]<code> uint256 borrowRatePerBlock</code>: Borrow interest rate of the current block
+  <br></li><li>
+  [8] <code>uint256 totalSupply</code>: Number of cToken in circulation 
+  <br></li><li>
+  [9]<code>uint256 totalBorrow</code>: Amount of underlying token loaned out by the market TODO determine if this is for the pool 
+  <br></li><li>
+  [10] <code>uint256 supplyBalance</code>: Total supply balance in pool TODO determine if this is in USD
+  <br></li><li>
+  [11]<code>uint256 borrowBalance</code>: Total borrow users in pool must repay including interest
+  <br></li><li>
+  [12] <code>uint256 liquidity</code>: (TODO determine denomination) USD value borrowable in pool 
+  <br></li><li>
+  [13] <code>bool membership</code>: TODO: True if token is active in the pool
+  <br></li><li>
+  [14] <code> uint256 <a href="https://docs.rari.capital/fuse/#exchange-rate" >exchangeRate</code></a>: Price of cTokens in terms of underlying tokens (a form of slippage) TODO: double check this is right!
+  <br></li><li>
+  [15] <code>uint256 underlyingPrice</code>: Price of underlying tokens denominated in ETH 
+  <br></li><li>
+  [16] <code>address oracle</code>: Oracle from which this asset's price is fetched 
+  <br></li><li>
+  [17] <code>unt256 <a href="https://docs.rari.capital/fuse/#collateral-factor" >collareralFactor</code></a>: Represents the proportional(0-90%) increase in liquidity(borrow limit) that a supplying user gets for depositing this token
+  <br></li><li>
+  [18]<code>uint256 <a href="https://docs.rari.capital/fuse/#reserve-factor" >reserveFactor</code></a>: TODO determine what this is  
+  <br></li><li>
+  [19] <code>uint256 adminFee</code>: Fee the pool admin takes TODO determine if this is on top of interest or base fee  
+  <br></li><li>
+  [20] <code>uint256 fuseFee</code>: Fee the DAO takes TODO determine above 
+  </li>
+  
 - <h5>fusePoolUser</h5>
   <details close>
-  <summary>returns []</summary>
-  -[0] address <code>account</code>: 
+  <summary>values []</summary>
+  [0] <code>address account</code>: 
   <br>
-  -[1]: uint256 <a href="https://docs.rari.capital/fuse/#total-borrow" ><code>totalBorrow</code></a>: Total borrow balance in the pool of the user 
+  [1] <code>uint256 <a href="https://docs.rari.capital/fuse/#total-borrow" >totalBorrow</code></a>: Total borrow balance in the pool of the user 
   <br>
-  -[2] uint256 <code>totalCollateral</code>: Total collateral of the user in the pool (TODO: determine this is correct)
+  [2] <code>uint256 totalCollateral</code>: Total collateral of the user in the pool (TODO: determine this is correct)
   <br>
-  -[3] uint256 <code>health</code>: Total health of account in pool(TODO: Determine this)
+  [3] <code>uint256 health</code>: Total health of account in pool(TODO: Determine this)
   <br>
-  -[4] tuple[] <code>assets</code>: <a href="https://docs.rari.capital/fuse/#ftoken-s" >fTokens</a> supplied/borrowed by user in pool
+  [4] <code>tuple[] assets</code>: <a href="https://docs.rari.capital/fuse/#ftoken-s" >fTokens</a> supplied/borrowed by user in pool
   </details>
-
+  
 ### fusePoolLens contract (TODO remove this )
 - Calling the view functions of fuse pool lens returns returns a variety of structures for the all of the fuse pools' data. There are __ functions in total, and __ main data types. 
 
