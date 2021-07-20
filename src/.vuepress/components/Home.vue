@@ -14,7 +14,7 @@
         Rari Capital
       </h1>
 
-      <h2>Yield for the people!</h2>
+      <h2>Developer Documentation</h2>
 
       <a class="action-button" href="/fuse/"><u>Fuse</u> Docs</a>
       <a class="action-button" href="/yag/"><u>Yield Aggregator</u> Docs</a>

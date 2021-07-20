@@ -17,13 +17,12 @@ module.exports = {
     repo: "Rari-Capital/docs",
     docsDir: "/",
     nav: [
-      { text: "Home", link: "/" },
-
       { text: "Fuse", link: "/fuse/" },
       { text: "Yield Aggregator", link: "/yag/" },
       { text: "Nova", link: "/nova/" },
+      { text: "Deployed Contracts", link: "/contracts/" },
 
-      { text: "Deployed Contracts", link: "/contracts/" }
+
     ],
     sidebarDepth: 10,
     sidebar: "auto",
