@@ -13,6 +13,8 @@
 - RariGovernanceTokenDistributor: `0x9C0CaEb986c003417D21A7Daaf30221d61FC1043`
 - RariGovernanceTokenSushiSwapDistributor: `0x1FA69a416bCF8572577d3949b742fBB0a9CD98c7`
 - RariGovernanceTokenVesting: `0xA54B473028f4ba881F1eD6B670af4103e8F9B98a`
+- GovernorBravoDelegator: `0x9ecc58d2d68da2c20e8630b000af55cb8324c759`
+- Timelock: `0x3a4498d6555b28631062edcae2f406efe0e2d1c8`
 
 ## Fuse
 
@@ -21,7 +23,7 @@
 [ABIs can be downloaded here ](https://github.com/Rari-Capital/rari-dApp/tree/master/src/fuse-sdk/src/abi)
 
 - FusePoolDirectory: `0x835482FE0532f169024d5E9410199369aAD5C77E`
-- FusePoolLense: `0x8dA38681826f4ABBe089643D2B3fE4C6e4730493`
+- FusePoolLens: `0x8dA38681826f4ABBe089643D2B3fE4C6e4730493`
 - FuseSafeLiquidator: `0x41C7F2D48bde2397dFf43DadA367d2BD3527452F`
 - FuseFeeDistributor: `0xa731585ab05fC9f83555cf9Bff8F58ee94e18F85`
 
@@ -85,7 +87,7 @@
 
 [ABIs can be downloaded here ](https://github.com/Rari-Capital/rari-dApp/tree/master/src/rari-sdk/pools/stable/abi)
 
-- RariPoolController: `0xD7590e93a2e04110Ad50ec70EADE7490F7B8228a` ([Etherscan](https://etherscan.io/address/0xD7590e93a2e04110Ad50ec70EADE7490F7B8228a), [Zapper](https://zapper.fi/dashboard?address=0xD7590e93a2e04110Ad50ec70EADE7490F7B8228a))
+- RariPoolController: `0xaFD2AaDE64E6Ea690173F6DE59Fc09F5C9190d74` ([Etherscan](https://etherscan.io/address/0xaFD2AaDE64E6Ea690173F6DE59Fc09F5C9190d74), [Zapper](https://zapper.fi/dashboard?address=0xaFD2AaDE64E6Ea690173F6DE59Fc09F5C9190d74))
 - RariPoolManager: `0xB465BAF04C087Ce3ed1C266F96CA43f4847D9635`
 - RariPoolToken: `0x0833cfcb11A5ba89FbAF73a407831c98aD2D7648`
 - RariPoolPriceConsumer: `0x96ce4C781eDF07F4e3D210c919CA4F9A7ad82a7f`
