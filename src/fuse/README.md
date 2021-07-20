@@ -1147,9 +1147,9 @@ questions:
 7) determine if tuple[][] return values are appropriate for uint256[], tuple[]
 8) determine fuse pool asset liquidity DENOMination
  
-### Return Value Glossary:
+### Return Value Glossary
 
--  <h5>fusePool</h5>
+  <h5>fusePool</h5>
   <details close>
   <summary>values[]</summary>
   <ul><li>
@@ -1164,10 +1164,10 @@ questions:
   [4] <code>uint256 timestampPosted</code>: Timestamp pool created
     </li></ul>
   </details>
-- <h5>fusePoolAsset</h5>
+<h5>fusePoolAsset</h5>
   <details close>
   <summary>values []</summary>
-  <li>
+  <ul><li>
   [0] <code>address <a href="https://docs.rari.capital/fuse/#ftoken-s" >fToken</code></a>: Pool token address
   <br></li><li>
   [1] <code>address underlyingToken</code>: ERC20 deposited/withdrawn from this pool token 
@@ -1209,47 +1209,40 @@ questions:
   [19] <code>uint256 adminFee</code>: Fee the pool admin takes TODO determine if this is on top of interest or base fee  
   <br></li><li>
   [20] <code>uint256 fuseFee</code>: Fee the DAO takes TODO determine above 
-  </li>
+  </li></ul>
   </details>
-- <h5>fusePoolUser</h5>
+<h5>fusePoolUser</h5>
   <details close>
   <summary>values []</summary>
-  [0] <code>address account</code>: 
-  <br>
+  <ul><li>
+  [0] <code>address account</code>: TODO: 
+  <br></li><li>
   [1] <code>uint256 <a href="https://docs.rari.capital/fuse/#total-borrow" >totalBorrow</code></a>: Total borrow balance in the pool of the user 
-  <br>
+  <br></li><li>
   [2] <code>uint256 totalCollateral</code>: Total collateral of the user in the pool (TODO: determine this is correct)
-  <br>
+  <br></li><li>
   [3] <code>uint256 health</code>: Total health of account in pool(TODO: Determine this)
-  <br>
+  <br></li><li>
   [4] <code>tuple[] assets</code>: <a href="https://docs.rari.capital/fuse/#ftoken-s" >fTokens</a> supplied/borrowed by user in pool
+  </li></ul>
   </details>
-  
-### fusePoolLens contract (TODO remove this )
-- Calling the view functions of fuse pool lens returns returns a variety of structures for the all of the fuse pools' data. There are __ functions in total, and __ main data types. 
 
-
-
-
-### Parameters:
+### Parameters
 
 `uint256: maxHealth`- The maximum collateral health of Accounts to parse for. If you are running a liquidation bot, you may want to only parse low health accounts. 
 
 `address: Comptroller`- Acts as address for a fuse pool when parsing
 
-`address: Account`- is used for accessing a variety of data depending on the function (see )  
+`address: Account`- is used for accessing a variety of data depending on the function
 
-### Return Values
-
-
-### getPublicPoolsWithData()
+### Get Public Pools With Data
 Gets all public fuse pools and metadata
-```js
+```solidity
   getPublicPoolsWithData() returns (uint256[], FusePool[], uint256[], uint256[], address[][], string[][], bool[])
 ```
 `RETURN`: [TODO: figure this out]
 #### Solidity
-~~~js
+~~~solidity
 fusePoolLens lens = fusePoolLens(0xABCD...);
 
 fusePool[] userPools = lens.getPublicPoolsWithData()
@@ -1262,9 +1255,9 @@ const lens = new Web3.eth.Contract(FUSE_POOL_LENS_ABI, 0xABCD...);
 const Pools = await lens.methods.getPoolsByAccountWithData(0xEFGH);
 ~~~
 
-### getPoolsByAccountWithData()
+### Get Pools By Account With Data
 
-~~~js
+~~~solidity
   getPoolsByAccountWithData(address account) retruns (uint256[], tuple[], uint256[], uint256[], address[][], string[][], bool[])
 ~~~
 
@@ -1273,7 +1266,7 @@ const Pools = await lens.methods.getPoolsByAccountWithData(0xEFGH);
 
 #### Solidity
 
-~~~js
+~~~solidity
 fusePoolLens lens = fusePoolLens(0xABCD...);
 
 poolData[] userPools = lens.getPoolsByAccountWithData(0xEFGH...) 
@@ -1289,10 +1282,10 @@ const usrPools = await lens.methods.getPoolsByAccountWithData(0xEFGH);
 
 
 
-### getPoolSummary
+### Get Pool Summary
 
 Gets metadata of a pool
-```js
+```solidity
   getPoolSummary(address comptroller) returns (uint256, uint256, address[], string[])
 ```
 
@@ -1301,7 +1294,7 @@ Gets metadata of a pool
 
 #### Solidity
 
-```js
+```solidity
 fusePoolLens lens = fusePoolLens(0xABCD...);
 
 tuple[] poolInfo = lens.getPoolSummary(0xEFGH...); TODO
@@ -1315,9 +1308,9 @@ const lens = new Web3.eth.Contract(FUSE_POOL_LENS_ABI, 0xABCD...);
 const poolInfo = await lens.methods.getPoolSummary(0xEFGH...)
 ```
 
-### getPoolAssetsWithData()
+### Get Pool Assets With Data
 Gets the tokens in a fuse pool
-```js
+```solidity
   getPoolAssetsWithData(address Comptroller) returns (tuple[])
 ```
 
@@ -1326,7 +1319,7 @@ Gets the tokens in a fuse pool
 
 #### Solidity
 
-```js
+```solidity
 fusePoolLens lens = fusePoolLens(0xABCD...);
 
 FuseAsset[] assets = lens.getPoolAssetsWithData(0xEFGH...);
@@ -1340,9 +1333,9 @@ const lens = new Web3.eth.Contract(FUSE_POOL_LENS_ABI, 0xABCD...);
 const assets = await lens.methods.getPoolAssetsWithData(0xEFGH...);
 ```
 
-### getPublicPoolUsersWithData()
+### Get Public Pool Users With Data
 Gets users and their data in a fuse pool under a given account health
-```js
+```solidity
   getPoolUsersWithData(uint256 maxHealth) returns (address[], tuple[][], uint256[], uint256[], bool)
 ```
 
@@ -1351,7 +1344,7 @@ Gets users and their data in a fuse pool under a given account health
 
 #### Solidity
 
-```js
+```solidity
 fusePoolLens lens = fusePoolLens(0xABCD...);
 
 poolUser[] usrs = lens.getPublicPoolUsersWithData(101010...);
@@ -1365,7 +1358,7 @@ const lens = new Web3.eth.Contract(FUSE_POOL_LENS_ABI, 0xABCD...);
 const usrs = await lens.methods.getPublicPoolUsersWithData(101010...);
 ```
 
-### getPoolUsersWithData()
+### Get Pool Users With Data
 Gets users and their data in a fuse pool under a given account health
 ```solidity
   getPoolUsersWithData(address Comptroller, uint256 maxHealth) returns (tuple[], uint256, uint256)
@@ -1391,9 +1384,9 @@ const lens = new Web3.eth.Contract(FUSE_POOL_LENS_ABI, 0xABCD...);
 const usrs = await lens.methods.getPoolUsersWithData(0xEFGH..., 101010101010101010);
 ```
 
-### getPoolsBySupplier()
+### Get Pools By Supplier
 gets pools that an address is supplying
-~~~js
+~~~solidity
   getPoolsBySupplier(address account) returns (uint256[], tuple[])
 ~~~
 
@@ -1402,7 +1395,7 @@ gets pools that an address is supplying
 
 #### Solidity 
 
-~~~js
+~~~solidity
 fusePoolLens lens = fusePoolLens(0xABCD...);
 
 tuple[][] pools = lens.getPoolsBysupplier(0xEFGH...);
@@ -1416,9 +1409,9 @@ const lens = new Web3.eth.Contract(FUSE_POOL_LENS_ABI, 0xABCD...);
 const pools = await lens.methods.getPoolsBySupplier(0xEFGH...);
 ~~~
 
-### getPoolsBySupplierWithData()
+### Get Pools By Supplier With Data
 gets pools that an address is supplying
-~~~js
+~~~solidity
   getPoolsBySupplier(address account) returns (uint256[], tuple[], uint256[], uint256[], address[][], string[][], bool[])
 ~~~
 
@@ -1427,7 +1420,7 @@ gets pools that an address is supplying
 
 #### Solidity 
 
-~~~js
+~~~solidity
 fusePoolLens lens = fusePoolLens(0xABCD...);
 
 tuple[][] pools = lens.getPoolsBysupplierWithData(0xEFGH...);
@@ -1441,9 +1434,9 @@ const lens = new Web3.eth.Contract(FUSE_POOL_LENS_ABI, 0xABCD...);
 const usrs = await lens.methods.getPoolsBySupplierWithData(0xEFGH...);
 ~~~
 
-### getUserSummary()
+### Get User Summary
 Gets supply and borrow metadata for a user/account
-~~~js
+~~~solidity
   getUserSummary(address account) returns (uint256, uint256, bool)
 ~~~
 
@@ -1452,7 +1445,7 @@ Gets supply and borrow metadata for a user/account
 
 #### Solidity
 
-~~~js
+~~~solidity
 fusePoolLens lens = fusePoolLens(0xABCD...);
 
 tuple usr = lens.getUserSummary(0xEFGH...);
@@ -1466,9 +1459,9 @@ const lens = new Web3.eth.Contract(FUSE_POOL_LENS_ABI, 0xABCD...);
 const usr = await lens.methods.getUserSummary(0xEFGH...);
 ~~~
 
-### getPoolUserSummary()
+### Get Pool User Summary
 Gets supply and borrow metadata for a user/account in a pool
-~~~js
+~~~solidity
   getPoolUserSummary(address comptroller, address account) returns (uint256, uint256)
 ~~~
 
@@ -1478,7 +1471,7 @@ Gets supply and borrow metadata for a user/account in a pool
 
 #### Solidity
 
-~~~js
+~~~solidity
 fusePoolLens lens = fusePoolLens(0xABCD...);
 
 tuple usr = lens.getPoolUserSummary(0xEFGH..., 0xIJKL...);
@@ -1492,9 +1485,9 @@ const lens = new Web3.eth.Contract(FUSE_POOL_LENS_ABI, 0xABCD...);
 const usr = await lens.methods.getPoolUserSummary(0xEFGH..., 0xIJKL...);
 ~~~
 
-### getWhitelistedPoolsByAccount()
+### Get Whitelisted Pools By Account
 
-~~~js
+~~~solidity
   getWhitelistedPoolsByAccount(address account) returns (uint256[], tuple[])
 ~~~
 
@@ -1503,7 +1496,7 @@ const usr = await lens.methods.getPoolUserSummary(0xEFGH..., 0xIJKL...);
 
 #### Solidity
 
-```js
+```solidity
 fusePoolLens lens = fusePoolLens(0xABCD...);
 
 tuple[] pools = lens.getWhitelistedPoolsByAccount(0xEFGH...);
@@ -1517,9 +1510,9 @@ const lens = new Web3.eth.Contract(FUSE_POOL_LENS_ABI, 0xABCD...);
 const pools = await lens.methods.getWhitelistedPoolsByAccount(0xEFGH...);
 ~~~
 
-### getWhitelistedPoolsByAccountWithData()
+### Get Whitelisted Pools By Account With Data
 
-~~~js 
+~~~solidity
   getWhitelistedPoolsByAccountWithData(address account) returns ()
 ~~~
 
@@ -1528,7 +1521,7 @@ const pools = await lens.methods.getWhitelistedPoolsByAccount(0xEFGH...);
 
 #### Solidity
 
-~~~js
+~~~solidity
 fusePoolLens lens = fusePoolLens(0xABCD...);
 
 tuple[] pools = lens.getWhitelistedPoolsByAccountWithData(0xEFGH...);
@@ -1545,7 +1538,7 @@ const pools = await lens.methods.getWhitelistedPoolsByAccountWithData(0xEFGH...)
 
 
 ### getPoolOwnership()
-~~~js
+~~~solidity
   getPoolOwnership(address Comptroller) returns (address, bool, bool, CTokenOwnership[])
 ~~~
 
@@ -1554,7 +1547,7 @@ const pools = await lens.methods.getWhitelistedPoolsByAccountWithData(0xEFGH...)
 
 #### Solidity
 
-~~~js
+~~~solidity
 fusePoolLens lens = fusePoolLens(0xABCD...);
 
 ownerInfo = lens.getPoolOwnership(0xEFGH...);
