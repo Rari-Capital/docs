@@ -1238,7 +1238,7 @@ questions:
 ### Get Public Pools With Data
 Gets all public fuse pools and metadata
 ```solidity
-  getPublicPoolsWithData() returns (uint256[], FusePool[], uint256[], uint256[], address[][], string[][], bool[])
+function getPublicPoolsWithData() returns (uint256[], FusePool[], uint256[], uint256[], address[][], string[][], bool[])
 ```
 `RETURN`: [TODO: figure this out]
 #### Solidity
@@ -1258,7 +1258,7 @@ const Pools = await lens.methods.getPoolsByAccountWithData(0xEFGH);
 ### Get Pools By Account With Data
 
 ~~~solidity
-  getPoolsByAccountWithData(address account) retruns (uint256[], tuple[], uint256[], uint256[], address[][], string[][], bool[])
+function getPoolsByAccountWithData(address account) retruns (uint256[], tuple[], uint256[], uint256[], address[][], string[][], bool[])
 ~~~
 
 - `account`: User address to parse for 
@@ -1280,13 +1280,11 @@ const lens = new Web3.eth.Contract(FUSE_POOL_LENS_ABI, 0xABCD...);
 const usrPools = await lens.methods.getPoolsByAccountWithData(0xEFGH);
 ~~~
 
-
-
 ### Get Pool Summary
 
 Gets metadata of a pool
 ```solidity
-  getPoolSummary(address comptroller) returns (uint256, uint256, address[], string[])
+function getPoolSummary(address comptroller) returns (uint256, uint256, address[], string[])
 ```
 
 - `Comptroller`: Pool to parse
@@ -1311,7 +1309,7 @@ const poolInfo = await lens.methods.getPoolSummary(0xEFGH...)
 ### Get Pool Assets With Data
 Gets the tokens in a fuse pool
 ```solidity
-  getPoolAssetsWithData(address Comptroller) returns (tuple[])
+function getPoolAssetsWithData(address Comptroller) returns (tuple[])
 ```
 
 - `Comptroller`: Pool to parse
@@ -1336,7 +1334,7 @@ const assets = await lens.methods.getPoolAssetsWithData(0xEFGH...);
 ### Get Public Pool Users With Data
 Gets users and their data in a fuse pool under a given account health
 ```solidity
-  getPoolUsersWithData(uint256 maxHealth) returns (address[], tuple[][], uint256[], uint256[], bool)
+function getPoolUsersWithData(uint256 maxHealth) returns (address[], tuple[][], uint256[], uint256[], bool)
 ```
 
 - `maxHealth`: maximum account health to parse for
@@ -1361,7 +1359,7 @@ const usrs = await lens.methods.getPublicPoolUsersWithData(101010...);
 ### Get Pool Users With Data
 Gets users and their data in a fuse pool under a given account health
 ```solidity
-  getPoolUsersWithData(address Comptroller, uint256 maxHealth) returns (tuple[], uint256, uint256)
+function getPoolUsersWithData(address Comptroller, uint256 maxHealth) returns (tuple[], uint256, uint256)
 ```
 
 - `Comptroller`: Pool to parse
@@ -1387,7 +1385,7 @@ const usrs = await lens.methods.getPoolUsersWithData(0xEFGH..., 1010101010101010
 ### Get Pools By Supplier
 gets pools that an address is supplying
 ~~~solidity
-  getPoolsBySupplier(address account) returns (uint256[], tuple[])
+function getPoolsBySupplier(address account) returns (uint256[], tuple[])
 ~~~
 
 - `account`: supplier account to parse pools for
@@ -1412,7 +1410,7 @@ const pools = await lens.methods.getPoolsBySupplier(0xEFGH...);
 ### Get Pools By Supplier With Data
 gets pools that an address is supplying
 ~~~solidity
-  getPoolsBySupplier(address account) returns (uint256[], tuple[], uint256[], uint256[], address[][], string[][], bool[])
+function getPoolsBySupplier(address account) returns (uint256[], tuple[], uint256[], uint256[], address[][], string[][], bool[])
 ~~~
 
 - `account`: supplier account to parse pools for
@@ -1437,7 +1435,7 @@ const usrs = await lens.methods.getPoolsBySupplierWithData(0xEFGH...);
 ### Get User Summary
 Gets supply and borrow metadata for a user/account
 ~~~solidity
-  getUserSummary(address account) returns (uint256, uint256, bool)
+function getUserSummary(address account) returns (uint256, uint256, bool)
 ~~~
 
 - `account`: account to parse for
@@ -1462,7 +1460,7 @@ const usr = await lens.methods.getUserSummary(0xEFGH...);
 ### Get Pool User Summary
 Gets supply and borrow metadata for a user/account in a pool
 ~~~solidity
-  getPoolUserSummary(address comptroller, address account) returns (uint256, uint256)
+function getPoolUserSummary(address comptroller, address account) returns (uint256, uint256)
 ~~~
 
 - `comptroller`: pool comptroller address to parse for
@@ -1488,7 +1486,7 @@ const usr = await lens.methods.getPoolUserSummary(0xEFGH..., 0xIJKL...);
 ### Get Whitelisted Pools By Account
 
 ~~~solidity
-  getWhitelistedPoolsByAccount(address account) returns (uint256[], tuple[])
+function getWhitelistedPoolsByAccount(address account) returns (uint256[], tuple[])
 ~~~
 
 - `account` : user to parse pools for 
@@ -1513,7 +1511,7 @@ const pools = await lens.methods.getWhitelistedPoolsByAccount(0xEFGH...);
 ### Get Whitelisted Pools By Account With Data
 
 ~~~solidity
-  getWhitelistedPoolsByAccountWithData(address account) returns ()
+function getWhitelistedPoolsByAccountWithData(address account) returns ()
 ~~~
 
 - `account`: use to parse pools for
@@ -1537,9 +1535,9 @@ const pools = await lens.methods.getWhitelistedPoolsByAccountWithData(0xEFGH...)
 ~~~
 
 
-### getPoolOwnership()
+### Get Pool Ownership
 ~~~solidity
-  getPoolOwnership(address Comptroller) returns (address, bool, bool, CTokenOwnership[])
+function getPoolOwnership(address Comptroller) returns (address, bool, bool, CTokenOwnership[])
 ~~~
 
 - `comptroller`: pool comptroller address to parse for 
@@ -1561,6 +1559,33 @@ const lens = new Web3.eth.Contract(FUSE_POOL_LENS_ABI, 0xABCD...);
 
 const pools = await lens.methods.getPoolOwnership(0xEFGH...);
 ~~~
+
+## Fuse Safe Liquidator
+
+function safeLiquidate(address borrower, uint256 repayAmount, CErc20 cErc20, CToken cTokenCollateral, uint256 minOutputAmount, address exchangeSeizedTo) external
+
+### Safe Liquidate (c/fToken)
+
+### Safe Liquidate (ETH)
+
+
+```solidity
+t
+```
+
+```solidity
+t
+```
+
+```js
+t
+```
+### Safe Liquidate To Tokens With Flash Loan
+safeliqflash1 (ftoken)
+
+safeliqflash2 (eth)
+
+univ2call
 
 
 
