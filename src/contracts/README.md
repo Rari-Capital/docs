@@ -14,7 +14,7 @@
 - RariGovernanceTokenSushiSwapDistributor: `0x1FA69a416bCF8572577d3949b742fBB0a9CD98c7`
 - RariGovernanceTokenVesting: `0xA54B473028f4ba881F1eD6B670af4103e8F9B98a`
 - GovernorBravoDelegator: `0x9ecc58d2d68da2c20e8630b000af55cb8324c759`
-- Timelock: `0x3a4498d6555b28631062edcae2f406efe0e2d1c8`
+- Timelock: `0x2859e4f36784d2ea72379ea036699aa477bba8ee`
 
 ## Fuse
 
