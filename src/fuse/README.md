@@ -1580,12 +1580,11 @@ t
 ```js
 t
 ```
-### Safe Liquidate To Tokens With Flash Loan
-safeliqflash1 (ftoken)
+### Safe Liquidate To Tokens With Flash Loan(ERC20)
 
-safeliqflash2 (eth)
+### Safe Liquidate To Tokens With Flash Loan(ETH)
 
-univ2call
+### Uniswap V2 Call 
 
 
 
