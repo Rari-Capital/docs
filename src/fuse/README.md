@@ -1552,11 +1552,8 @@ const lens = new Web3.eth.Contract(FUSE_POOL_LENS_ABI, 0xABCD...);
 
 const pools = await lens.methods.getPoolOwnership(0xEFGH...);
 ```
-<br>
-<br>
-## Fuse Safe Liquidator
 
- 
+## Fuse Safe Liquidator
 
 ### Safe Liquidate (c/fToken)
 
