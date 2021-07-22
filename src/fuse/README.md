@@ -1231,7 +1231,7 @@ Gets all public fuse pools and metadata.
 function getPublicPoolsWithData() returns (uint256[], FusePool[], uint256[], uint256[], address[][], string[][], bool[])
 ```
 
-`RETURN`: [ indexes[], [pools[]]("https://docs.rari.capital/fuse/#fusePoolAsset"), totalSupply[], totalBorrow[], errored ]
+`RETURN`: [ indexes[], [pools[]]("https://docs.rari.capital/fuse/#####fusePoolAsset"), totalSupply[], totalBorrow[], errored ]
 
 #### Solidity
 
@@ -1255,7 +1255,7 @@ function getPoolsByAccountWithData(address account) retruns (uint256[], tuple[],
 ~~~
 
 - `account`: User address to parse for.
-- `RETURN`: [ indexes[], [accountPools[]]("https://docs.rari.capital/fuse/fusePoolAsset"), totalSupply[], totalBorrow[], errored ]
+- `RETURN`: [ indexes[], [accountPools[]]("https://docs.rari.capital/fuse/#fusePoolAsset"), totalSupply[], totalBorrow[], errored ]
 
 #### Solidity
 
