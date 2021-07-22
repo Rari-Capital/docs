@@ -1139,7 +1139,7 @@ const closeFactor = await troll.methods.liquidationIncentiveMantissa().call();
 
 ### Return Value Glossary
 
-  <h5>fusePool</h5>
+  <h5 id="fP">fusePool</h5>
   <details close>
   <summary>values[]</summary>
   <ul><li>
@@ -1154,7 +1154,7 @@ const closeFactor = await troll.methods.liquidationIncentiveMantissa().call();
   [4] <code>uint256 timestampPosted</code>: Timestamp pool created
     </li></ul>
   </details>
-<h5>fusePoolAsset</h5>
+<h5 id = "fA">fusePoolAsset</h5>
   <details close>
   <summary>values []</summary>
   <ul><li>
@@ -1201,7 +1201,7 @@ const closeFactor = await troll.methods.liquidationIncentiveMantissa().call();
   [20] <code>uint256 fuseFee</code>: Fee the DAO takes on accrued interest
   </li></ul>
   </details>
-<h5>fusePoolUser</h5>
+<h5 id = "fU">fusePoolUser</h5>
   <details close>
   <summary>values []</summary>
   <ul><li>
@@ -1255,7 +1255,7 @@ function getPoolsByAccountWithData(address account) retruns (uint256[], tuple[],
 ~~~
 
 - `account`: User address to parse for.
-- `RETURN`: [ indexes[], [accountPools[]]("https://docs.rari.capital/fuse/#fusePoolAsset"), totalSupply[], totalBorrow[], errored ]
+- `RETURN`: [ indexes[], [accountPools[]](#fP)), totalSupply[], totalBorrow[], errored ]
 
 #### Solidity
 
@@ -1306,7 +1306,7 @@ function getPoolAssetsWithData(address Comptroller) returns (tuple[])
 ```
 
 - `Comptroller`: Pool to parse.
-- `RETURN`: [ [fusePoolAsset[]]("https://docs.rari.capital/fuse/#fusePoolAsset) ]
+- `RETURN`: [ [fusePoolAsset[]](#fA) ]
 
 #### Solidity
 
@@ -1331,7 +1331,7 @@ function getPoolUsersWithData(uint256 maxHealth) returns (address[], tuple[][], 
 ```
 
 - `maxHealth`: maximum account health to parse for.
-- `RETURN`: [ comptroller[], [fusePoolUser[]]("https://docs.rari.capital/fuse/#fusePoolUser"), closeFactor[], liquidationIncentive[], error]
+- `RETURN`: [ comptroller[], [fusePoolUser[]](#fU), closeFactor[], liquidationIncentive[], error]
 
 #### Solidity
 
@@ -1357,7 +1357,7 @@ function getPoolUsersWithData(address Comptroller, uint256 maxHealth) returns (t
 
 - `Comptroller`: Pool to parse for.
 - `maxHealth`: maximum account health to parse for.
-- `RETURN`: [  [fusePoolUser[]]("docs.rari.capital/fuse/#fusePoolUser"), closeFactor,liquidationIncentive ]
+- `RETURN`: [  [fusePoolUser[]](#fU), closeFactor,liquidationIncentive ]
 
 #### Solidity
 
@@ -1382,7 +1382,7 @@ function getPoolsBySupplier(address account) returns (uint256[], tuple[])
 ~~~
 
 - `account`: supplier account to parse pools for.
-- `RETURN`: [index[], [fusePool[]]("https://docs.rari.capital/fuse/#fusePool")]
+- `RETURN`: [index[], [fusePool[]](#fP)]
 
 #### Solidity 
 
@@ -1407,7 +1407,7 @@ function getPoolsBySupplier(address account) returns (uint256[], tuple[], uint25
 ```
 
 - `account`: supplier account to parse pools for.
-- `RETURN`: [indexes[], [pools[]]("https://docs.rari.capital/fuse/#fusePool), totalSupply[], totalBorrow[], underlyingTokens[][], underlyingSymbols[][], errored[]]
+- `RETURN`: [indexes[], [pools[]](#fP), totalSupply[], totalBorrow[], underlyingTokens[][], underlyingSymbols[][], errored[]]
 
 #### Solidity 
 
@@ -1483,7 +1483,7 @@ function getWhitelistedPoolsByAccount(address account) returns (uint256[], tuple
 ```
 
 - `account` : user to parse pools for. 
-- `RETURN`: [indexes[], [pools[]]("https://docs.rari.capital/fuse/#fusePools") ]
+- `RETURN`: [indexes[], [pools[]](#fP) ]
 
 #### Solidity
 
@@ -1508,7 +1508,7 @@ function getWhitelistedPoolsByAccountWithData(address account) returns (uint256[
 ```
 
 - `account`: use to parse pools for.
-- `RETURN`: [indexes[], [pools[]]("https://docs.rari.capital/fuse/#fusePools"), totalSupply[], totalBorrow[], underlyingTokens[][], underlyingSymbols[][], errored[] ]
+- `RETURN`: [indexes[], [pools[]](#fP), totalSupply[], totalBorrow[], underlyingTokens[][], underlyingSymbols[][], errored[] ]
 
 #### Solidity
 
