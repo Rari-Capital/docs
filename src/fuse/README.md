@@ -1255,7 +1255,7 @@ function getPoolsByAccountWithData(address account) retruns (uint256[], tuple[],
 ~~~
 
 - `account`: User address to parse for.
-- `RETURN`: [ indexes[], [accountPools[]]("https://docs.rari.capital/fuse/#fusePoolAsset"), totalSupply[], totalBorrow[], errored ]
+- `RETURN`: [ indexes[], [accountPools[]]("https://docs.rari.capital/fuse/fusePoolAsset"), totalSupply[], totalBorrow[], errored ]
 
 #### Solidity
 
