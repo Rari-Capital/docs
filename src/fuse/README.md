@@ -111,7 +111,7 @@ console.log(`Borrow APY for ETH ${borrowApy} %`);
 
 ### Gas Costs
 
-The gas usage of the protocol functions may fluctuate by market and user. External calls, such as to underlying ERC-20 tokens, may use an arbitrary amount of gas. Any calculations that involve checking [account liquidity](https://compound.finance/docs/comptroller#account-liquidity), have gas costs that increase with the number of [entered markets](https://compound.finance/docs/comptroller#enter-markets). Thus, while it can be difficult to provide any guarantees about costs, we provide the table below for guidance:
+The gas usage of the protocol functions may fluctuate by market and user. External calls, such as to underlying ERC-20 tokens, may use an arbitrary amount of gas. Any calculations that involve checking [account liquidity](#account-liquidity), have gas costs that increase with the number of [entered markets](#enter-markets). Thus, while it can be difficult to provide any guarantees about costs, we provide the table below for guidance:
 
 | Function         | Typical Gas Cost                     |
 | ---------------- | ------------------------------------ |
@@ -125,7 +125,7 @@ The gas usage of the protocol functions may fluctuate by market and user. Extern
 
 ### Mint
 
-The mint function transfers an asset into the protocol, which begins accumulating interest based on the current [Supply Rate](https://compound.finance/docs/fTokens#supply-rate) for the asset. The user receives a quantity of fTokens equal to the underlying tokens supplied, divided by the current [Exchange Rate](https://compound.finance/docs/fTokens#exchange-rate).
+The mint function transfers an asset into the protocol, which begins accumulating interest based on the current [Supply Rate](#supply-rate) for the asset. The user receives a quantity of fTokens equal to the underlying tokens supplied, divided by the current [Exchange Rate](#exchange-rate).
 
 #### fERC20
 
@@ -135,7 +135,7 @@ function mint(uint mintAmount) returns (uint)
 
 - `msg.sender`: The account which shall supply the asset, and own the minted fTokens.
 - `mintAmount`: The amount of the asset to be supplied, in units of the underlying asset.
-- `RETURN`: 0 on success, otherwise an [Error code](https://compound.finance/docs/fTokens#error-codes)
+- `RETURN`: 0 on success, otherwise an [Error code](#error-codes)
 
 Before supplying an asset, users must first [approve](https://eips.ethereum.org/EIPS/eip-20#approve) the fToken to access their token balance.
 
@@ -171,7 +171,7 @@ await fToken.methods.mint().send({from: myAccount, value: 50});
 
 ### Redeem
 
-The redeem function converts a specified quantity of fTokens into the underlying asset, and returns them to the user. The amount of underlying tokens received is equal to the quantity of fTokens redeemed, multiplied by the current [Exchange Rate](https://compound.finance/docs/fTokens#exchange-rate). The amount redeemed must be less than the user's [Account Liquidity](https://compound.finance/docs/comptroller#account-liquidity) and the market's available liquidity.
+The redeem function converts a specified quantity of fTokens into the underlying asset, and returns them to the user. The amount of underlying tokens received is equal to the quantity of fTokens redeemed, multiplied by the current [Exchange Rate](#exchange-rate). The amount redeemed must be less than the user's [Account Liquidity](#account-liquidity) and the market's available liquidity.
 
 #### fERC20 / fEther
 
@@ -181,7 +181,7 @@ function redeem(uint redeemTokens) returns (uint)
 
 - `msg.sender`: The account to which redeemed funds shall be transferred.
 - `redeemTokens`: The number of fTokens to be redeemed.
-- `RETURN`: 0 on success, otherwise an [Error code](https://compound.finance/docs/fTokens#error-codes)
+- `RETURN`: 0 on success, otherwise an [Error code](#error-codes)
 
 #### Solidity
 
@@ -201,7 +201,7 @@ fToken.methods.redeem(1).send({from: ...});
 
 ### Redeem Underlying
 
-The redeem underlying function converts fTokens into a specified quantity of the underlying asset, and returns them to the user. The amount of fTokens redeemed is equal to the quantity of underlying tokens received, divided by the current [Exchange Rate](https://compound.finance/docs/fTokens#exchange-rate). The amount redeemed must be less than the user's [Account Liquidity](https://compound.finance/docs/comptroller#account-liquidity) and the market's available liquidity.
+The redeem underlying function converts fTokens into a specified quantity of the underlying asset, and returns them to the user. The amount of fTokens redeemed is equal to the quantity of underlying tokens received, divided by the current [Exchange Rate](#exchange-rate). The amount redeemed must be less than the user's [Account Liquidity](#account-liquidity) and the market's available liquidity.
 
 #### fERC20 / fEther
 
@@ -211,7 +211,7 @@ function redeemUnderlying(uint redeemAmount) returns (uint)
 
 - `msg.sender`: The account to which redeemed funds shall be transferred.
 - `redeemAmount`: The amount of underlying to be redeemed.
-- `RETURN`: 0 on success, otherwise an [Error code](https://compound.finance/docs/fTokens#error-codes)
+- `RETURN`: 0 on success, otherwise an [Error code](#error-codes)
 
 #### Solidity
 
@@ -231,7 +231,7 @@ fToken.methods.redeemUnderlying(10).send({from: ...});
 
 ### Borrow
 
-The borrow function transfers an asset from the protocol to the user, and creates a borrow balance which begins accumulating interest based on the [Borrow Rate](https://compound.finance/docs/fTokens#borrow-rate) for the asset. The amount borrowed must be less than the user's [Account Liquidity](https://compound.finance/docs/comptroller#account-liquidity) and the market's available liquidity.
+The borrow function transfers an asset from the protocol to the user, and creates a borrow balance which begins accumulating interest based on the [Borrow Rate](#borrow-rate) for the asset. The amount borrowed must be less than the user's [Account Liquidity](#account-liquidity) and the market's available liquidity.
 
 To borrow Ether, the borrower must be 'payable' (solidity).
 
@@ -243,7 +243,7 @@ function borrow(uint borrowAmount) returns (uint)
 
 - `msg.sender`: The account to which borrowed funds shall be transferred.
 - `borrowAmount` : The amount of the underlying asset to be borrowed.
-- `RETURN`: 0 on success, otherwise an [Error code](https://compound.finance/docs/fTokens#error-codes)
+- `RETURN`: 0 on success, otherwise an [Error code](#error-codes)
 
 #### Solidity
 
@@ -273,7 +273,7 @@ function repayBorrow(uint repayAmount) returns (uint)
 
 - `msg.sender`: The account which borrowed the asset, and shall repay the borrow.
 - `repayAmount`: The amount of the underlying borrowed asset to be repaid. A value of -1 (i.e. 2256 - 1) can be used to repay the full amount.
-- `RETURN`: 0 on success, otherwise an [Error code](https://compound.finance/docs/fTokens#error-codes)
+- `RETURN`: 0 on success, otherwise an [Error code](#error-codes)
 
 Before repaying an asset, users must first [approve](https://eips.ethereum.org/EIPS/eip-20#approve) the fToken to access their token balance.
 
@@ -316,7 +316,7 @@ function repayBorrowBehalf(address borrower, uint repayAmount) returns (uint)
 - `msg.sender`: The account which shall repay the borrow.
 - `borrower`: The account which borrowed the asset to be repaid.
 - `repayAmount`: The amount of the underlying borrowed asset to be repaid. A value of -1 (i.e. 2256 - 1) can be used to repay the full amount.
-- `RETURN`: 0 on success, otherwise an [Error code](https://compound.finance/docs/fTokens#error-codes)
+- `RETURN`: 0 on success, otherwise an [Error code](#error-codes)
 
 Before repaying an asset, users must first [approve](https://eips.ethereum.org/EIPS/eip-20#approve) the fToken to access their token balance.
 
@@ -349,7 +349,7 @@ await fToken.methods.repayBorrowBehalf(0xBorrower, 10000).send({from: 0xPayer});
 
 ### Liquidate Borrow
 
-A user who has negative [account liquidity](https://compound.finance/docs/comptroller#account-liquidity) is subject to [liquidation](https://compound.finance/docs/fTokens#liquidate-borrow) by other users of the protocol to return his/her account liquidity back to positive (i.e. above the collateral requirement). When a liquidation occurs, a liquidator may repay some or all of an outstanding borrow on behalf of a borrower and in return receive a discounted amount of collateral held by the borrower; this discount is defined as the liquidation incentive.
+A user who has negative [account liquidity](#account-liquidity) is subject to [liquidation](#liquidate-borrow) by other users of the protocol to return his/her account liquidity back to positive (i.e. above the collateral requirement). When a liquidation occurs, a liquidator may repay some or all of an outstanding borrow on behalf of a borrower and in return receive a discounted amount of collateral held by the borrower; this discount is defined as the liquidation incentive.
 
 A liquidator may close up to a certain fixed percentage (i.e. close factor) of any individual outstanding borrow of the underwater account. Unlike in v1, liquidators must interact with each fToken contract in which they wish to repay a borrow and seize another asset as collateral. When collateral is seized, the liquidator is transferred fTokens, which they may redeem the same as if they had supplied the asset themselves. Users must approve each fToken contract before calling liquidate (i.e. on the borrowed asset which they are repaying), as they are transferring funds into the contract.
 
@@ -365,7 +365,7 @@ function liquidateBorrow(address borrower, uint amount, address collateral) retu
 
 ### Transfer
 
-Transfer is an ERC-20 method that allows accounts to send tokens to other Ethereum addresses. A fToken transfer will fail if the account has [entered](https://compound.finance/docs/comptroller#enter-markets) that fToken market and the transfer would have put the account into a state of negative [liquidity](https://compound.finance/docs/comptroller#account-liquidity).
+Transfer is an ERC-20 method that allows accounts to send tokens to other Ethereum addresses. A fToken transfer will fail if the account has [entered](#enter-markets) that fToken market and the transfer would have put the account into a state of negative [liquidity](#account-liquidity).
 
 #### fERC20 / fEther
 
@@ -400,10 +400,10 @@ function liquidateBorrow(address borrower, uint amount, address collateral) retu
 ```
 
 - `msg.sender`: The account which shall liquidate the borrower by repaying their debt and seizing their collateral.
-- `borrower`: The account with negative [account liquidity](https://compound.finance/docs/comptroller#account-liquidity) that shall be liquidated.
+- `borrower`: The account with negative [account liquidity](#account-liquidity) that shall be liquidated.
 - `repayAmount`: The amount of the borrowed asset to be repaid and converted into collateral, specified in units of the underlying borrowed asset.
 - `collateral`: The address of the fToken currently held as collateral by a borrower, that the liquidator shall seize.
-- `RETURN`: 0 on success, otherwise an [Error code](https://compound.finance/docs/fTokens#error-codes)
+- `RETURN`: 0 on success, otherwise an [Error code](#error-codes)
 
 Before supplying an asset, users must first [approve](https://eips.ethereum.org/EIPS/eip-20#approve) the fToken to access their token balance.
 
@@ -415,7 +415,7 @@ function liquidateBorrow(address borrower, address fTokenCollateral) payable
 
 - `msg.value`: The amount of ether to be repaid and converted into collateral, in wei.
 - `msg.sender`: The account which shall liquidate the borrower by repaying their debt and seizing their collateral.
-- `borrower`: The account with negative [account liquidity](https://compound.finance/docs/comptroller#account-liquidity) that shall be liquidated.
+- `borrower`: The account with negative [account liquidity](#account-liquidity) that shall be liquidated.
 - `collateral`: The address of the fToken currently held as collateral by a borrower, that the liquidator shall seize.
 - `RETURN`: No return, reverts on error.
 
@@ -531,7 +531,7 @@ const borrows = (await fToken.methods.totalBorrowsCurrent().call());
 
 ### Borrow Balance
 
-A user who borrows assets from the protocol is subject to accumulated interest based on the current [borrow rate](https://compound.finance/docs/fTokens#borrow-rate). Interest is accumulated every block and integrations may use this function to obtain the current value of a user's borrow balance with interest.
+A user who borrows assets from the protocol is subject to accumulated interest based on the current [borrow rate](#borrow-rate). Interest is accumulated every block and integrations may use this function to obtain the current value of a user's borrow balance with interest.
 
 #### fERC20 / fEther
 
@@ -616,7 +616,7 @@ const tokens = (await fToken.methods.totalSupply().call());
 
 ### Underlying Balance
 
-The user's underlying balance, representing their assets in the protocol, is equal to the user's fToken balance multiplied by the [Exchange Rate](https://compound.finance/docs/fTokens#exchange-rate).
+The user's underlying balance, representing their assets in the protocol, is equal to the user's fToken balance multiplied by the [Exchange Rate](#exchange-rate).
 
 #### fERC20 / fEther
 
@@ -645,7 +645,7 @@ const tokens = await fToken.methods.balanceOfUnderlying(account).call();
 
 ### Supply Rate
 
-At any point in time one may query the contract to get the current supply rate per block. The supply rate is derived from the [borrow rate](https://compound.finance/docs/fTokens#borrow-rate), [reserve factor](https://compound.finance/docs/fTokens#reserve-factor) and the amount of [total borrows](https://compound.finance/docs/fTokens#total-borrows).
+At any point in time one may query the contract to get the current supply rate per block. The supply rate is derived from the [borrow rate](#borrow-rate), [reserve factor](#reserve-factor) and the amount of [total borrows](#total-borrows).
 
 #### fERC20 / fEther
 
@@ -673,7 +673,7 @@ const supplyRate = (await fToken.methods.supplyRatePerBlock().call()) / 1e18;
 
 ### Total Reserves
 
-Reserves are an accounting entry in each fToken contract that represents a portion of historical interest set aside as [cash](https://compound.finance/docs/fTokens#cash) which can be withdrawn or transferred through the protocol's governance. A small portion of borrower interest accrues into the protocol, determined by the [reserve factor](https://compound.finance/docs/fTokens#reserve-factor).
+Reserves are an accounting entry in each fToken contract that represents a portion of historical interest set aside as [cash](#cash) which can be withdrawn or transferred through the protocol's governance. A small portion of borrower interest accrues into the protocol, determined by the [reserve factor](#reserve-factor).
 
 #### fERC20 / fEther
 
@@ -701,7 +701,7 @@ const reserves = (await fToken.methods.totalReserves().call());
 
 ### Reserve Factor
 
-The reserve factor defines the portion of borrower interest that is converted into [reserves](https://compound.finance/docs/fTokens#total-reserves).
+The reserve factor defines the portion of borrower interest that is converted into [reserves](#total-reserves).
 
 #### fERC20 / fEther
 
@@ -729,13 +729,13 @@ const reserveFactor = (await fToken.methods.reserveFactorMantissa().call()) / 1e
 
 ### Key Events
 
-| Event                                                                                                               | Description                                                                                           |
-| ------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
-| Mint(address minter, uint mintAmount, uint mintTokens)                                                              | Emitted upon a successful [Mint](https://compound.finance/docs/fTokens#mint).                         |
-| Redeem(address redeemer, uint redeemAmount, uint redeemTokens)                                                      | Emitted upon a successful [Redeem](https://compound.finance/docs/fTokens#redeem).                     |
-| Borrow(address borrower, uint borrowAmount, uint accountBorrows, uint totalBorrows)                                 | Emitted upon a successful [Borrow](https://compound.finance/docs/fTokens#borrow).                     |
-| RepayBorrow(address payer, address borrower, uint repayAmount, uint accountBorrows, uint totalBorrows)              | Emitted upon a successful [Repay Borrow](https://compound.finance/docs/fTokens#repay-borrow).         |
-| LiquidateBorrow(address liquidator, address borrower, uint repayAmount, address fTokenCollateral, uint seizeTokens) | Emitted upon a successful [Liquidate Borrow](https://compound.finance/docs/fTokens#liquidate-borrow). |
+| Event                                                                                                               | Description                                                      |
+| ------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| Mint(address minter, uint mintAmount, uint mintTokens)                                                              | Emitted upon a successful [Mint](#mint).                         |
+| Redeem(address redeemer, uint redeemAmount, uint redeemTokens)                                                      | Emitted upon a successful [Redeem](#redeem).                     |
+| Borrow(address borrower, uint borrowAmount, uint accountBorrows, uint totalBorrows)                                 | Emitted upon a successful [Borrow](#borrow).                     |
+| RepayBorrow(address payer, address borrower, uint repayAmount, uint accountBorrows, uint totalBorrows)              | Emitted upon a successful [Repay Borrow](#repay-borrow).         |
+| LiquidateBorrow(address liquidator, address borrower, uint repayAmount, address fTokenCollateral, uint seizeTokens) | Emitted upon a successful [Liquidate Borrow](#liquidate-borrow). |
 
 ### Error Codes
 
@@ -850,7 +850,7 @@ const reserveFactor = (await fToken.methods.reserveFactorMantissa().call()) / 1e
 
 The Comptroller is the risk management layer of the Fuse protocol; it determines how much collateral a user is required to maintain, and whether (and by how much) a user can be liquidated. Each time a user interacts with a fToken, the Comptroller is asked to approve or deny the transaction.
 
-The Comptroller maps user balances to prices (via the Price Oracle) to risk weights (called [Collateral Factors](https://compound.finance/docs/comptroller#collateral-factor)) to make its determinations. Users explicitly list which assets they would like included in their risk scoring, by calling [Enter Markets](https://compound.finance/docs/comptroller#enter-markets) and [Exit Market](https://compound.finance/docs/comptroller#exit-market).
+The Comptroller maps user balances to prices (via the Price Oracle) to risk weights (called [Collateral Factors](#collateral-factor)) to make its determinations. Users explicitly list which assets they would like included in their risk scoring, by calling [Enter Markets](#enter-markets) and [Exit Market](#exit-market).
 
 ### Architecture
 
@@ -866,7 +866,7 @@ function enterMarkets(address[] calldata fTokens) returns (uint[] memory)
 
 - `msg.sender`: The account which shall enter the given markets.
 - `fTokens`: The addresses of the fToken markets to enter.
-- `RETURN`: For each market, returns an error code indicating whether or not it was entered. Each is 0 on success, otherwise an [Error code](https://compound.finance/docs/comptroller#error-codes).
+- `RETURN`: For each market, returns an error code indicating whether or not it was entered. Each is 0 on success, otherwise an [Error code](#error-codes).
 
 #### Solidity
 
@@ -902,7 +902,7 @@ function exitMarket(address fToken) returns (uint)
 
 - `msg.sender`: The account which shall exit the given market.
 - `fToken`: The addresses of the fToken market to exit.
-- `RETURN`: 0 on success, otherwise an [Error code](https://compound.finance/docs/comptroller#error-codes).
+- `RETURN`: 0 on success, otherwise an [Error code](#error-codes).
 
 #### Solidity
 
@@ -922,7 +922,7 @@ const errors = await troll.methods.exitMarket(fEther.at(0x3FDB...)).send({from: 
 
 ### Get Assets In
 
-Get the list of markets an account is currently entered into. In order to supply collateral or borrow in a market, it must be entered first. Entered markets count towards [account liquidity](https://compound.finance/docs/comptroller#account-liquidity) calculations.
+Get the list of markets an account is currently entered into. In order to supply collateral or borrow in a market, it must be entered first. Entered markets count towards [account liquidity](#account-liquidity) calculations.
 
 ```solidity
 function getAssetsIn(address account) view returns (address[] memory)
@@ -984,7 +984,7 @@ const {0: isListed, 1: collateralFactorMantissa, 2: isComped} = result;
 
 Account Liquidity represents the USD value borrowable by a user, before it reaches liquidation. Users with a shortfall (negative liquidity) are subject to liquidation, and can’t withdraw or borrow assets until Account Liquidity is positive again.
 
-For each market the user has [entered](https://compound.finance/docs/comptroller#enter-markets) into, their supplied balance is multiplied by the market’s [collateral factor](https://compound.finance/docs/comptroller#collateral-factor), and summed; borrow balances are then subtracted, to equal Account Liquidity. Borrowing an asset reduces Account Liquidity for each USD borrowed; withdrawing an asset reduces Account Liquidity by the asset’s collateral factor times each USD withdrawn.
+For each market the user has [entered](#enter-markets) into, their supplied balance is multiplied by the market’s [collateral factor](#collateral-factor), and summed; borrow balances are then subtracted, to equal Account Liquidity. Borrowing an asset reduces Account Liquidity for each USD borrowed; withdrawing an asset reduces Account Liquidity by the asset’s collateral factor times each USD withdrawn.
 
 Because the Fuse Protocol exclusively uses unsigned integers, Account Liquidity returns either a surplus or shortfall.
 
@@ -993,7 +993,7 @@ function getAccountLiquidity(address account) view returns (uint, uint, uint)
 ```
 
 - `account`: The account whose liquidity shall be calculated.
-- `RETURN`: Tuple of values (error, liquidity, shortfall). The error shall be 0 on success, otherwise an [error code](https://compound.finance/docs/comptroller#error-codes). A non-zero liquidity value indicates the account has available [account liquidity](https://compound.finance/docs/comptroller#account-liquidity). A non-zero shortfall value indicates the account is currently below his/her collateral requirement and is subject to liquidation. At most one of liquidity or shortfall shall be non-zero.
+- `RETURN`: Tuple of values (error, liquidity, shortfall). The error shall be 0 on success, otherwise an [error code](#error-codes). A non-zero liquidity value indicates the account has available [account liquidity](#account-liquidity). A non-zero shortfall value indicates the account is currently below his/her collateral requirement and is subject to liquidation. At most one of liquidity or shortfall shall be non-zero.
 
 #### Solidity
 
@@ -1073,10 +1073,10 @@ const closeFactor = await troll.methods.liquidationIncentiveMantissa().call();
 
 ### Key Events
 
-| Event                                         | Description                                                                                        |
-| --------------------------------------------- | -------------------------------------------------------------------------------------------------- |
-| MarketEntered(fToken fToken, address account) | Emitted upon a successful [Enter Market](https://compound.finance/docs/comptroller#enter-markets). |
-| MarketExited(fToken fToken, address account)  | Emitted upon a successful [Exit Market](https://compound.finance/docs/comptroller#exit-market).    |
+| Event                                         | Description                                               |
+| --------------------------------------------- | --------------------------------------------------------- |
+| MarketEntered(fToken fToken, address account) | Emitted upon a successful [Enter Market](#enter-markets). |
+| MarketExited(fToken fToken, address account)  | Emitted upon a successful [Exit Market](#exit-market).    |
 
 ### Error Codes
 
@@ -1134,3 +1134,745 @@ const closeFactor = await troll.methods.liquidationIncentiveMantissa().call();
 | 20   | UNSUPPORT_MARKET_OWNER_CHECK                |
 | 21   | UNSUPPORT_MARKET_DOES_NOT_EXIST             |
 | 22   | UNSUPPORT_MARKET_IN_USE                     |
+
+## Fuse Pool Lens
+
+### Return Value Glossary
+
+#### fusePool
+
+  <details close>
+  <summary>values[]</summary>
+  <ul><li>
+  [0] <code>string name</code>: Name of the fuse pool
+  <br></li><li>
+  [1] <code>address creator</code>: Creator of the fuse pool 
+  <br></li><li>
+  [2] <code>address <a href="#comptroller">comptroller</a></code>: Comptroller of the fuse pool
+  <br></li><li>
+  [3] <code>uint256 blockPosted</code>:  Block in which pool created
+  <br></li><li>
+  [4] <code>uint256 timestampPosted</code>: Timestamp pool created
+    </li></ul>
+  </details>
+  
+#### fusePoolAsset
+  <details close>
+  <summary>values []</summary>
+  <ul><li>
+  [0] <code>address <a href="#ftoken-s">fToken</a></code>: Pool token address
+  <br></li><li>
+  [1] <code>address underlyingToken</code>: ERC20 deposited/withdrawn from this pool token 
+  <br></li><li>
+  [2] <code>string underlyingName</code>: Name of the token
+  <br></li><li>
+  [3] <code>string underlyingSymbol</code>: Symbol of the token
+  <br></li><li>
+  [4] <code>uint256 underlyingDecimals</code>: Decimals of token ($ETH is 18)
+  <br></li><li>
+  [5] <code>uint256 underlyingBalance</code>: Supply of underlying ERC20
+  <br></li><li>
+  [6] <code>uint256 <a href="#supply-rate" >supplyRatePerBlock</a></code>: Supply interest in current block of token for the pool. Derived from borrow rate, reserve factor, and total borrows
+  <br></li><li>
+  [7]<code> uint256 borrowRatePerBlock</code>: Borrow interest rate of the current block
+  <br></li><li>
+  [8] <code>uint256 totalSupply</code>: Number of fTokens in circulation 
+  <br></li><li>
+  [9]<code>uint256 totalBorrow</code>: Amount of underlying token being borrowed in pool.
+  <br></li><li>
+  [10] <code>uint256 supplyBalance</code>: Total supply balance USD in pool 
+  <br></li><li>
+  [11]<code>uint256 borrowBalance</code>: Total borrow balance USD users in pool must repay including interest
+  <br></li><li>
+  [12] <code>uint256 liquidity</code>: USD value borrowable in pool
+  <br></li><li>
+  [13] <code>bool membership</code>: True if token is active in the pool
+  <br></li><li>
+  [14] <code> uint256 <a href="#exchange-rate" >exchangeRate</a></code>: Number of underlying tokens that can be redeemed for fTokens
+  <br></li><li>
+  [15] <code>uint256 underlyingPrice</code>: Price of underlying tokens denominated in ETH 
+  <br></li><li>
+  [16] <code>address oracle</code>: Oracle from which this asset's price is fetched 
+  <br></li><li>
+  [17] <code>unt256 <a href="#collateral-factor" >collateralFactor</a></code>: Represents the proportional(0-90%) increase in liquidity(borrow limit) that a supplying user gets for depositing this token
+  <br></li><li>
+  [18]<code>uint256 reserveFactor</code>: Proportion of borrow interest that is converted into reserves
+  <br></li><li>
+  [19] <code>uint256 adminFee</code>: Proportion of borrow interest that is converted into admin fees
+  <br></li><li>
+  [20] <code>uint256 fuseFee</code>: Proportion of borrow interest that is converted into fees for the Rari Capital DAO
+  </li></ul>
+  </details>
+
+#### fusePoolUser
+
+  <details close>
+  <summary>values []</summary>
+  <ul><li>
+  [0] <code>address account</code>: User's Ethereum address
+  <br></li><li>
+  [1] <code>uint256 <a href="#total-borrow" >totalBorrow</a></code>: Total borrow balance of the pool user 
+  <br></li><li>
+  [2] <code>uint256 totalCollateral</code>: Total collateral of the user in the pool (USD)
+  <br></li><li>
+  [3] <code>uint256 health</code>: Total health of account in pool, collateral-borrow = health
+  <br></li><li>
+  [4] <code>tuple[] assets</code>: <a href="#ftoken-s" >fTokens</a> supplied/borrowed by user in pool
+  </li></ul>
+  </details>
+
+### Get Public Pools With Data
+
+Gets all public fuse pools and metadata.
+
+```solidity
+function getPublicPoolsWithData() returns (uint256[], FusePool[], uint256[], uint256[],address[][], string[][], bool[])
+```
+
+`RETURN`: [ 
+  - index[] 
+  - [FusePool[]](#fusepool)
+  - totalSupply[]
+  - totalBorrow[]
+  - underlyingToken[][]
+  - underlyingSymbol[][] 
+  - errored[] 
+  ]
+
+#### Solidity
+
+```solidity
+FusePoolLens lens = fusePoolLens(0xABCD...);
+
+( 
+  uint256[]   indexes, 
+  FusePool[]  fusePools[],
+  uint256[]   totalSupplys, 
+  uint256[]   totalBorrows, 
+  address[][] underlyingTokens, 
+  string[][]  underlyingSymbols, 
+  errored[]   errors) = lens.getPublicPoolsWithData();
+```
+
+#### Web3 1.0
+
+```js
+const FusePoolLens = new Web3.eth.Contract(FUSE_POOL_LENS_ABI, 0xABCD...);
+
+const pools = await FusePoolLens.methods.getPoolsByAccountWithData(0xEFGH);
+```
+
+### Get Pools By Account With Data
+
+Gets all pools in which an account is active.
+
+```solidity
+function getPoolsByAccountWithData(address account) returns (
+  uint256[], 
+  FusePool[], 
+  uint256[], 
+  uint256[], 
+  address[][], 
+  string[][], 
+  bool[])
+```
+
+- `account`: User address to parse for.
+- `RETURN`: [ 
+  - index[]
+  - [FusePool[]](#fusepool)
+  - totalSupply[]
+  - totalBorrow[]
+  - underlyingToken[][]
+  - underlyingSymbol[][]
+  - errored[] 
+  ]
+
+#### Solidity
+
+```solidity
+FusePoolLens lens = fusePoolLens(0xABCD...);
+
+( 
+  uint256[]   indexes, 
+  FusePool[]  fusePools, 
+  uint256[]   totalSupplys, 
+  uint256[]   totalBorrows,  
+  address[][] underlyingTokens,
+  string[][]  underlyingSymbols,
+  uint256[]   errors ) = lens.getPoolsByAccountWithData(0xEFGH...)
+```
+
+#### Web3 1.0
+
+```js
+const FusePoolLens = new Web3.eth.Contract(FUSE_POOL_LENS_ABI, 0xABCD...);
+
+const usrPools = await FusePoolLens.methods.getPoolsByAccountWithData(0xEFGH);
+```
+
+### Get Pool Summary
+
+Gets metadata of a pool.
+
+```solidity
+function getPoolSummary(address comptroller) returns (uint256, uint256, address[], string[])
+```
+
+- `Comptroller`: Pool to parse.
+- `RETURN`: [ 
+  - totalSupply
+  - totalBorrow
+  - underlyingToken[]
+  - underlyingSymbol[] 
+  ]
+
+#### Solidity
+
+```solidity
+FusePoolLens lens = fusePoolLens(0xABCD...);
+
+( 
+  uint256   totalSupply, 
+  uint256   totalBorrow, 
+  address[] underlyingTokens, 
+  string[]  underlyingSymbols ) = lens.getPoolSummary(0xEFGH...); 
+```
+
+#### Web3 1.0
+
+```js
+const FusePoolLens = new Web3.eth.Contract(FUSE_POOL_LENS_ABI, 0xABCD...);
+
+const poolInfo = await FusePoolLens.methods.getPoolSummary(0xEFGH...)
+```
+
+### Get Pool Assets With Data
+
+Gets the tokens in a fuse pool.
+
+```solidity
+function getPoolAssetsWithData(address Comptroller) returns (FusePoolAsset[])
+```
+
+- `Comptroller`: Pool to parse.
+- `RETURN`: 
+  - [FusePoolAsset[]](#fusepoolasset)
+
+#### Solidity
+
+```solidity
+FusePoolLens lens = fusePoolLens(0xABCD...);
+
+FusePoolAsset[] fusePoolAssets = lens.getPoolAssetsWithData(0xEFGH...);
+```
+
+#### Web3 1.0
+
+```js
+const FusePoolLens = new Web3.eth.Contract(FUSE_POOL_LENS_ABI, 0xABCD...);
+
+const assets = await FusePoolLens.methods.getPoolAssetsWithData(0xEFGH...);
+```
+
+### Get Public Pool Users With Data
+
+Gets users and their data in a fuse pool under a given account health.
+
+```solidity
+function getPoolUsersWithData(uint256 maxHealth) returns (address[], FusePoolUser[][], uint256[], uint256[], bool)
+```
+
+- `maxHealth`: maximum account health to parse for.
+- `RETURN`: [ 
+  - comptroller[]
+  - [FusePoolUser[][]](#fusepooluser)
+  - closeFactor[]
+  - liquidationIncentive[]
+  - error 
+  ]
+
+#### Solidity
+
+```solidity
+FusePoolLens lens = fusePoolLens(0xABCD...);
+
+( 
+  address[]        comptrollers, 
+  fusePoolUser[][] fusePoolUsers, 
+  uint256[]        closeFactors, 
+  uint256[]        liquidationIncentives, 
+  bool             error ) = lens.getPublicPoolUsersWithData(101010...);
+```
+
+#### Web3 1.0
+
+```js
+const FusePoolLens = new Web3.eth.Contract(FUSE_POOL_LENS_ABI, 0xABCD...);
+
+const usrs = await FusePoolLens.methods.getPublicPoolUsersWithData(101010...);
+```
+
+### Get Pool Users With Data
+
+Gets users and their data in a fuse pool under a given account health.
+
+```solidity
+function getPoolUsersWithData(
+  address Comptroller, 
+  uint256 maxHealth
+  ) returns (FusePoolUser[], uint256, uint256)
+```
+
+- `Comptroller`: Pool to parse for.
+- `maxHealth`: maximum account health to parse for.
+- `RETURN`: [ 
+  - [FusePoolUser[]](#fusepooluser)
+  - closeFactor
+  - liquidationIncentive 
+  ]
+
+#### Solidity
+
+```solidity
+FusePoolLens lens = fusePoolLens(0xABCD...);
+
+( 
+  FusePoolUser[] fusePoolUsers, 
+  uint256        closeFactor, 
+  uint256        liquidationIncentive ) = lens.getPoolUsersWithData(0xEFGH..., 101010...);
+```
+
+#### Web3 1.0
+
+```js
+const FusePoolLens = new Web3.eth.Contract(FUSE_POOL_LENS_ABI, 0xABCD...);
+
+const usrs = await FusePoolLens.methods.getPoolUsersWithData(0xEFGH..., 101010...);
+```
+
+### Get Pools By Supplier
+
+Gets pools that an address is supplying in.
+
+```solidity
+function getPoolsBySupplier(address account) returns (uint256[], FusePool[])
+```
+
+- `account`: supplier account to parse pools for.
+- `RETURN`: [ 
+  - index[]
+  - [FusePool[]](#fusepool) 
+  ]
+
+#### Solidity
+
+```solidity
+FusePoolLens lens = fusePoolLens(0xABCD...);
+
+( uint256[] index, FusePool[] FusePool ) = lens.getPoolsBySupplier(0xEFGH...);
+```
+
+#### Web3 1.0
+
+```js
+const FusePoolLens = new Web3.eth.Contract(FUSE_POOL_LENS_ABI, 0xABCD...);
+
+const pools = await FusePoolLens.methods.getPoolsBySupplier(0xEFGH...);
+```
+
+### Get Pools By Supplier With Data
+
+Gets pools that an address is supplying.
+
+```solidity
+function getPoolsBySupplier(address account) returns (
+  uint256[], 
+  FusePool[], 
+  uint256[], 
+  uint256[], 
+  address[][], 
+  string[][], 
+  bool[])
+```
+
+- `account`: supplier account to parse pools for.
+- `RETURN`: [ 
+  - index[]
+  - [FusePool[]](#fusepool)
+  - totalSupply[]
+  - totalBorrow[]
+  - underlyingToken[][]
+  - underlyingSymbol[][]
+  - errored[] 
+  ]
+
+#### Solidity
+
+```solidity
+FusePoolLens lens = fusePoolLens(0xABCD...);
+
+( 
+  uint256[]   index, 
+  FusePool[]  FusePool, 
+  uint256[]   totalSupply, 
+  uint256[]   totalBorrow, 
+  address[][] underlyingToken, 
+  string[][]  underlyingSymbol, 
+  bool[]      errored ) = lens.getPoolsBySupplierWithData(0xEFGH...);
+```
+
+#### Web3 1.0
+
+```js
+const FusePoolLens = new Web3.eth.Contract(FUSE_POOL_LENS_ABI, 0xABCD...);
+
+const usrs = await FusePoolLens.methods.getPoolsBySupplierWithData(0xEFGH...);
+```
+
+### Get User Summary
+
+Gets supply and borrow metadata for a user/account
+
+```solidity
+function getUserSummary(address account) returns (uint256, uint256, bool)
+```
+
+- `account`: account to parse for.
+- `RETURN`: [ 
+  - supplyBalance
+  - borrowBalance
+  - error 
+  ]
+
+#### Solidity
+
+```solidity
+FusePoolLens lens = fusePoolLens(0xABCD...);
+
+( 
+  uint256 supplyBalance, 
+  uint256 borrowBalance, 
+  bool    error ) = lens.getUserSummary(0xEFGH...);
+```
+
+#### Web3 1.0
+
+```js
+const FusePoolLens = new Web3.eth.Contract(FUSE_POOL_LENS_ABI, 0xABCD...);
+
+const usrSummary = await FusePoolLens.methods.getUserSummary(0xEFGH...);
+```
+
+### Get Pool User Summary
+
+Gets supply and borrow metadata for a user/account in a pool.
+
+```solidity
+function getPoolUserSummary(address comptroller, address account) returns (uint256, uint256)
+```
+
+- `comptroller`: pool comptroller address to parse for.
+- `account`: user to parse for.
+- `RETURN`: [ 
+  - supplyBalance
+  - borrowBalance
+  ]
+
+#### Solidity
+
+```solidity
+fusePoolLens lens = fusePoolLens(0xABCD...);
+
+( 
+  uint256 supplyBalance, 
+  uint256 borrowBalance ) = lens.getPoolUserSummary(0xEFGH..., 0xIJKL...);
+```
+
+#### Web3 1.0
+
+```js
+const FusePoolLens = new Web3.eth.Contract(FUSE_POOL_LENS_ABI, 0xABCD...);
+
+const usr = await FusePoolLens.methods.getPoolUserSummary(0xEFGH..., 0xIJKL...);
+```
+
+### Get Whitelisted Pools By Account
+
+Gets whitelisted pools an account is participating in.
+
+```solidity
+function getWhitelistedPoolsByAccount(address account) returns (uint256[], FusePool[])
+```
+
+- `account` : user to parse pools for.
+- `RETURN`: [ 
+  - index[]
+  - [FusePool[]](#fusepool) 
+  ]
+
+#### Solidity
+
+```solidity
+FusePoolLens lens = fusePoolLens(0xABCD...);
+
+( uint256[] index, FusePool[] FusePool ) = lens.getWhitelistedPoolsByAccount(0xEFGH...);
+```
+
+#### Web3 1.0
+
+```js
+const FusePoolLens = new Web3.eth.Contract(FUSE_POOL_LENS_ABI, 0xABCD...);
+
+const FusePool = await FusePoolLens.methods.getWhitelistedPoolsByAccount(0xEFGH...);
+```
+
+### Get Whitelisted Pools By Account With Data
+
+Gets whitelisted pools an account is participating in with metadata.
+
+```solidity
+function getWhitelistedPoolsByAccountWithData(address account) returns (
+  uint256[], 
+  FusePool[], 
+  uint256[], 
+  uint256[], 
+  address[][], 
+  string[][], 
+  bool[])
+```
+
+- `account`: use to parse pools for.
+- `RETURN`: [ 
+  - index[]
+  - [FusePool[]](#fusepool)
+  - totalSupply[]
+  - totalBorrow[]
+  - underlyingToken[][]
+  - underlyingSymbol[][]
+  - errored[] 
+  ]
+
+#### Solidity
+
+```solidity
+FusePoolLens lens = fusePoolLens(0xABCD...);
+
+( 
+  uint256[]   indexes, 
+  FusePool[]  fusePools,
+  uint256[]   totalSupplys,
+  uint256[]   totalBorrows, 
+  address[][] underlyingTokens, 
+  string[][]  underlyingSymbols, 
+  bool[]      errored ) = lens.getWhitelistedPoolsByAccountWithData(0xEFGH...);
+
+```
+
+#### Web3 1.0
+
+```js
+const FusePoolLens = new Web3.eth.Contract(FUSE_POOL_LENS_ABI, 0xABCD...);
+
+const FusePool = await FusePoolLens.methods.getWhitelistedPoolsByAccountWithData(0xEFGH...);
+```
+
+### Get Pool Ownership
+
+Gets information about the owner of a pool.
+
+```solidity
+function getPoolOwnership(address Comptroller) returns (
+  address, 
+  bool, 
+  bool, 
+  CTokenOwnership[])
+```
+
+- `comptroller`: pool comptroller address to parse for.
+- `RETURN`: [ 
+  - compAdmin
+  - compAdminHasRights
+  - compFuseAdminHasRights
+  - outliers 
+  ]
+
+#### Solidity
+
+```solidity
+FusePoolLens lens = fusePoolLens(0xABCD...);
+
+( 
+  address compAdmin, 
+  bool compAdminHasRights, 
+  bool compFuseAdminHasRights, 
+  CTokenOwnership[] outliers ) = lens.getPoolOwnership(0xEFGH...);
+```
+
+#### Web3 1.0
+
+```js
+const FusePoolLens = new Web3.eth.Contract(FUSE_POOL_LENS_ABI, 0xABCD...);
+
+const ownerInfo = await FusePoolLens.methods.getPoolOwnership(0xEFGH...);
+```
+
+## Fuse Safe Liquidator
+
+### Safe Liquidate (c/fToken)
+
+Self-funded-liquidate a fuse ERC20 position.
+
+```solidity
+function   safeLiquidate(
+  address  borrower, 
+  uint256  repayAmount, 
+  CErc20   cErc20, 
+  CToken   cTokenCollateral, 
+  uint256  minOutputAmount, 
+  address  exchangeSeizedTo)
+```
+
+- `borrower`: The borrower's Ethereum address.
+- `repayAmount`: The amount to repay to liquidate the unhealthy loan.
+- `cErc20`: The borrowed cErc20 to repay.
+- `cTokenCollateral`: The cToken collateral to be liquidated.
+- `minOutputAmount`: The minimum amount of collateral to seize (or the minimum exchange output if applicable) required for execution. Reverts if this condition is not met.
+- `exchangeSeizedTo`: If set to an address other than `cTokenCollateral`, exchange seized collateral to this ERC20 token contract address (or the zero address for ETH).
+
+#### Solidity
+
+```solidity
+FuseSafeLiquidator liq = fuseSafeLiquidator(0xABCD...);
+
+liq.safeLiquidate(0xEFGH..., 010101..., cErc20, cTokenCollateral, 010101..., 0xHIJK...);
+```
+
+#### Web3 1.0
+
+```js
+const FuseSafeLiquidator = new Web3.eth.Contract(FUSE_SAFE_LIQUIDATOR_ABI, 0xABCD...);
+
+FuseSafeLiquidator.methods.safeLiquidate(0xEFGH..., 010101..., cErc20, cTokenCollateral, 010101..., 0xHIJK...);
+```
+
+### Safe Liquidate (ETH)
+
+Self-funded-liquidate a fuse ETH position.
+
+```solidity
+ function safeLiquidate(
+   address borrower, 
+   CEther  cEther, 
+   CErc20  cErc20Collateral, 
+   uint256 minOutputAmount, 
+   address exchangeSeizedTo)
+```
+
+- `borrower`: The borrower's Ethereum address.
+- `cEther`: The borrowed cEther contract to repay.
+- `cErc20Collateral`: The cErc20 collateral contract to be liquidated.
+- `minOutputAmount`: The minimum amount of collateral to seize (or the minimum exchange output if applicable) required for execution. Reverts if this condition is not met.
+- `exchangeSeizedTo`: If set to an address other than `cTokenCollateral`, exchange seized collateral to this ERC20 token contract address (or the zero address for ETH).
+
+#### Solidity
+
+```solidity
+FuseSafeLiquidator liq = fuseSafeLiquidator(0xABCD...);
+
+liq.safeLiquidate(0xEFGH..., cEther, cErc20Collateral, 010101..., 0xHIJK...);
+```
+
+#### Web 3 1.0
+
+```js
+const FuseSafeLiquidator = new Web3.eth.Contract(FUSE_SAFE_LIQUIDATOR_ABI, 0xABCD...);
+
+FuseSafeLiquidator.methods.safeLiquidate(0xEFGH..., cEther, cErc20Collateral, 010101..., 0xHIJK...);
+```
+
+### Safe Liquidate To Tokens With Flash Loan (ERC20)
+
+Flash-loan-funded liquidate a fuse ERC20 position.
+
+```solidity
+function safeLiquidateToTokensWithFlashLoan(
+  address borrower, 
+  uint256 repayAmount, 
+  CErc20  cErc20, 
+  CToken  cTokenCollateral, 
+  uint256 minProfitAmount, 
+  address exchangeProfitTo)
+```
+
+- `borrower`: The borrower's Ethereum address.
+- `repayAmount`: The amount to repay to liquidate the unhealthy loan.
+- `cErc20`: The borrowed cErc20 to repay.
+- `cTokenCollateral`: The cToken collateral to be liquidated.
+- `minProfitAmount`: The minimum amount of profit required for execution (in terms of `exchangeProfitTo`). Reverts if this condition is not met.
+- `exchangeProfitTo`: If set to an address other than `cTokenCollateral`, exchange seized collateral to this ERC20 token contract address (or the zero address for ETH).
+
+#### Solidity
+
+```solidity
+FuseSafeLiquidator liq = fuseSafeLiquidator(0xABCD...);
+
+liq.safeLiquidateToTokensWithFlashLoan(
+  0xEFGH..., 
+  010101..., 
+  cErc20, 
+  cTokenCollateral, 
+  010101..., 
+  0xHIJK...);
+```
+
+#### Web3 1.0
+
+```js
+const FuseSafeLiquidator = new Web3.eth.Contract(FUSE_SAFE_LIQUIDATOR_ABI, 0xABCD...);
+
+FuseSafeLiquidator.methods.safeLiquidateToTokensWithFlashLoan(0xEFGH..., 010101..., cErc20, cTokenCollateral, 010101..., 0xHIJK...);
+```
+
+### Safe Liquidate To ETH With Flash Loan
+
+Flash-loan-funded liquidate a fuse ETH position.
+
+```solidity
+function safeLiquidateToEthWithFlashLoan(
+  address borrower, 
+  uint256 repayAmount, 
+  CEther  cEther, 
+  CErc20  cErc20Collateral, 
+  uint256 minProfitAmount, 
+  address exchangeProfitTo)
+```
+
+- `borrower`: The borrower's Ethereum address.
+- `repayAmount`: The amount to repay to liquidate the unhealthy loan.
+- `cEther`: The borrowed cEther to repay.
+- `cErc20Collateral`: The cErc20 collateral to be liquidated.
+- `minProfitAmount`: The minimum amount of profit required for execution (in terms of `exchangeProfitTo`). Reverts if this condition is not met.
+- `exchangeProfitTo`: If set to an address other than `cErc20Collateral`, exchange seized collateral to this ERC20 token contract address (or the zero address for ETH).
+
+#### Solidity
+
+```solidity
+FuseSafeLiquidator liq = fuseSafeLiquidator(0xABCD...);
+
+liq.safeLiquidateToEthWithFlashLoan(
+  0xEFGH..., 
+  010101..., 
+  cEther, 
+  cErc20Collateral, 
+  010101..., 
+  0xHIJK...);
+```
+
+#### Web3 1.0
+
+```js
+const FuseSafeLiquidator = new Web3.eth.Contract(FUSE_SAFE_LIQUIDATOR_ABI, 0xABCD...);
+
+lens.methods.safeLiquidateToEthWithFlashLoan(0xEFGH..., 010101..., cEther, cErc20Collateral, 010101..., 0xHIJK...);
+```
