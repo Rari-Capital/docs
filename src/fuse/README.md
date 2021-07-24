@@ -1139,7 +1139,7 @@ const closeFactor = await troll.methods.liquidationIncentiveMantissa().call();
 
 ### Return Value Glossary
 
-#### fusePool<a name="fp"></a>
+#### fusePool
   <details close>
   <summary>values[]</summary>
   <ul><li>
@@ -1250,7 +1250,7 @@ function getPoolsByAccountWithData(address account) retruns (uint256[], tuple[],
 ```
 
 - `account`: User address to parse for.
-- `RETURN`: [ indexes[], [accountPools[]](#fp)), totalSupply[], totalBorrow[], errored ]
+- `RETURN`: [ indexes[], [accountPools[]](#fusePool)), totalSupply[], totalBorrow[], errored ]
 
 #### Solidity
 
