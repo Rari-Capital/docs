@@ -1176,9 +1176,9 @@ const closeFactor = await troll.methods.liquidationIncentiveMantissa().call();
   <br></li><li>
   [7]<code> uint256 borrowRatePerBlock</code>: Borrow interest rate of the current block
   <br></li><li>
-  [8] <code>uint256 totalSupply</code>: Number of cToken in circulation 
+  [8] <code>uint256 totalSupply</code>: Number of fTokens in circulation 
   <br></li><li>
-  [9]<code>uint256 totalBorrow</code>: Amount of underlying token being borrowed in pool
+  [9]<code>uint256 totalBorrow</code>: Amount of underlying token being borrowed in pool.
   <br></li><li>
   [10] <code>uint256 supplyBalance</code>: Total supply balance USD in pool 
   <br></li><li>
@@ -1281,7 +1281,7 @@ function getPoolsByAccountWithData(address account) returns (
 - `RETURN`: [ 
   - index[]
   - [FusePool[]](#fusepool)
-  - totalSupply[],
+  - totalSupply[]
   - totalBorrow[]
   - underlyingToken[][]
   - underlyingSymbol[][]
@@ -1576,7 +1576,7 @@ function getPoolUserSummary(address comptroller, address account) returns (uint2
 - `account`: user to parse for.
 - `RETURN`: [ 
   - supplyBalance
-  - borrowBalance 
+  - borrowBalance
   ]
 
 #### Solidity
