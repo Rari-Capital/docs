@@ -1139,7 +1139,7 @@ const closeFactor = await troll.methods.liquidationIncentiveMantissa().call();
 
 ### Return Value Glossary
 
-#### fusePool
+#### fusePool<a name="fp"></a>
   <details close>
   <summary>values[]</summary>
   <ul><li>
@@ -1225,7 +1225,7 @@ Gets all public fuse pools and metadata.
 function getPublicPoolsWithData() returns (uint256[], FusePool[], uint256[], uint256[], address[][], string[][], bool[])
 ```
 
-`RETURN`: [ indexes[], [pools[]]("https://docs.rari.capital/fuse/#fusePoolAsset"), totalSupply[], totalBorrow[], errored ]
+`RETURN`: [ indexes[], [pools[]](#fusePool), totalSupply[], totalBorrow[], errored ]
 
 #### Solidity
 
@@ -1250,7 +1250,7 @@ function getPoolsByAccountWithData(address account) retruns (uint256[], tuple[],
 ```
 
 - `account`: User address to parse for.
-- `RETURN`: [ indexes[], [accountPools[]]("https://docs.rari.capital/fuse/#fusePool")), totalSupply[], totalBorrow[], errored ]
+- `RETURN`: [ indexes[], [accountPools[]](#fp)), totalSupply[], totalBorrow[], errored ]
 
 #### Solidity
 
