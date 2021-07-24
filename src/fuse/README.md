@@ -1139,7 +1139,7 @@ const closeFactor = await troll.methods.liquidationIncentiveMantissa().call();
 
 ### Return Value Glossary
 
-  <h5 id="fP">fusePool</h5>
+#### fusePool
   <details close>
   <summary>values[]</summary>
   <ul><li>
@@ -1154,7 +1154,7 @@ const closeFactor = await troll.methods.liquidationIncentiveMantissa().call();
   [4] <code>uint256 timestampPosted</code>: Timestamp pool created
     </li></ul>
   </details>
-<h5 id = "fA">fusePoolAsset</h5>
+#### fusePoolAsset
   <details close>
   <summary>values []</summary>
   <ul><li>
@@ -1201,7 +1201,7 @@ const closeFactor = await troll.methods.liquidationIncentiveMantissa().call();
   [20] <code>uint256 fuseFee</code>: Fee the DAO takes on accrued interest
   </li></ul>
   </details>
-<h5 id = "fU">fusePoolUser</h5>
+#### fusePoolUser
   <details close>
   <summary>values []</summary>
   <ul><li>
@@ -1217,21 +1217,15 @@ const closeFactor = await troll.methods.liquidationIncentiveMantissa().call();
   </li></ul>
   </details>
 
-### Parameters
-
-`uint256: maxHealth`- The maximum collateral health of Accounts to parse for. If you are running a liquidation bot, you may want to only parse low health accounts. 
-
-`address: Comptroller`- Acts as address for a fuse pool when parsing
-
-`address: Account`- is used for accessing a variety of data depending on the function
-
 ### Get Public Pools With Data
+
 Gets all public fuse pools and metadata.
+
 ```solidity
 function getPublicPoolsWithData() returns (uint256[], FusePool[], uint256[], uint256[], address[][], string[][], bool[])
 ```
 
-`RETURN`: [ indexes[], [pools[]]("https://docs.rari.capital/fuse/#####fusePoolAsset"), totalSupply[], totalBorrow[], errored ]
+`RETURN`: [ indexes[], [pools[]]("https://docs.rari.capital/fuse/#fusePoolAsset"), totalSupply[], totalBorrow[], errored ]
 
 #### Solidity
 
@@ -1242,20 +1236,21 @@ fusePool[] userPools = lens.getPublicPoolsWithData()
 ```
 
 #### Web3 1.0
-~~~js
+
+```js
 const lens = new Web3.eth.Contract(FUSE_POOL_LENS_ABI, 0xABCD...);
 
 const Pools = await lens.methods.getPoolsByAccountWithData(0xEFGH);
-~~~
+```
 
 ### Get Pools By Account With Data
 
-~~~solidity
+```solidity
 function getPoolsByAccountWithData(address account) retruns (uint256[], tuple[], uint256[], uint256[], address[][], string[][], bool[])
-~~~
+```
 
 - `account`: User address to parse for.
-- `RETURN`: [ indexes[], [accountPools[]](#fP)), totalSupply[], totalBorrow[], errored ]
+- `RETURN`: [ indexes[], [accountPools[]]("https://docs.rari.capital/fuse/#fusePool")), totalSupply[], totalBorrow[], errored ]
 
 #### Solidity
 
@@ -1276,6 +1271,7 @@ const usrPools = await lens.methods.getPoolsByAccountWithData(0xEFGH);
 ### Get Pool Summary
 
 Gets metadata of a pool
+
 ```solidity
 function getPoolSummary(address comptroller) returns (uint256, uint256, address[], string[])
 ```
@@ -1300,13 +1296,15 @@ const poolInfo = await lens.methods.getPoolSummary(0xEFGH...)
 ```
 
 ### Get Pool Assets With Data
+
 Gets the tokens in a fuse pool
+
 ```solidity
 function getPoolAssetsWithData(address Comptroller) returns (tuple[])
 ```
 
 - `Comptroller`: Pool to parse.
-- `RETURN`: [ [fusePoolAsset[]](#fA) ]
+- `RETURN`: [ [fusePoolAsset[]]("https://docs.rari.capital/fuse/#fusePoolAssetUser") ]
 
 #### Solidity
 
@@ -1325,13 +1323,15 @@ const assets = await lens.methods.getPoolAssetsWithData(0xEFGH...);
 ```
 
 ### Get Public Pool Users With Data
+
 Gets users and their data in a fuse pool under a given account health
+
 ```solidity
 function getPoolUsersWithData(uint256 maxHealth) returns (address[], tuple[][], uint256[], uint256[], bool)
 ```
 
 - `maxHealth`: maximum account health to parse for.
-- `RETURN`: [ comptroller[], [fusePoolUser[]](#fU), closeFactor[], liquidationIncentive[], error]
+- `RETURN`: [ comptroller[], [fusePoolUser[]]("https://docs.rari.capital/fuse/#fusePoolUser"), closeFactor[], liquidationIncentive[], error]
 
 #### Solidity
 
@@ -1350,14 +1350,16 @@ const usrs = await lens.methods.getPublicPoolUsersWithData(101010...);
 ```
 
 ### Get Pool Users With Data
+
 Gets users and their data in a fuse pool under a given account health
+
 ```solidity
 function getPoolUsersWithData(address Comptroller, uint256 maxHealth) returns (tuple[], uint256, uint256)
 ```
 
 - `Comptroller`: Pool to parse for.
 - `maxHealth`: maximum account health to parse for.
-- `RETURN`: [  [fusePoolUser[]](#fU), closeFactor,liquidationIncentive ]
+- `RETURN`: [  [fusePoolUser[]]("https://docs.rari.capital/fuse/#fusePoolUser"), closeFactor,liquidationIncentive ]
 
 #### Solidity
 
@@ -1376,7 +1378,9 @@ const usrs = await lens.methods.getPoolUsersWithData(0xEFGH..., 1010101010101010
 ```
 
 ### Get Pools By Supplier
+
 gets pools that an address is supplying
+
 ~~~solidity
 function getPoolsBySupplier(address account) returns (uint256[], tuple[])
 ~~~
@@ -1401,13 +1405,15 @@ const pools = await lens.methods.getPoolsBySupplier(0xEFGH...);
 ```
 
 ### Get Pools By Supplier With Data
+
 Gets pools that an address is supplying
+
 ```solidity
 function getPoolsBySupplier(address account) returns (uint256[], tuple[], uint256[], uint256[], address[][], string[][], bool[])
 ```
 
 - `account`: supplier account to parse pools for.
-- `RETURN`: [indexes[], [pools[]](#fP), totalSupply[], totalBorrow[], underlyingTokens[][], underlyingSymbols[][], errored[]]
+- `RETURN`: [indexes[], [pools[]]("https://docs.rari.capital/fuse/#fusePool"), totalSupply[], totalBorrow[], underlyingTokens[][], underlyingSymbols[][], errored[]]
 
 #### Solidity 
 
@@ -1426,7 +1432,9 @@ const usrs = await lens.methods.getPoolsBySupplierWithData(0xEFGH...);
 ```
 
 ### Get User Summary
+
 Gets supply and borrow metadata for a user/account
+
 ```solidity
 function getUserSummary(address account) returns (uint256, uint256, bool)
 ```
@@ -1451,7 +1459,9 @@ const usr = await lens.methods.getUserSummary(0xEFGH...);
 ```
 
 ### Get Pool User Summary
+
 Gets supply and borrow metadata for a user/account in a pool
+
 ```solidity
 function getPoolUserSummary(address comptroller, address account) returns (uint256, uint256)
 ```
@@ -1483,7 +1493,7 @@ function getWhitelistedPoolsByAccount(address account) returns (uint256[], tuple
 ```
 
 - `account` : user to parse pools for. 
-- `RETURN`: [indexes[], [pools[]](#fP) ]
+- `RETURN`: [indexes[], [pools[]]("https://docs.rari.capital/fuse/#fusePool") ]
 
 #### Solidity
 
@@ -1502,13 +1512,15 @@ const pools = await lens.methods.getWhitelistedPoolsByAccount(0xEFGH...);
 ```
 
 ### Get Whitelisted Pools By Account With Data
+
 Gets whitelisted pools an account is participating in with metadata
+
 ```solidity
 function getWhitelistedPoolsByAccountWithData(address account) returns (uint256[], FusePool[], uint256[], uint256[], address[][], String[][], bool[])
 ```
 
 - `account`: use to parse pools for.
-- `RETURN`: [indexes[], [pools[]](#fP), totalSupply[], totalBorrow[], underlyingTokens[][], underlyingSymbols[][], errored[] ]
+- `RETURN`: [indexes[], [pools[]]("https://docs.rari.capital/fuse/#fusePool"), totalSupply[], totalBorrow[], underlyingTokens[][], underlyingSymbols[][], errored[] ]
 
 #### Solidity
 
@@ -1587,7 +1599,9 @@ lens.methods.safeLiquidate(0xEFGH..., 010101..., cErc20, cTokenCollateral, 01010
 ```
 
 ### Safe Liquidate (ETH)
+
 Self-funded-liquidate a fuse ETH position
+
 ```solidity
  function safeLiquidate(address borrower, CEther cEther, CErc20 cErc20Collateral, uint256 minOutputAmount, address exchangeSeizedTo)
 ```
@@ -1615,7 +1629,9 @@ lens.methods.safeLiquidate(0xEFGH..., cEther, cErc20Collateral, 010101..., 0xHIJ
 ```
 
 ### Safe Liquidate To Tokens With Flash Loan(ERC20)
+
 Flash-loan-funded liquidate a fuse ERC20 position
+
 ```solidity
 function safeLiquidateToTokensWithFlashLoan(address borrower, uint256 repayAmount, CErc20 cErc20, CToken cTokenCollateral, uint256 minProfitAmount, address exchangeProfitTo)
 ```
@@ -1644,7 +1660,9 @@ lens.methods.safeLiquidateToTokensWithFlashLoan(0xEFGH..., 010101..., cErc20, cT
 ```
 
 ### Safe Liquidate To ETH With Flash Loan
+
 Flash-loan-funded liquidate a fuse ETH position
+
 ```solidity
 function safeLiquidateToEthWithFlashLoan(address borrower, uint256 repayAmount, CEther cEther, CErc20 cErc20Collateral, uint256 minProfitAmount, address exchangeProfitTo)
 ```
