@@ -13,8 +13,8 @@
 - RariGovernanceTokenDistributor: `0x9C0CaEb986c003417D21A7Daaf30221d61FC1043`
 - RariGovernanceTokenSushiSwapDistributor: `0x1FA69a416bCF8572577d3949b742fBB0a9CD98c7`
 - RariGovernanceTokenVesting: `0xA54B473028f4ba881F1eD6B670af4103e8F9B98a`
-- GovernorBravoDelegator: `0x9ecc58d2d68da2c20e8630b000af55cb8324c759`
-- Timelock: `0x2859e4f36784d2ea72379ea036699aa477bba8ee`
+- GovernorBravoDelegator: `0x91d9c2b5cf81d55a5f2ecc0fc84e62f9cd2cefd6`
+- Timelock: `0x8ace03fc45139fddba944c6a4082b604041d19fc`
 
 ## Fuse
 
@@ -58,7 +58,7 @@
 
 [ABIs can be downloaded here ](https://github.com/Rari-Capital/rari-dApp/tree/master/src/rari-sdk/pools/stable/abi)
 
-- RariPoolController: `0x369855b051d1b2dbee88a792dcfc08614ff4e262` ([Etherscan](https://etherscan.io/address/0x369855b051d1b2dbee88a792dcfc08614ff4e262), [Zapper](https://zapper.fi/dashboard?address=0x369855b051d1b2dbee88a792dcfc08614ff4e262))
+- RariPoolController: `0x66f4856f1bbd1eb09e1c8d9d646f5a3a193da569` ([Etherscan](https://etherscan.io/address/0x66f4856f1bbd1eb09e1c8d9d646f5a3a193da569), [Zapper](https://zapper.fi/dashboard?address=0x66f4856f1bbd1eb09e1c8d9d646f5a3a193da569))
 - RariPoolManager: `0xC6BF8C8A55f77686720E0a88e2Fd1fEEF58ddf4a`
 - RariPoolToken: `0x016bf078ABcaCB987f0589a6d3BEAdD4316922B0`
 - RariPoolPriceConsumer: `0xFE98A52bCAcC86432E7aa76376751DcFAB202244`
