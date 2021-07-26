@@ -78,7 +78,7 @@
 
 [ABIs can be downloaded here ](https://github.com/Rari-Capital/rari-dApp/tree/master/src/rari-sdk/pools/ethereum/abi)
 
-- RariPoolController: `0xa422890cbBE5EAa8f1c88590fBab7F319D7e24B6` ([Etherscan](https://etherscan.io/address/0xa422890cbBE5EAa8f1c88590fBab7F319D7e24B6), [Zapper](https://zapper.fi/dashboard?address=0xa422890cbBE5EAa8f1c88590fBab7F319D7e24B6))
+- RariPoolController: `0x3F4931A8E9D4cdf8F56e7E8A8Cfe3BeDE0E43657` ([Etherscan](https://etherscan.io/address/0x3F4931A8E9D4cdf8F56e7E8A8Cfe3BeDE0E43657), [Zapper](https://zapper.fi/dashboard?address=0x3F4931A8E9D4cdf8F56e7E8A8Cfe3BeDE0E43657))
 - RariPoolManager: `0xD6e194aF3d9674b62D1b30Ec676030C23961275e`
 - RariPoolToken: `0xCda4770d65B4211364Cb870aD6bE19E7Ef1D65f4`
 - RariPoolProxy: `0xa3cc9e4B9784c80a05B3Af215C32ff223C3ebE5c`
