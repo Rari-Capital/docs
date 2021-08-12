@@ -1653,19 +1653,19 @@ const ownerInfo = await FusePoolLens.methods.getPoolOwnership(0xEFGH...);
   <br></li><li>
   [7]<code> uint256 borrowRatePerBlock</code>: Borrow interest rate for the token in the pool. Can be converted to APY/APR as shown <a href="https://github.com/Rari-Capital/rari-dApp/blob/master/src/utils/apyUtils.ts#L1">here</a>.
   <br></li><li>
-  [8] <code>uint256 totalSupply</code>: Amount of the underlying token supplied in the pool.
+  [8] <code>uint256 totalSupply</code>: Amount of the underlying token supplied in the pool. Scaled by underlyingDecimals.
   <br></li><li>
-  [9]<code>uint256 totalBorrow</code>: Amount of the underlying token being borrowed in pool.
+  [9]<code>uint256 totalBorrow</code>: Amount of the underlying token being borrowed in pool. Scaled by underlyingDecimals.
   <br></li><li>
-  [10] <code>uint256 supplyBalance</code>: Amount of the underlying token the user of interest has supplied to the pool.
+  [10] <code>uint256 supplyBalance</code>: Amount of the underlying token the user of interest has supplied to the pool. Scaled by underlyingDecimals.
   <br></li><li>
-  [11]<code>uint256 borrowBalance</code>: Amount of the underlying token the user of interest has borrowed from the pool.
+  [11]<code>uint256 borrowBalance</code>: Amount of the underlying token the user of interest has borrowed from the pool. Scaled by underlyingDecimals.
   <br></li><li>
-  [12] <code>uint256 liquidity</code>: Amount of the underlying token that is unborrowed in the pool.
+  [12] <code>uint256 liquidity</code>: Amount of the underlying token that is unborrowed in the pool. Scaled by underlyingDecimals.
   <br></li><li>
   [13] <code>bool membership</code>: If the user of interest has enabled the asset as collateral in the pool.
   <br></li><li>
-  [14] <code> uint256 <a href="#exchange-rate">exchangeRate</a></code>: The price of the underlying asset in Ether.
+  [14] <code> uint256 <a href="#exchange-rate">exchangeRate</a></code>: How much underlying one fToken can be redeemed for.
   <br></li><li>
   [15] <code>uint256 underlyingPrice</code>: Price of underlying tokens denominated in ETH. Its decimals are a function of underlyingDecimals: 1e(36 - underlyingDecimals). This is so multiplying the underlyingPrice and supplyBalance/totalSupply/totalBorrow/borrowBalance and dividing the result by 1e36 returns the Ether value of the underlying asset.
   <br></li><li>
