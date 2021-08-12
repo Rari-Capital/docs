@@ -960,7 +960,7 @@ function markets(address fTokenAddress) returns (bool, uint, bool)
 ```
 
 - `fTokenAddress`: The address of the fToken to check if listed and get the collateral factor for.
-- `RETURN:` Tuple of values (isListed, collateralFactorMantissa, isComped); isListed represents whether the comptroller recognizes this fToken; collateralFactorMantissa, scaled by 1e18, is multiplied by a supply balance to determine how much value can be borrowed.
+- `RETURN`: Tuple of values (isListed, collateralFactorMantissa, isComped); isListed represents whether the comptroller recognizes this fToken; collateralFactorMantissa, scaled by 1e18, is multiplied by a supply balance to determine how much value can be borrowed.
 
 #### Solidity
 
@@ -1147,7 +1147,7 @@ function getPublicPoolsWithData() returns (uint256[], FusePool[], uint256[], uin
 
 - `RETURN`:
   - `uint256[]`: Pool ID for each pool.
-  - [`FusePool[]`](#fusepool):` Pool data for each pool.
+  - [`FusePool[]`](#fusepool)`: Pool data for each pool.
   - `uint256[]`: Total supplied in each pool denominated in ether (18 decimals).
   - `uint256[]`: Total borrowed in each pool denominated in ether (18 decimals).
   - `address[][]`: The underlying tokens in each pool.
