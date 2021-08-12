@@ -1739,9 +1739,9 @@ function   safeLiquidate(
 #### Solidity
 
 ```solidity
-FuseSafeLiquidator fuseSafeLiquidator = fuseSafeLiquidator(0xABCD...);
+FuseSafeLiquidator liq = fuseSafeLiquidator(0xABCD...);
 
-fuseSafeLiquidator.safeLiquidate(0xEFGH..., 010101..., cErc20, cTokenCollateral, 010101..., 0xHIJK...);
+liq.safeLiquidate(0xEFGH..., 010101..., cErc20, cTokenCollateral, 010101..., 0xHIJK...);
 ```
 
 #### Web3 1.0
@@ -1774,9 +1774,9 @@ Self-funded-liquidate a Fuse ETH position.
 #### Solidity
 
 ```solidity
-FuseSafeLiquidator fuseSafeLiquidator = fuseSafeLiquidator(0xABCD...);
+FuseSafeLiquidator liq = fuseSafeLiquidator(0xABCD...);
 
-fuseSafeLiquidator.safeLiquidate(0xEFGH..., cEther, cErc20Collateral, 010101..., 0xHIJK...);
+liq.safeLiquidate(0xEFGH..., cEther, cErc20Collateral, 010101..., 0xHIJK...);
 ```
 
 #### Web 3 1.0
@@ -1811,9 +1811,9 @@ function safeLiquidateToTokensWithFlashLoan(
 #### Solidity
 
 ```solidity
-FuseSafeLiquidator fuseSafeLiquidator = fuseSafeLiquidator(0xABCD...);
+FuseSafeLiquidator liq = fuseSafeLiquidator(0xABCD...);
 
-fuseSafeLiquidator.safeLiquidateToTokensWithFlashLoan(
+liq.safeLiquidateToTokensWithFlashLoan(
   0xEFGH...,
   010101...,
   cErc20,
@@ -1854,9 +1854,9 @@ function safeLiquidateToEthWithFlashLoan(
 #### Solidity
 
 ```solidity
-FuseSafeLiquidator fuseSafeLiquidator = fuseSafeLiquidator(0xABCD...);
+FuseSafeLiquidator liq = fuseSafeLiquidator(0xABCD...);
 
-fuseSafeLiquidator.safeLiquidateToEthWithFlashLoan(
+liq.safeLiquidateToEthWithFlashLoan(
   0xEFGH...,
   010101...,
   cEther,
