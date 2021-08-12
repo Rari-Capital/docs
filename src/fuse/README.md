@@ -925,7 +925,7 @@ const errors = await troll.methods.exitMarket(fEther.at(0x3FDB...)).send({from: 
 Get the list of markets an account is currently entered into. In order to supply collateral or borrow in a market, it must be entered first. Entered markets count towards [account liquidity](#account-liquidity) calculations.
 
 ```solidity
-function getAssetsIn(address account) view returns (address[] memory)
+function getAssetsIn(address account) returns (address[] memory)
 ```
 
 - `account`: The account whose list of entered markets shall be queried.
@@ -956,7 +956,7 @@ Generally, large or liquid assets have high collateral factors, while small or i
 Collateral factors can be increased (or decreased) by the pool creator.
 
 ```solidity
-function markets(address fTokenAddress) view returns (bool, uint, bool)
+function markets(address fTokenAddress) returns (bool, uint, bool)
 ```
 
 - `fTokenAddress`: The address of the fToken to check if listed and get the collateral factor for.
@@ -989,7 +989,7 @@ For each market the user has [entered](#enter-markets) into, their supplied bala
 Because the Fuse Protocol exclusively uses unsigned integers, Account Liquidity returns either a surplus or shortfall.
 
 ```solidity
-function getAccountLiquidity(address account) view returns (uint, uint, uint)
+function getAccountLiquidity(address account) returns (uint, uint, uint)
 ```
 
 - `account`: The account whose liquidity shall be calculated.
@@ -1024,7 +1024,7 @@ const {0: error, 1: liquidity, 2: shortfall} = result;
 The percent, ranging from 0% to 100%, of a liquidatable account's borrow that can be repaid in a single liquidate transaction. If a user has multiple borrowed assets, the closeFactor applies to any single borrowed asset, not the aggregated value of a user’s outstanding borrowing.
 
 ```solidity
-function closeFactorMantissa() view returns (uint)
+function closeFactorMantissa() returns (uint)
 ```
 
 - `RETURN`: The closeFactor, scaled by 1e18, is multiplied by an outstanding borrow balance to determine how much could be closed.
@@ -1050,7 +1050,7 @@ const closeFactor = await troll.methods.closeFactorMantissa().call();
 The additional collateral given to liquidators as an incentive to perform liquidation of underwater accounts. For example, if the liquidation incentive is 1.1, liquidators receive an extra 10% of the borrowers collateral for every unit they close.
 
 ```solidity
-function liquidationIncentiveMantissa() view returns (uint)
+function liquidationIncentiveMantissa() returns (uint)
 ```
 
 - `RETURN`: The liquidationIncentive, scaled by 1e18, is multiplied by the closed borrow amount from the liquidator to determine how much collateral can be seized.
@@ -1137,121 +1137,35 @@ const closeFactor = await troll.methods.liquidationIncentiveMantissa().call();
 
 ## Fuse Pool Lens
 
-### Return Value Glossary
-
-#### fusePool
-
-  <details close>
-  <summary>values[]</summary>
-  <ul><li>
-  [0] <code>string name</code>: Name of the fuse pool
-  <br></li><li>
-  [1] <code>address creator</code>: Creator of the fuse pool 
-  <br></li><li>
-  [2] <code>address <a href="#comptroller">comptroller</a></code>: Comptroller of the fuse pool
-  <br></li><li>
-  [3] <code>uint256 blockPosted</code>:  Block in which pool created
-  <br></li><li>
-  [4] <code>uint256 timestampPosted</code>: Timestamp pool created
-    </li></ul>
-  </details>
-  
-#### fusePoolAsset
-  <details close>
-  <summary>values []</summary>
-  <ul><li>
-  [0] <code>address <a href="#ftoken-s">fToken</a></code>: Pool token address
-  <br></li><li>
-  [1] <code>address underlyingToken</code>: ERC20 deposited/withdrawn from this pool token 
-  <br></li><li>
-  [2] <code>string underlyingName</code>: Name of the token
-  <br></li><li>
-  [3] <code>string underlyingSymbol</code>: Symbol of the token
-  <br></li><li>
-  [4] <code>uint256 underlyingDecimals</code>: Decimals of token ($ETH is 18)
-  <br></li><li>
-  [5] <code>uint256 underlyingBalance</code>: Supply of underlying ERC20
-  <br></li><li>
-  [6] <code>uint256 <a href="#supply-rate" >supplyRatePerBlock</a></code>: Supply interest in current block of token for the pool. Derived from borrow rate, reserve factor, and total borrows
-  <br></li><li>
-  [7]<code> uint256 borrowRatePerBlock</code>: Borrow interest rate of the current block
-  <br></li><li>
-  [8] <code>uint256 totalSupply</code>: Number of fTokens in circulation 
-  <br></li><li>
-  [9]<code>uint256 totalBorrow</code>: Amount of underlying token being borrowed in pool.
-  <br></li><li>
-  [10] <code>uint256 supplyBalance</code>: Total supply balance USD in pool 
-  <br></li><li>
-  [11]<code>uint256 borrowBalance</code>: Total borrow balance USD users in pool must repay including interest
-  <br></li><li>
-  [12] <code>uint256 liquidity</code>: USD value borrowable in pool
-  <br></li><li>
-  [13] <code>bool membership</code>: True if token is active in the pool
-  <br></li><li>
-  [14] <code> uint256 <a href="#exchange-rate" >exchangeRate</a></code>: Number of underlying tokens that can be redeemed for fTokens
-  <br></li><li>
-  [15] <code>uint256 underlyingPrice</code>: Price of underlying tokens denominated in ETH 
-  <br></li><li>
-  [16] <code>address oracle</code>: Oracle from which this asset's price is fetched 
-  <br></li><li>
-  [17] <code>unt256 <a href="#collateral-factor" >collateralFactor</a></code>: Represents the proportional(0-90%) increase in liquidity(borrow limit) that a supplying user gets for depositing this token
-  <br></li><li>
-  [18]<code>uint256 reserveFactor</code>: Proportion of borrow interest that is converted into reserves
-  <br></li><li>
-  [19] <code>uint256 adminFee</code>: Proportion of borrow interest that is converted into admin fees
-  <br></li><li>
-  [20] <code>uint256 fuseFee</code>: Proportion of borrow interest that is converted into fees for the Rari Capital DAO
-  </li></ul>
-  </details>
-
-#### fusePoolUser
-
-  <details close>
-  <summary>values []</summary>
-  <ul><li>
-  [0] <code>address account</code>: User's Ethereum address
-  <br></li><li>
-  [1] <code>uint256 <a href="#total-borrow" >totalBorrow</a></code>: Total borrow balance of the pool user 
-  <br></li><li>
-  [2] <code>uint256 totalCollateral</code>: Total collateral of the user in the pool (USD)
-  <br></li><li>
-  [3] <code>uint256 health</code>: Total health of account in pool, collateral-borrow = health
-  <br></li><li>
-  [4] <code>tuple[] assets</code>: <a href="#ftoken-s" >fTokens</a> supplied/borrowed by user in pool
-  </li></ul>
-  </details>
-
 ### Get Public Pools With Data
 
-Gets all public fuse pools and metadata.
+Gets all public Fuse pools.
 
 ```solidity
 function getPublicPoolsWithData() returns (uint256[], FusePool[], uint256[], uint256[],address[][], string[][], bool[])
 ```
 
-`RETURN`: [ 
-  - index[] 
-  - [FusePool[]](#fusepool)
-  - totalSupply[]
-  - totalBorrow[]
-  - underlyingToken[][]
-  - underlyingSymbol[][] 
-  - errored[] 
-  ]
+- `RETURN`:
+  - `uint256[]`: Pool ID for each pool.
+  - [FusePool[]](#fusepool): Pool data for each pool.
+  - `uint256[]`: Total supplied in each pool denominated in ether (18 decimals).
+  - `uint256[]`: Total borrowed in each pool denominated in ether (18 decimals).
+  - `address[][]`: The underlying tokens in each pool.
+  - `string[][]`: The underlying symbols of each token in each pool.
+  - `bool[]`: A bool indicating if fetching data about the pool failed.
 
 #### Solidity
 
 ```solidity
 FusePoolLens lens = fusePoolLens(0xABCD...);
 
-( 
-  uint256[]   indexes, 
+( uint256[]   indexes,
   FusePool[]  fusePools[],
-  uint256[]   totalSupplys, 
-  uint256[]   totalBorrows, 
-  address[][] underlyingTokens, 
-  string[][]  underlyingSymbols, 
-  errored[]   errors) = lens.getPublicPoolsWithData();
+  uint256[]   totalSupplys,
+  uint256[]   totalBorrows,
+  address[][] underlyingTokens,
+  string[][]  underlyingSymbols,
+  bool[]      errors) = lens.getPublicPoolsWithData();
 ```
 
 #### Web3 1.0
@@ -1268,39 +1182,37 @@ Gets all pools in which an account is active.
 
 ```solidity
 function getPoolsByAccountWithData(address account) returns (
-  uint256[], 
-  FusePool[], 
-  uint256[], 
-  uint256[], 
-  address[][], 
-  string[][], 
+  uint256[],
+  FusePool[],
+  uint256[],
+  uint256[],
+  address[][],
+  string[][],
   bool[])
 ```
 
-- `account`: User address to parse for.
-- `RETURN`: [ 
-  - index[]
-  - [FusePool[]](#fusepool)
-  - totalSupply[]
-  - totalBorrow[]
-  - underlyingToken[][]
-  - underlyingSymbol[][]
-  - errored[] 
-  ]
+- `account`: User address to get data about.
+- `RETURN`:
+  - `uint256[]`: Pool ID for each pool.
+  - [FusePool[]](#fusepool): Pool data for each pool.
+  - `uint256[]`: Total supplied in each pool denominated in ether (18 decimals).
+  - `uint256[]`: Total borrowed in each pool denominated in ether (18 decimals).
+  - `address[][]`: The underlying tokens in each pool.
+  - `string[][]`: The underlying symbols of each token in each pool.
+  - `bool[]`: A bool indicating if fetching data about the pool failed.
 
 #### Solidity
 
 ```solidity
 FusePoolLens lens = fusePoolLens(0xABCD...);
 
-( 
-  uint256[]   indexes, 
-  FusePool[]  fusePools, 
-  uint256[]   totalSupplys, 
-  uint256[]   totalBorrows,  
+( uint256[]   indexes,
+  FusePool[]  fusePools,
+  uint256[]   totalSupplys,
+  uint256[]   totalBorrows,
   address[][] underlyingTokens,
   string[][]  underlyingSymbols,
-  uint256[]   errors ) = lens.getPoolsByAccountWithData(0xEFGH...)
+  bool[]      errors ) = lens.getPoolsByAccountWithData(0xEFGH...)
 ```
 
 #### Web3 1.0
@@ -1313,30 +1225,28 @@ const usrPools = await FusePoolLens.methods.getPoolsByAccountWithData(0xEFGH);
 
 ### Get Pool Summary
 
-Gets metadata of a pool.
+Gets a pool's metadata.
 
 ```solidity
 function getPoolSummary(address comptroller) returns (uint256, uint256, address[], string[])
 ```
 
-- `Comptroller`: Pool to parse.
-- `RETURN`: [ 
-  - totalSupply
-  - totalBorrow
-  - underlyingToken[]
-  - underlyingSymbol[] 
-  ]
+- `comptroller`: Pool to get data about.
+- `RETURN`:
+  - `uint256`: Total supplied in the pool denominated in ether (18 decimals).
+  - `uint256`: Total borrowed in the pool denominated in ether (18 decimals).
+  - `address[]`: The underlying tokens in the pool.
+  - `string[]`: The underlying symbols of each token in the pool.
 
 #### Solidity
 
 ```solidity
 FusePoolLens lens = fusePoolLens(0xABCD...);
 
-( 
-  uint256   totalSupply, 
-  uint256   totalBorrow, 
-  address[] underlyingTokens, 
-  string[]  underlyingSymbols ) = lens.getPoolSummary(0xEFGH...); 
+( uint256   totalSupply,
+  uint256   totalBorrow,
+  address[] underlyingTokens,
+  string[]  underlyingSymbols ) = lens.getPoolSummary(0xEFGH...);
 ```
 
 #### Web3 1.0
@@ -1349,15 +1259,14 @@ const poolInfo = await FusePoolLens.methods.getPoolSummary(0xEFGH...)
 
 ### Get Pool Assets With Data
 
-Gets the tokens in a fuse pool.
+Gets the tokens in a Fuse pool.
 
 ```solidity
-function getPoolAssetsWithData(address Comptroller) returns (FusePoolAsset[])
+function getPoolAssetsWithData(address comptroller) returns (FusePoolAsset[])
 ```
 
-- `Comptroller`: Pool to parse.
-- `RETURN`: 
-  - [FusePoolAsset[]](#fusepoolasset)
+- `comptroller`: Pool to get data about.
+- `RETURN`: [FusePoolAsset[]](#fusepoolasset)
 
 #### Solidity
 
@@ -1377,32 +1286,30 @@ const assets = await FusePoolLens.methods.getPoolAssetsWithData(0xEFGH...);
 
 ### Get Public Pool Users With Data
 
-Gets users and their data in a fuse pool under a given account health.
+Gets users and their data in a Fuse pool under a given account health.
 
 ```solidity
-function getPoolUsersWithData(uint256 maxHealth) returns (address[], FusePoolUser[][], uint256[], uint256[], bool)
+function getPublicPoolUsersWithData(uint256 maxHealth) returns (address[], FusePoolUser[][], uint256[], uint256[], bool)
 ```
 
-- `maxHealth`: maximum account health to parse for.
-- `RETURN`: [ 
-  - comptroller[]
-  - [FusePoolUser[][]](#fusepooluser)
-  - closeFactor[]
-  - liquidationIncentive[]
-  - error 
-  ]
+- `maxHealth`: Maximum account health users returned should have.
+- `RETURN`:
+  - `address[]`: Comptrollers with users below the max health.
+  - [FusePoolUser[][]](#fusepooluser): Users below the max health in each pool.
+  - `uint256[]`: Close factor associated with each comptroller. 18 decimals, where 1e18 is 100% and 0 is 0%.
+  - `uint256[]`: Liquidation incentive associated with each comptroller. 18 decimals, where 1e18 is 100% and 0 is 0%.
+  - `bool[]`: Will be true if fetching data about a pool caused an error.
 
 #### Solidity
 
 ```solidity
 FusePoolLens lens = fusePoolLens(0xABCD...);
 
-( 
-  address[]        comptrollers, 
-  fusePoolUser[][] fusePoolUsers, 
-  uint256[]        closeFactors, 
-  uint256[]        liquidationIncentives, 
-  bool             error ) = lens.getPublicPoolUsersWithData(101010...);
+( address[]        comptrollers,
+  FusePoolUser[][] fusePoolUsers,
+  uint256[]        closeFactors,
+  uint256[]        liquidationIncentives,
+  bool[]           errors ) = lens.getPublicPoolUsersWithData(101010...);
 ```
 
 #### Web3 1.0
@@ -1410,36 +1317,34 @@ FusePoolLens lens = fusePoolLens(0xABCD...);
 ```js
 const FusePoolLens = new Web3.eth.Contract(FUSE_POOL_LENS_ABI, 0xABCD...);
 
-const usrs = await FusePoolLens.methods.getPublicPoolUsersWithData(101010...);
+const users = await FusePoolLens.methods.getPublicPoolUsersWithData(101010...);
 ```
 
 ### Get Pool Users With Data
 
-Gets users and their data in a fuse pool under a given account health.
+Gets users and their data in a Fuse pool under a given account health.
 
 ```solidity
 function getPoolUsersWithData(
-  address Comptroller, 
+  address comptroller,
   uint256 maxHealth
   ) returns (FusePoolUser[], uint256, uint256)
 ```
 
-- `Comptroller`: Pool to parse for.
-- `maxHealth`: maximum account health to parse for.
-- `RETURN`: [ 
-  - [FusePoolUser[]](#fusepooluser)
-  - closeFactor
-  - liquidationIncentive 
-  ]
+- `comptroller`: Pool to get data about.
+- `maxHealth`: Maximum account health to include.
+- `RETURN`:
+  - [FusePoolUser[]](#fusepooluser): Users below the maxHealth in the pool.
+  - `uint256`: Close factor associated with the pool. 18 decimals, where 1e18 is 100% and 0 is 0%.
+  - `uint256`: Liquidation incentive associated with the pool. 18 decimals, where 1e18 is 100% and 0 is 0%.
 
 #### Solidity
 
 ```solidity
 FusePoolLens lens = fusePoolLens(0xABCD...);
 
-( 
-  FusePoolUser[] fusePoolUsers, 
-  uint256        closeFactor, 
+( FusePoolUser[] fusePoolUsers,
+  uint256        closeFactor,
   uint256        liquidationIncentive ) = lens.getPoolUsersWithData(0xEFGH..., 101010...);
 ```
 
@@ -1448,7 +1353,7 @@ FusePoolLens lens = fusePoolLens(0xABCD...);
 ```js
 const FusePoolLens = new Web3.eth.Contract(FUSE_POOL_LENS_ABI, 0xABCD...);
 
-const usrs = await FusePoolLens.methods.getPoolUsersWithData(0xEFGH..., 101010...);
+const users = await FusePoolLens.methods.getPoolUsersWithData(0xEFGH..., 101010...);
 ```
 
 ### Get Pools By Supplier
@@ -1459,18 +1364,17 @@ Gets pools that an address is supplying in.
 function getPoolsBySupplier(address account) returns (uint256[], FusePool[])
 ```
 
-- `account`: supplier account to parse pools for.
-- `RETURN`: [ 
-  - index[]
-  - [FusePool[]](#fusepool) 
-  ]
+- `account`: Supplier account to find pools for.
+- `RETURN`:
+  - `uint256[]`: Pool IDs.
+  - [FusePool[]](#fusepool): Pool data.
 
 #### Solidity
 
 ```solidity
 FusePoolLens lens = fusePoolLens(0xABCD...);
 
-( uint256[] index, FusePool[] FusePool ) = lens.getPoolsBySupplier(0xEFGH...);
+( uint256[] ids, FusePool[] pools ) = lens.getPoolsBySupplier(0xEFGH...);
 ```
 
 #### Web3 1.0
@@ -1483,43 +1387,41 @@ const pools = await FusePoolLens.methods.getPoolsBySupplier(0xEFGH...);
 
 ### Get Pools By Supplier With Data
 
-Gets pools that an address is supplying.
+Gets pools that an address is supplying to.
 
 ```solidity
 function getPoolsBySupplier(address account) returns (
-  uint256[], 
-  FusePool[], 
-  uint256[], 
-  uint256[], 
-  address[][], 
-  string[][], 
+  uint256[],
+  FusePool[],
+  uint256[],
+  uint256[],
+  address[][],
+  string[][],
   bool[])
 ```
 
-- `account`: supplier account to parse pools for.
-- `RETURN`: [ 
-  - index[]
-  - [FusePool[]](#fusepool)
-  - totalSupply[]
-  - totalBorrow[]
-  - underlyingToken[][]
-  - underlyingSymbol[][]
-  - errored[] 
-  ]
+- `account`: Account to fetch find pools for.
+- `RETURN`:
+  - `uint256[]`: Pool ID for each pool.
+  - [FusePool[]](#fusepool): Pool data for each pool.
+  - `uint256[]`: Total supplied in each pool denominated in ether (18 decimals).
+  - `uint256[]`: Total borrowed in each pool denominated in ether (18 decimals).
+  - `address[][]`: The underlying tokens in each pool.
+  - `string[][]`: The underlying symbols of each token in each pool.
+  - `bool[]`: A bool indicating if fetching data about the pool failed.
 
 #### Solidity
 
 ```solidity
 FusePoolLens lens = fusePoolLens(0xABCD...);
 
-( 
-  uint256[]   index, 
-  FusePool[]  FusePool, 
-  uint256[]   totalSupply, 
-  uint256[]   totalBorrow, 
-  address[][] underlyingToken, 
-  string[][]  underlyingSymbol, 
-  bool[]      errored ) = lens.getPoolsBySupplierWithData(0xEFGH...);
+( uint256[]   ids,
+  FusePool[]  pools,
+  uint256[]   totalSupplys,
+  uint256[]   totalBorrows,
+  address[][] underlyingTokens,
+  string[][]  underlyingSymbols,
+  bool[]      errors ) = lens.getPoolsBySupplierWithData(0xEFGH...);
 ```
 
 #### Web3 1.0
@@ -1527,7 +1429,7 @@ FusePoolLens lens = fusePoolLens(0xABCD...);
 ```js
 const FusePoolLens = new Web3.eth.Contract(FUSE_POOL_LENS_ABI, 0xABCD...);
 
-const usrs = await FusePoolLens.methods.getPoolsBySupplierWithData(0xEFGH...);
+const users = await FusePoolLens.methods.getPoolsBySupplierWithData(0xEFGH...);
 ```
 
 ### Get User Summary
@@ -1538,21 +1440,19 @@ Gets supply and borrow metadata for a user/account
 function getUserSummary(address account) returns (uint256, uint256, bool)
 ```
 
-- `account`: account to parse for.
-- `RETURN`: [ 
-  - supplyBalance
-  - borrowBalance
-  - error 
-  ]
+- `account`: Account to fetch data about.
+- `RETURN`:
+  - `uint256`: Total supplied across all Fuse pools in Ether (18 decimals).
+  - `uint256`: Total borrowed across all Fuse pools in Ether (18 decimals).
+  - `bool`: Whether there was an error fetching this data.
 
 #### Solidity
 
 ```solidity
 FusePoolLens lens = fusePoolLens(0xABCD...);
 
-( 
-  uint256 supplyBalance, 
-  uint256 borrowBalance, 
+( uint256 supplyBalance,
+  uint256 borrowBalance,
   bool    error ) = lens.getUserSummary(0xEFGH...);
 ```
 
@@ -1561,7 +1461,7 @@ FusePoolLens lens = fusePoolLens(0xABCD...);
 ```js
 const FusePoolLens = new Web3.eth.Contract(FUSE_POOL_LENS_ABI, 0xABCD...);
 
-const usrSummary = await FusePoolLens.methods.getUserSummary(0xEFGH...);
+const userSummary = await FusePoolLens.methods.getUserSummary(0xEFGH...);
 ```
 
 ### Get Pool User Summary
@@ -1572,21 +1472,21 @@ Gets supply and borrow metadata for a user/account in a pool.
 function getPoolUserSummary(address comptroller, address account) returns (uint256, uint256)
 ```
 
-- `comptroller`: pool comptroller address to parse for.
-- `account`: user to parse for.
-- `RETURN`: [ 
-  - supplyBalance
-  - borrowBalance
-  ]
+- `comptroller`: Pool to fetch data about.
+- `account`: Account to fetch data for.
+- `RETURN`:
+  - `uint256`: Balance supplied in the pool denominated Ether (18 decimals).
+  - `uint256`: Balance borrowed in the pool denominated in Ether (18 decimals).
+  - `bool`: Whether there was an error fetching this data.
 
 #### Solidity
 
 ```solidity
 fusePoolLens lens = fusePoolLens(0xABCD...);
 
-( 
-  uint256 supplyBalance, 
-  uint256 borrowBalance ) = lens.getPoolUserSummary(0xEFGH..., 0xIJKL...);
+( uint256 supplyBalance,
+  uint256 borrowBalance,
+  bool    error ) = lens.getPoolUserSummary(0xEFGH..., 0xIJKL...);
 ```
 
 #### Web3 1.0
@@ -1594,7 +1494,7 @@ fusePoolLens lens = fusePoolLens(0xABCD...);
 ```js
 const FusePoolLens = new Web3.eth.Contract(FUSE_POOL_LENS_ABI, 0xABCD...);
 
-const usr = await FusePoolLens.methods.getPoolUserSummary(0xEFGH..., 0xIJKL...);
+const userSummary = await FusePoolLens.methods.getPoolUserSummary(0xEFGH..., 0xIJKL...);
 ```
 
 ### Get Whitelisted Pools By Account
@@ -1605,18 +1505,17 @@ Gets whitelisted pools an account is participating in.
 function getWhitelistedPoolsByAccount(address account) returns (uint256[], FusePool[])
 ```
 
-- `account` : user to parse pools for.
-- `RETURN`: [ 
-  - index[]
-  - [FusePool[]](#fusepool) 
-  ]
+- `account`: User to fetch pools for.
+- `RETURN`:
+  - `uint256[]`: Pool IDs.
+  - [FusePool[]](#fusepool): Pool data.
 
 #### Solidity
 
 ```solidity
 FusePoolLens lens = fusePoolLens(0xABCD...);
 
-( uint256[] index, FusePool[] FusePool ) = lens.getWhitelistedPoolsByAccount(0xEFGH...);
+( uint256[] ids, FusePool[] pools ) = lens.getWhitelistedPoolsByAccount(0xEFGH...);
 ```
 
 #### Web3 1.0
@@ -1624,7 +1523,7 @@ FusePoolLens lens = fusePoolLens(0xABCD...);
 ```js
 const FusePoolLens = new Web3.eth.Contract(FUSE_POOL_LENS_ABI, 0xABCD...);
 
-const FusePool = await FusePoolLens.methods.getWhitelistedPoolsByAccount(0xEFGH...);
+const pools = await FusePoolLens.methods.getWhitelistedPoolsByAccount(0xEFGH...);
 ```
 
 ### Get Whitelisted Pools By Account With Data
@@ -1633,39 +1532,38 @@ Gets whitelisted pools an account is participating in with metadata.
 
 ```solidity
 function getWhitelistedPoolsByAccountWithData(address account) returns (
-  uint256[], 
-  FusePool[], 
-  uint256[], 
-  uint256[], 
-  address[][], 
-  string[][], 
+  uint256[],
+  FusePool[],
+  uint256[],
+  uint256[],
+  address[][],
+  string[][],
   bool[])
 ```
 
-- `account`: use to parse pools for.
-- `RETURN`: [ 
-  - index[]
-  - [FusePool[]](#fusepool)
-  - totalSupply[]
-  - totalBorrow[]
-  - underlyingToken[][]
-  - underlyingSymbol[][]
-  - errored[] 
-  ]
+- `account`: User to fetch pools for.
+- `RETURN`:
+  - `uint256[]`: Pool ID for each pool.
+  - [FusePool[]](#fusepool): Pool data for each pool.
+  - `uint256[]`: Total supplied in each pool denominated in ether (18 decimals).
+  - `uint256[]`: Total borrowed in each pool denominated in ether (18 decimals).
+  - `address[][]`: The underlying tokens in each pool.
+  - `string[][]`: The underlying symbols of each token in each pool.
+  - `bool[]`: A bool indicating if fetching data about the pool failed.
 
 #### Solidity
 
 ```solidity
 FusePoolLens lens = fusePoolLens(0xABCD...);
 
-( 
-  uint256[]   indexes, 
+(
+  uint256[]   ids,
   FusePool[]  fusePools,
   uint256[]   totalSupplys,
-  uint256[]   totalBorrows, 
-  address[][] underlyingTokens, 
-  string[][]  underlyingSymbols, 
-  bool[]      errored ) = lens.getWhitelistedPoolsByAccountWithData(0xEFGH...);
+  uint256[]   totalBorrows,
+  address[][] underlyingTokens,
+  string[][]  underlyingSymbols,
+  bool[]      errors ) = lens.getWhitelistedPoolsByAccountWithData(0xEFGH...);
 
 ```
 
@@ -1674,7 +1572,7 @@ FusePoolLens lens = fusePoolLens(0xABCD...);
 ```js
 const FusePoolLens = new Web3.eth.Contract(FUSE_POOL_LENS_ABI, 0xABCD...);
 
-const FusePool = await FusePoolLens.methods.getWhitelistedPoolsByAccountWithData(0xEFGH...);
+const pools = await FusePoolLens.methods.getWhitelistedPoolsByAccountWithData(0xEFGH...);
 ```
 
 ### Get Pool Ownership
@@ -1682,30 +1580,29 @@ const FusePool = await FusePoolLens.methods.getWhitelistedPoolsByAccountWithData
 Gets information about the owner of a pool.
 
 ```solidity
-function getPoolOwnership(address Comptroller) returns (
-  address, 
-  bool, 
-  bool, 
+function getPoolOwnership(address comptroller) returns (
+  address,
+  bool,
+  bool,
   CTokenOwnership[])
 ```
 
-- `comptroller`: pool comptroller address to parse for.
-- `RETURN`: [ 
-  - compAdmin
-  - compAdminHasRights
-  - compFuseAdminHasRights
-  - outliers 
-  ]
+- `comptroller`: Pool to fetch data about.
+- `RETURN`:
+  - `address`: The admin of the pool.
+  - `bool`: Does the admin have rights over the pool.
+  - `bool`: Does the global Fuse admin have rights over the pool.
+  - [CTokenOwnership[]](#ctokenownership): fTokens in the pool that have different pool ownership parameters than the comptroller.
 
 #### Solidity
 
 ```solidity
 FusePoolLens lens = fusePoolLens(0xABCD...);
 
-( 
-  address compAdmin, 
-  bool compAdminHasRights, 
-  bool compFuseAdminHasRights, 
+(
+  address compAdmin,
+  bool compAdminHasRights,
+  bool compFuseAdminHasRights,
   CTokenOwnership[] outliers ) = lens.getPoolOwnership(0xEFGH...);
 ```
 
@@ -1717,19 +1614,118 @@ const FusePoolLens = new Web3.eth.Contract(FUSE_POOL_LENS_ABI, 0xABCD...);
 const ownerInfo = await FusePoolLens.methods.getPoolOwnership(0xEFGH...);
 ```
 
+### Return Value Glossary
+
+#### FusePool
+
+  <details close>
+  <summary>values[]</summary>
+  <ul><li>
+  [0] <code>string name</code>: Name of the Fuse pool.
+  <br></li><li>
+  [1] <code>address creator</code>: Creator of the Fuse pool.
+  <br></li><li>
+  [2] <code>address <a href="#comptroller">comptroller</a></code>: Comptroller of the Fuse pool.
+  <br></li><li>
+  [3] <code>uint256 blockPosted</code>:  Block in which the pool was created.
+  <br></li><li>
+  [4] <code>uint256 timestampPosted</code>: Timestamp when the pool was created.
+    </li></ul>
+  </details>
+  
+#### FusePoolAsset
+  <details close>
+  <summary>values []</summary>
+  <ul><li>
+  [0] <code>address <a href="#ftoken-s">fToken</a></code>: The fToken's address.
+  <br></li><li>
+  [1] <code>address underlyingToken</code>: ERC20 deposited/withdrawn from this pool token .
+  <br></li><li>
+  [2] <code>string underlyingName</code>: Name of the underlying token.
+  <br></li><li>
+  [3] <code>string underlyingSymbol</code>: Symbol of the underlying token.
+  <br></li><li>
+  [4] <code>uint256 underlyingDecimals</code>: Decimals of underlying token (ETH is 18).
+  <br></li><li>
+  [5] <code>uint256 underlyingBalance</code>: How much of the underlying token the user of interest holds in their wallet.
+  <br></li><li>
+  [6] <code>uint256 <a href="#supply-rate">supplyRatePerBlock</a></code>: Supply interest rate for the token in the pool. Can be converted to APY/APR as shown <a href="https://github.com/Rari-Capital/rari-dApp/blob/master/src/utils/apyUtils.ts#L1">here</a>.
+  <br></li><li>
+  [7]<code> uint256 borrowRatePerBlock</code>: Borrow interest rate for the token in the pool. Can be converted to APY/APR as shown <a href="https://github.com/Rari-Capital/rari-dApp/blob/master/src/utils/apyUtils.ts#L1">here</a>.
+  <br></li><li>
+  [8] <code>uint256 totalSupply</code>: Amount of the underlying token supplied in the pool.
+  <br></li><li>
+  [9]<code>uint256 totalBorrow</code>: Amount of the underlying token being borrowed in pool.
+  <br></li><li>
+  [10] <code>uint256 supplyBalance</code>: Amount of the underlying token the user of interest has supplied to the pool.
+  <br></li><li>
+  [11]<code>uint256 borrowBalance</code>: Amount of the underlying token the user of interest has borrowed from the pool.
+  <br></li><li>
+  [12] <code>uint256 liquidity</code>: Amount of the underlying token that is unborrowed in the pool.
+  <br></li><li>
+  [13] <code>bool membership</code>: If the user of interest has enabled the asset as collateral in the pool.
+  <br></li><li>
+  [14] <code> uint256 <a href="#exchange-rate">exchangeRate</a></code>: The price of the underlying asset in Ether.
+  <br></li><li>
+  [15] <code>uint256 underlyingPrice</code>: Price of underlying tokens denominated in ETH. Its decimals are a function of underlyingDecimals: 1e(36 - underlyingDecimals). This is so multiplying the underlyingPrice and supplyBalance/totalSupply/totalBorrow/borrowBalance and dividing the result by 1e36 returns the Ether value of the underlying asset.
+  <br></li><li>
+  [16] <code>address oracle</code>: Oracle from which this asset's price is fetched.
+  <br></li><li>
+  [17] <code>unt256 <a href="#collateral-factor">collateralFactor</a></code>: A percentage representing how much of the asset's value in USD can be borrowed against if the asset is lent as collateral. 18 decimals (where 1e18 is 100% and 0 is 0%).
+  <br></li><li>
+  [18]<code>uint256 reserveFactor</code>: Proportion of borrow interest that is converted into reserves. 18 decimals (where 1e18 is 100% and 0 is 0%).
+  <br></li><li>
+  [19] <code>uint256 adminFee</code>: Proportion of borrow interest that is converted into admin fees. 18 decimals (where 1e18 is 100% and 0 is 0%).
+  <br></li><li>
+  [20] <code>uint256 fuseFee</code>: Proportion of borrow interest that is converted into fees for the Rari Capital DAO. 18 decimals (where 1e18 is 100% and 0 is 0%).
+  </li></ul>
+  </details>
+
+#### FusePoolUser
+
+  <details close>
+  <summary>values []</summary>
+  <ul><li>
+  [0] <code>address account</code>: User's Ethereum address.
+  <br></li><li>
+  [1] <code>uint256 totalBorrow</code>: The user's total borrow balance in the pool, dominated in Ether (scaled by 18 decimals).
+  <br></li><li>
+  [2] <code>uint256 totalCollateral</code>: The user's total supply balance in the pool, dominated in Ether (scaled by 18 decimals).
+  <br></li><li>
+  [3] <code>uint256 health</code>: Represents how overcollateralized the user is in the pool (totalCollateral/totalBorrow). 18 decimals (where 1e18 is 100% and 0 is 0%). At 1e18 or lower the user is eligible for liquidation. 
+  <br></li><li>
+  [4] <code><a href="#fusepoolasset">FusePoolAsset[]</a> assets</code>: <a href="#ftoken-s">fTokens</a> supplied/borrowed by the user in the pool.
+  </li></ul>
+  </details>
+
+#### CTokenOwnership
+
+  <details close>
+  <summary>values []</summary>
+  <ul><li>
+  [0] <code>address cToken</code>: The fToken in question.
+  <br></li><li>
+  [1] <code>address admin</code>: The fToken's admin.
+  <br></li><li>
+  [2] <code>bool adminHasRights</code>: Does the admin have rights over the pool.
+  <br></li><li>
+  [3] <code>bool fuseAdminHasRights</code>: Does the global Fuse admin have rights over the pool.
+  </li></ul>
+  </details>
+
 ## Fuse Safe Liquidator
 
 ### Safe Liquidate (c/fToken)
 
-Self-funded-liquidate a fuse ERC20 position.
+Self-funded-liquidate a Fuse ERC20 position.
 
 ```solidity
 function   safeLiquidate(
-  address  borrower, 
-  uint256  repayAmount, 
-  CErc20   cErc20, 
-  CToken   cTokenCollateral, 
-  uint256  minOutputAmount, 
+  address  borrower,
+  uint256  repayAmount,
+  CErc20   cErc20,
+  CToken   cTokenCollateral,
+  uint256  minOutputAmount,
   address  exchangeSeizedTo)
 ```
 
@@ -1743,9 +1739,9 @@ function   safeLiquidate(
 #### Solidity
 
 ```solidity
-FuseSafeLiquidator liq = fuseSafeLiquidator(0xABCD...);
+FuseSafeLiquidator fuseSafeLiquidator = fuseSafeLiquidator(0xABCD...);
 
-liq.safeLiquidate(0xEFGH..., 010101..., cErc20, cTokenCollateral, 010101..., 0xHIJK...);
+fuseSafeLiquidator.safeLiquidate(0xEFGH..., 010101..., cErc20, cTokenCollateral, 010101..., 0xHIJK...);
 ```
 
 #### Web3 1.0
@@ -1758,14 +1754,14 @@ FuseSafeLiquidator.methods.safeLiquidate(0xEFGH..., 010101..., cErc20, cTokenCol
 
 ### Safe Liquidate (ETH)
 
-Self-funded-liquidate a fuse ETH position.
+Self-funded-liquidate a Fuse ETH position.
 
 ```solidity
  function safeLiquidate(
-   address borrower, 
-   CEther  cEther, 
-   CErc20  cErc20Collateral, 
-   uint256 minOutputAmount, 
+   address borrower,
+   CEther  cEther,
+   CErc20  cErc20Collateral,
+   uint256 minOutputAmount,
    address exchangeSeizedTo)
 ```
 
@@ -1778,9 +1774,9 @@ Self-funded-liquidate a fuse ETH position.
 #### Solidity
 
 ```solidity
-FuseSafeLiquidator liq = fuseSafeLiquidator(0xABCD...);
+FuseSafeLiquidator fuseSafeLiquidator = fuseSafeLiquidator(0xABCD...);
 
-liq.safeLiquidate(0xEFGH..., cEther, cErc20Collateral, 010101..., 0xHIJK...);
+fuseSafeLiquidator.safeLiquidate(0xEFGH..., cEther, cErc20Collateral, 010101..., 0xHIJK...);
 ```
 
 #### Web 3 1.0
@@ -1793,15 +1789,15 @@ FuseSafeLiquidator.methods.safeLiquidate(0xEFGH..., cEther, cErc20Collateral, 01
 
 ### Safe Liquidate To Tokens With Flash Loan (ERC20)
 
-Flash-loan-funded liquidate a fuse ERC20 position.
+Flash-loan-funded liquidate a Fuse ERC20 position.
 
 ```solidity
 function safeLiquidateToTokensWithFlashLoan(
-  address borrower, 
-  uint256 repayAmount, 
-  CErc20  cErc20, 
-  CToken  cTokenCollateral, 
-  uint256 minProfitAmount, 
+  address borrower,
+  uint256 repayAmount,
+  CErc20  cErc20,
+  CToken  cTokenCollateral,
+  uint256 minProfitAmount,
   address exchangeProfitTo)
 ```
 
@@ -1815,14 +1811,14 @@ function safeLiquidateToTokensWithFlashLoan(
 #### Solidity
 
 ```solidity
-FuseSafeLiquidator liq = fuseSafeLiquidator(0xABCD...);
+FuseSafeLiquidator fuseSafeLiquidator = fuseSafeLiquidator(0xABCD...);
 
-liq.safeLiquidateToTokensWithFlashLoan(
-  0xEFGH..., 
-  010101..., 
-  cErc20, 
-  cTokenCollateral, 
-  010101..., 
+fuseSafeLiquidator.safeLiquidateToTokensWithFlashLoan(
+  0xEFGH...,
+  010101...,
+  cErc20,
+  cTokenCollateral,
+  010101...,
   0xHIJK...);
 ```
 
@@ -1836,15 +1832,15 @@ FuseSafeLiquidator.methods.safeLiquidateToTokensWithFlashLoan(0xEFGH..., 010101.
 
 ### Safe Liquidate To ETH With Flash Loan
 
-Flash-loan-funded liquidate a fuse ETH position.
+Flash-loan-funded liquidate a Fuse ETH position.
 
 ```solidity
 function safeLiquidateToEthWithFlashLoan(
-  address borrower, 
-  uint256 repayAmount, 
-  CEther  cEther, 
-  CErc20  cErc20Collateral, 
-  uint256 minProfitAmount, 
+  address borrower,
+  uint256 repayAmount,
+  CEther  cEther,
+  CErc20  cErc20Collateral,
+  uint256 minProfitAmount,
   address exchangeProfitTo)
 ```
 
@@ -1858,14 +1854,14 @@ function safeLiquidateToEthWithFlashLoan(
 #### Solidity
 
 ```solidity
-FuseSafeLiquidator liq = fuseSafeLiquidator(0xABCD...);
+FuseSafeLiquidator fuseSafeLiquidator = fuseSafeLiquidator(0xABCD...);
 
-liq.safeLiquidateToEthWithFlashLoan(
-  0xEFGH..., 
-  010101..., 
-  cEther, 
-  cErc20Collateral, 
-  010101..., 
+fuseSafeLiquidator.safeLiquidateToEthWithFlashLoan(
+  0xEFGH...,
+  010101...,
+  cEther,
+  cErc20Collateral,
+  010101...,
   0xHIJK...);
 ```
 
