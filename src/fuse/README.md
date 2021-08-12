@@ -1639,7 +1639,7 @@ const ownerInfo = await FusePoolLens.methods.getPoolOwnership(0xEFGH...);
   <ul><li>
   [0] <code>address <a href="#ftoken-s">fToken</a></code>: The fToken's address.
   <br></li><li>
-  [1] <code>address underlyingToken</code>: ERC20 deposited/withdrawn from this pool token .
+  [1] <code>address underlyingToken</code>: The token the fToken is redeemable for.
   <br></li><li>
   [2] <code>string underlyingName</code>: Name of the underlying token.
   <br></li><li>
