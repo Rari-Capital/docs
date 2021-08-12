@@ -1147,7 +1147,7 @@ function getPublicPoolsWithData() returns (uint256[], FusePool[], uint256[], uin
 
 - `RETURN`:
   - `uint256[]`: Pool ID for each pool.
-  - [FusePool[]](#fusepool): Pool data for each pool.
+  - [`FusePool[]`](#fusepool):` Pool data for each pool.
   - `uint256[]`: Total supplied in each pool denominated in ether (18 decimals).
   - `uint256[]`: Total borrowed in each pool denominated in ether (18 decimals).
   - `address[][]`: The underlying tokens in each pool.
@@ -1194,7 +1194,7 @@ function getPoolsByAccountWithData(address account) returns (
 - `account`: User address to get data about.
 - `RETURN`:
   - `uint256[]`: Pool ID for each pool.
-  - [FusePool[]](#fusepool): Pool data for each pool.
+  - [`FusePool[]`](#fusepool): Pool data for each pool.
   - `uint256[]`: Total supplied in each pool denominated in ether (18 decimals).
   - `uint256[]`: Total borrowed in each pool denominated in ether (18 decimals).
   - `address[][]`: The underlying tokens in each pool.
@@ -1295,7 +1295,7 @@ function getPublicPoolUsersWithData(uint256 maxHealth) returns (address[], FuseP
 - `maxHealth`: Maximum account health users returned should have.
 - `RETURN`:
   - `address[]`: Comptrollers with users below the max health.
-  - [FusePoolUser[][]](#fusepooluser): Users below the max health in each pool.
+  - [`FusePoolUser[][]`](#fusepooluser): Users below the max health in each pool.
   - `uint256[]`: Close factor associated with each comptroller. 18 decimals, where 1e18 is 100% and 0 is 0%.
   - `uint256[]`: Liquidation incentive associated with each comptroller. 18 decimals, where 1e18 is 100% and 0 is 0%.
   - `bool[]`: Will be true if fetching data about a pool caused an error.
@@ -1334,7 +1334,7 @@ function getPoolUsersWithData(
 - `comptroller`: Pool to get data about.
 - `maxHealth`: Maximum account health to include.
 - `RETURN`:
-  - [FusePoolUser[]](#fusepooluser): Users below the maxHealth in the pool.
+  - [`FusePoolUser[]`](#fusepooluser): Users below the maxHealth in the pool.
   - `uint256`: Close factor associated with the pool. 18 decimals, where 1e18 is 100% and 0 is 0%.
   - `uint256`: Liquidation incentive associated with the pool. 18 decimals, where 1e18 is 100% and 0 is 0%.
 
@@ -1367,7 +1367,7 @@ function getPoolsBySupplier(address account) returns (uint256[], FusePool[])
 - `account`: Supplier account to find pools for.
 - `RETURN`:
   - `uint256[]`: Pool IDs.
-  - [FusePool[]](#fusepool): Pool data.
+  - [`FusePool[]`](#fusepool): Pool data.
 
 #### Solidity
 
@@ -1403,7 +1403,7 @@ function getPoolsBySupplier(address account) returns (
 - `account`: Account to fetch find pools for.
 - `RETURN`:
   - `uint256[]`: Pool ID for each pool.
-  - [FusePool[]](#fusepool): Pool data for each pool.
+  - [`FusePool[]`](#fusepool): Pool data for each pool.
   - `uint256[]`: Total supplied in each pool denominated in ether (18 decimals).
   - `uint256[]`: Total borrowed in each pool denominated in ether (18 decimals).
   - `address[][]`: The underlying tokens in each pool.
@@ -1508,7 +1508,7 @@ function getWhitelistedPoolsByAccount(address account) returns (uint256[], FuseP
 - `account`: User to fetch pools for.
 - `RETURN`:
   - `uint256[]`: Pool IDs.
-  - [FusePool[]](#fusepool): Pool data.
+  - [`FusePool[]`](#fusepool): Pool data.
 
 #### Solidity
 
@@ -1544,7 +1544,7 @@ function getWhitelistedPoolsByAccountWithData(address account) returns (
 - `account`: User to fetch pools for.
 - `RETURN`:
   - `uint256[]`: Pool ID for each pool.
-  - [FusePool[]](#fusepool): Pool data for each pool.
+  - [`FusePool[]`](#fusepool): Pool data for each pool.
   - `uint256[]`: Total supplied in each pool denominated in ether (18 decimals).
   - `uint256[]`: Total borrowed in each pool denominated in ether (18 decimals).
   - `address[][]`: The underlying tokens in each pool.
@@ -1592,7 +1592,7 @@ function getPoolOwnership(address comptroller) returns (
   - `address`: The admin of the pool.
   - `bool`: Does the admin have rights over the pool.
   - `bool`: Does the global Fuse admin have rights over the pool.
-  - [CTokenOwnership[]](#ctokenownership): fTokens in the pool that have different pool ownership parameters than the comptroller.
+  - [`CTokenOwnership[]`](#ctokenownership): fTokens in the pool that have different pool ownership parameters than the comptroller.
 
 #### Solidity
 
