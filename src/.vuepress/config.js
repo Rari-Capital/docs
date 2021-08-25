@@ -15,7 +15,12 @@ module.exports = {
 
   themeConfig: {
     repo: "Rari-Capital/docs",
-    docsDir: "/",
+    docsDir: "src",
+    docsBranch: "main",
+
+    editLinks: true,
+    editLinkText: "Want to improve this page? Hit us with a PR on Github!",
+
     nav: [
       { text: "Fuse", link: "/fuse/" },
       { text: "Yield Aggregator", link: "/yag/" },
