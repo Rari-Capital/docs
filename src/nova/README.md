@@ -1,70 +1,56 @@
 # Nova
 
-**Nova gives your <u>L2 contracts</u> the power to <u>read and write to L1</u> with <u>minimal latency</u> and <u>no trust tradeoffs</u>.**
+**Nova gives your <u>L2 contracts</u> the power to <u>read and write to L1</u> with <u>minimal latency</u> and <u>no trust tradeoffs</u>.** [Read the whitepaper to learn more.](https://github.com/Rari-Capital/nova/blob/master/media/whitepaper/Whitepaper.pdf)
 
-<img width="500" style="float: right;" alt="Explainer" src="https://i.imgur.com/TbbAhLd.png">
-
-- L2 contracts "request execution" of an L1 contract's function(s)
-
-- L2 contracts provide a bounty which pays for the gas of execution on L1 + whatever upfront costs a relayer needs to endure.
-
-- Relayers execute requests on L1 by calling the Nova "Execution Manager" contract with the calldata contracts on L2 give them.
-
-- The execution manager will call the specified "strategy contract" which may send tokens up to L2 via a bridge.
-
-- After executing a request, the Nova Execution Manager sends a confirmation up to L2 to unlock the bounty for the relayer.
-
-**[Read our whitepaper/technical specification to learn more!](https://github.com/rari-capital/nova/blob/master/docs/spec.md)**
+![Diagram](https://lucid.app/publicSegments/view/3cbf2d11-05fe-4f79-ae8b-fcdd4ad11f26/image.png)
 
 ## L2_NovaRegistry
 
 This is the primary contract users and contracts will be interacting with. L2 users/contracts can use this contract to [request execution of different strategies](#request-execution), [unlock their tokens](#unlock-tokens), [withdraw their tokens](#withdraw-tokens), and [speed up their requests](#speed-up-a-request).
 
-Relayers will use this contract to view the latest requests, [receive tips for executing requests](#complete-execution-request) and [claim input tokens](#claim-input-tokens).
+Relayers will use this contract to view the latest requests, [receive tips for executing requests](#complete-request) and [claim input tokens](#claim-input-tokens).
 
 ### Request execution
 
 ```solidity
 /// @notice A token/amount pair that a relayer will need on L1 to execute the request (and will be returned to them on L2).
 /// @param l2Token The token on L2 to transfer to the relayer upon a successful execution.
-/// @param amount The amount of the `l2Token` to the relayer upon a successful execution (scaled by the `l2Token`'s decimals).
-/// @dev Relayers may have to reference a registry/list of some sort to determine the equivalent L1 token they will need.
-/// @dev The decimal scheme may not align between the L1 and L2 tokens, a relayer should check via off-chain logic.
+/// @param amount The amount of l2Token to refund the relayer upon a successful execution.
+/// @dev Relayers must reference a list of L2-L1 token mappings to determine the L1 equivalent for an l2Token.
+/// @dev The decimal scheme may not align between the L1 and L2 tokens, relayers should check via off-chain logic.
 struct InputToken {
     IERC20 l2Token;
     uint256 amount;
 }
 
-function requestExec(address strategy, bytes calldata l1calldata, uint256 gasLimit, uint256 gasPrice, uint256 tip, InputToken[] calldata inputTokens) public returns (bytes32 execHash)
+function requestExec(address strategy, bytes calldata l1Calldata, uint256 gasLimit, uint256 gasPrice, uint256 tip, InputToken[] calldata inputTokens) external returns (bytes32 execHash)
 ```
+
+Request a strategy to be executed with specific calldata and (optionally) input tokens.
 
 - `strategy`: The address of the "strategy" contract on L1 a relayer should call with `l1calldata`.
 
 - `l1calldata`: The abi encoded calldata a relayer should call the `strategy` with on L1.
 
-- `gasLimit`: The gas limit a relayer should use on L1.
+- `gasLimit`: The gas limit that will be afforded to the call on L1.
 
-- `gasPrice`: The gas price a relayer should use on L1.
+- `gasPrice`: The gas price (in wei) a relayer should use on L1.
 
-- `tip`: The additional wei to pay as a tip for any relayer that executes this request.
+- `tip`:The additional wei to pay as a tip for any relayer that successfully executes the request. If the relayer executes the request and the strategy reverts, the creator will be refunded the tip.
 
-- `inputTokens`: An array of 5 or less token/amount pairs that a relayer will need on L1 to execute the request (and will be returned to them on L2).
+- `inputTokens`: An array with a length of 5 or less token/amount pairs that the relayer will need to execute the request on L1. Input tokens are refunded to the relayer on L2 after a successful execution.
 
-- **`RETURN`: The "execHash" (unique identifier) for this request.**
+* **`RETURN`: The "execHash" (unique identifier) for this request.**
 
-This function allows a user/contract to request a strategy to be executed with specific calldata.
-
-::: tip
-This function may consume a fair bit of gas as it transfers multiple ERC20s at once.
-:::
-
-The caller must approve all `inputTokens` to the registry as well as approving enough WETH to pay for `(gasLimit * gasPrice) + tip`.
+The caller must approve all `inputTokens` to the registry as well as attaching enough ETH to pay for `(gasLimit * gasPrice) + tip`.
 
 ### Request execution with a timeout
 
 ```solidity
-function requestExecWithTimeout(address strategy, bytes calldata l1calldata, uint256 gasLimit, uint256 gasPrice, uint256 tip, InputToken[] calldata inputTokens, uint256 autoUnlockDelay) external returns (bytes32 execHash)
+function requestExecWithTimeout(address strategy, bytes calldata l1calldata, uint256 gasLimit, uint256 gasPrice, uint256 tip, InputToken[] calldata inputTokens, uint256 autoUnlockDelaySeconds) external returns (bytes32 execHash)
 ```
+
+Bundles a call to [`requestExec`](#request-execution) and [`unlockTokens`](#unlock-tokens) into a single transaction.
 
 - `strategy`: [See `requestExec`.](#request-execution)
 
@@ -78,14 +64,12 @@ function requestExecWithTimeout(address strategy, bytes calldata l1calldata, uin
 
 - `inputTokens`: [See `requestExec`.](#request-execution)
 
-- `autoUnlockDelay`: [See `unlockTokens`.](#unlock-tokens)
+- `autoUnlockDelaySeconds`: [See `unlockTokens`.](#unlock-tokens)
 
 - **`RETURN`: [See `requestExec`.](#request-execution)**
 
-Behaves exactly like [`requestExec`](#request-execution) but also calls [`unlockTokens`](#unlock-tokens) with `autoUnlockDelay` automatically.
-
 ::: warning
-The user will still have to call [`withdrawTokens`](#withdraw-tokens) once the `autoUnlockDelay` timeout completes.
+The user will still have to call [`withdrawTokens`](#withdraw-tokens) once `autoUnlockDelaySeconds` passes.
 :::
 
 This function is useful for strategies that are likely to cause hard reverts or not be executed for some reason.
@@ -96,17 +80,13 @@ This function is useful for strategies that are likely to cause hard reverts or 
 function unlockTokens(bytes32 execHash, uint256 unlockDelaySeconds) public
 ```
 
-- `execHash`: The unique hash of the request to unlock.
+This function starts a countdown which lasts for `unlockDelaySeconds`. After the `unlockDelaySeconds` has passed a user is allowed to withdraw their tip/inputs via [`withdrawTokens`](#withdraw-tokens).
 
-- `unlockDelaySeconds`: The delay in seconds until the creator can withdraw their tokens. Must be greater than or equal to `MIN_UNLOCK_DELAY_SECONDS`.
+- `execHash`: The unique identifier of the request to unlock.
 
-This function starts a countdown which lasts for `unlockDelaySeconds`. After the delay is passed a user is allowed to withdraw their tip/inputs via [`withdrawTokens`](#withdraw-tokens).
+- `unlockDelaySeconds`: The delay in seconds until the creator can withdraw their tokens. Must be greater than or equal to 300.
 
-`msg.sender` must be the initiator of execution request the `execHash` links to.
-
-::: tip
-After [`unlockTokens`](#unlock-tokens) is called the user must wait `unlockDelaySeconds` before calling [`withdrawTokens`](#withdraw-tokens) to get their tip, input tokens, etc back.
-:::
+The caller must be the creator of request.
 
 ::: warning
 `unlockDelaySeconds` must be >=300 (5 minutes).
@@ -114,7 +94,19 @@ After [`unlockTokens`](#unlock-tokens) is called the user must wait `unlockDelay
 
 A relayer can still execute the request associated with the `execHash` until [`withdrawTokens`](#withdraw-tokens) is called.
 
-A user may call may not call [`unlockTokens`](#unlock-tokens) a second time on the same `execHash`.
+### Relock tokens
+
+Reverses a request's completed token unlock (meaning the request had an unlocked scheduled via [`unlockTokens`](#unlock-tokens) and the unlock delay specified has passed).
+
+```solidity
+function relockTokens(bytes32 execHash) external
+```
+
+- `execHash`: The unique identifier of the request which has been unlocked.
+
+After if a request creator successfully calls this function they will have to call [`unlockTokens`](#unlock-tokens) again if they wish to unlock the request's tokens another time.
+
+The caller must be the creator of the request.
 
 ### Withdraw tokens
 
@@ -122,15 +114,11 @@ A user may call may not call [`unlockTokens`](#unlock-tokens) a second time on t
 function withdrawTokens(bytes32 execHash) external
 ```
 
-- `execHash`: The unique hash of the request to withdraw from.
+This function gives a request's creator their input tokens, tip, and gas payment back.
 
-This function gives the request's creator their input tokens, tip, and gas payment back.
+- `execHash`: The unique identifier of the request to withdraw from.
 
 The creator of the request associated with `execHash` must call [`unlockTokens`](#unlock-tokens) and wait the `unlockDelaySeconds` they specified before calling [`withdrawTokens`](#withdraw-tokens).
-
-::: tip
-This function may consume a fair bit of gas as it transfers multiple ERC20s at once.
-:::
 
 Anyone may call this function, but the tokens will still go the creator of the request associated with the `execHash`.
 
@@ -140,37 +128,27 @@ Anyone may call this function, but the tokens will still go the creator of the r
 function speedUpRequest(bytes32 execHash, uint256 gasPrice) external returns (bytes32 newExecHash)
 ```
 
+This function allows a user/contract to increase the gas price for a request they've created.
+
 - `execHash`: The execHash of the request you wish to resubmit with a higher gas price.
 
 - `gasPrice`: The updated gas price to use for the resubmitted request in wei.
 
-- **`RETURN`: The "newExecHash" (unique identifier) for the resubmitted request.**
-
-This function allows a user/contract to increase the gas price for a request they've created.
+- **`RETURN`: The unique identifier for the resubmitted request.**
 
 Calling this function will initiate a 5 minute delay before disabling the request associated with `execHash` (this is known as the "uncled" request) and enabling an updated version of the request (this is known as the resubmitted request which is returned as `newExecHash`).
 
-The caller must be the creator of the `execHash` and must also approve enough extra WETH to pay for the increased gas costs: `(gasPrice - previousGasPrice) * previousGasLimit`.
+The caller must be the creator of the request and must also attach enough ETH to pay for the increased gas costs: `(gasPrice - previousGasPrice) * previousGasLimit`.
 
 ::: danger
-A relayer can still execute the uncled request associated with the `execHash` up until the delay has passed.
+A relayer can still execute the uncled request (`execHash`) up until the delay has passed.
 :::
 
-If a relayer executes the uncled request before the delay has passed the resubmitted request will not be executable after the delay.
-
-### Relock tokens
-
-```solidity
-function relockTokens(bytes32 execHash) external
-```
-
-- `execHash`: The unique hash of the request which has an unlock scheduled.
-
-Cancels a scheduled unlock triggered via [`unlockTokens`](#unlock-tokens).
-
-The caller must be the creator of the request.
+If a relayer executes the uncled request before the delay has passed the resubmitted request will not be executable after the delay and the request creator will be automatically refunded the ETH they attached for the resubmitted request.
 
 ### Claim input tokens
+
+Claims input tokens earned from executing a request. Request creators must also call this function if their request reverted (as input tokens are not automatically refunded).
 
 ```solidity
 function claimInputTokens(bytes32 execHash) external
@@ -178,210 +156,289 @@ function claimInputTokens(bytes32 execHash) external
 
 - `execHash`: The hash of the executed request.
 
-Claims input tokens earned from executing a request. Request creators must also call this function if their request reverted to claim their input tokens (as input tokens are not sent to relayers if the request reverts).
+Anyone may call this function, but the tokens will be sent to the proper input token recipient (either the `l2Recipient` passed to `execCompleted` or the request creator if the request reverted).
 
-::: tip
-This function may consume a fair bit of gas as it transfers multiple ERC20s at once.
-:::
-
-Anyone may call this function, but the tokens will be sent to the proper input token recipient (either the l2Recipient given in `execCompleted` or the request creator if the request reverted).
-
-### Check if tokens are removed
+### Check if a request has tokens
 
 ```solidity
-function areTokensRemoved(bytes32 execHash) public view returns (bool tokensRemoved, uint256 changeTimestamp)
+function hasTokens(bytes32 execHash) public view returns (bool requestHasTokens, uint256 changeTimestamp)
 ```
+
+Checks if a request exists and hasn't been withdrawn, uncled (scheduled to be sped up), or executed.
 
 - `execHash`: The unique identifier for the request to check.
 
-- **`RETURN`: Tuple of 2 values (are tokens removed, when that may change). `changeTimestamp` will be 0 if no removal/addition is scheduled to occur.**
+- **`RETURN`**:
 
-::: tip
-Relayers should call this function before trying to execute a request in the registry.
-:::
+  - `requestHasTokens`: A boolean indicating if the request exists and has all of its tokens.
+  - `changeTimestamp`: A timestamp indicating when the request may have its tokens removed or added.
 
-Checks if the request has had its tokens removed. Returns if the tokens have been removed along with a timestamp of when they may be added or removed.
+* Resubmitted requests generated via [`speedUpRequest`](#speed-up-a-request) start out with no tokens but have them added after a delay. If `requestHasTokens` is false and but `changeTimestamp` is a timestamp in the future, you know the request is a resubmitted request.
 
-- Tokens may start out removed, if so `tokensRemoved` will be true and `changeTimestamp` will be in the future and represent when tokens will be added. If this is the case you know the request is a resubmitted request created via [`speedUpRequest`](#speed-up-a-request).
+* Requests scheduled to be sped up via [`speedUpRequest`](#speed-up-a-request) start out with tokens but have them removed after a delay. If `requestHasTokens` is true but `changeTimestamp` is a timestamp in the future, you know the request is an uncled request (request scheduled to be sped up).
 
-- Tokens may be scheduled to be removed, if so `tokensRemoved` will be false and `changeTimestamp` will be in the future and represent when the tokens will be removed. If this is the case you know the request is an uncled request— updated via [`speedUpRequest`](#speed-up-a-request).
+* If a request exists but hasn't been withdrawn, uncled, or executed, `requestHasTokens` will be true and `changeTimestamp` will be 0.
 
-- Tokens may be already removed or added, in which case `changeTimestamp` will be 0.
+* If a request doesn't exist or has already been withdrawn, uncled, or executed, `requestHasTokens` will be false and `changeTimestamp` will be 0.
 
-### Check if tokens are unlocked
+### Check if a request's tokens are unlocked
 
 ```solidity
 function areTokensUnlocked(bytes32 execHash) public view returns (bool unlocked, uint256 changeTimestamp)
 ```
 
+Checks if a request has had an unlock completed ([`unlockTokens`](#unlock-tokens) was called and 300 seconds have passed).
+
 - `execHash`: The unique identifier for the request to check.
 
-- **`RETURN`: Tuple of 2 values (is unlocked, when that may change). `changeTimestamp` will be 0 if no future unlock is scheduled.**
+- **`RETURN`**:
+  - `unlocked`: A boolean indicating if the request has had an unlock completed and hence a withdrawal can be triggered.
+  - `changeTimestamp`: A timestamp indicating when the request may have its unlock completed.
 
-::: tip
-Relayers should call this function before trying to execute a request in the registry.
-:::
+### Get request data
 
-Checks if the request is scheduled to have its tokens unlocked. Returns if tokens are unlocked yet along with a timestamp of when they are scheduled to be unlocked (if the creator has called [`unlockTokens`](#unlock-tokens)).
-
-### Complete execution request
+_Many individual functions are provided to fetch data about a request. Each function takes only one argument, a request's unique identifier (also known as its `execHash`)._
 
 ```solidity
-function execCompleted(bytes32 execHash, address rewardRecipient, uint256 gasUsed, bool reverted) external onlyXDomainMessageFromNovaExecutionManager
+function getRequestCreator(bytes32 execHash) external view returns (address)
 ```
 
-::: danger NOT DIRECTLY CALLABLE
-This function can only be called via a message relayed from cross domain messenger with the L1 origin being the `L1_NovaExecutionManager` contract.
-:::
-
-The `execHash` gets computed by the `L1_NovaExecutionManager` like so: `keccak256(abi.encodePacked(nonce, strategy, l1calldata, gasPrice))` and is used to ensure the right calldata **(and gas price)** was used on L1.
-
-Once the registry verifies that the `execHash` was previously registered (meaning this execution was valid) and tokens are not removed:
-
-- It will find this `execHash` in the registry's storage and retrieve the `gasPrice` and tip/inputToken information associated with this execHash.
-
-- It will first pay for the gas cost of L1 execution by calculating the ETH to send to the `relayer` using `(gasLimit > gasUsed ? gasUsed : gasLimit) * gasPrice`. Any remaining ETH will be sent back to the user who requested execution (just like how gas is refunded on L1 if the gas limit exceeds gas used).
-
-- It will then send the `rewardRecipient` the tip. If the request reverted, the recipient will only receive 50% of the tip and the creator will be refunded the remaining portion. **This is to incentivize relayers to act honestly.**
-
-- If the request did not revert, the `rewardRecipient` will be marked as the input token recipient for this request so they can claim the input tokens via [`claimInputTokens`](#claim-input-tokens). If the request reverted the creator of the request will be marked as the input token recipient.
-
-Lastly it will mark `execHash` as executed so it cannot be executed again.
-
-### Get request info
-
-There are quite a few public functions to get details about a request.
-
-They are all implemented as public mappings (which generate a function with the mapping's name which takes its key as a parameter and returns what the key maps to):
+Get the creator of a request.
 
 ```solidity
-/// @notice Maps execHashes to the creator of each request.
-mapping(bytes32 => address) public getRequestCreator;
-
-/// @notice Maps execHashes to the address of the strategy associated with the request.
-mapping(bytes32 => address) public getRequestStrategy;
-
-/// @notice Maps execHashes to the calldata associated with the request.
-mapping(bytes32 => bytes) public getRequestCalldata;
-
-/// @notice Maps execHashes to the gas limit a relayer should use to execute the request.
-mapping(bytes32 => uint256) public getRequestGasLimit;
-
-/// @notice Maps execHashes to the gas price a relayer must use to execute the request.
-mapping(bytes32 => uint256) public getRequestGasPrice;
-
-/// @notice Maps execHashes to the additional tip in wei relayers will receive for executing them.
-mapping(bytes32 => uint256) public getRequestTip;
+function getRequestStrategy(bytes32 execHash) external view returns (address)
 ```
 
----
+Get the address of the strategy associated with a request.
+
+```solidity
+function getRequestCalldata(bytes32 execHash) external view returns (bytes memory)
+```
+
+Get the calldata associated with a request.
+
+```solidity
+function getRequestGasLimit(bytes32 execHash) external view returns (uint256)
+```
+
+Get the gas limit that will be used when calling a request's strategy on L1.
+
+```solidity
+function getRequestGasPrice(bytes32 execHash) external view returns (uint256)
+```
+
+Get the gas price (in wei) a relayer must use to execute a request.
+
+```solidity
+function getRequestTip(bytes32 execHash) external view returns (uint256)
+```
+
+Get the additional tip (in wei) relayers will receive for successfully executing a request.
+
+```solidity
+function getRequestNonce(bytes32 execHash) external view returns (uint256)
+```
+
+Get the nonce assigned a request.
+
+```solidity
+/// @notice A token/amount pair that a relayer will need on L1 to execute the request (and will be returned to them on L2).
+/// @param l2Token The token on L2 to transfer to the relayer upon a successful execution.
+/// @param amount The amount of l2Token to refund the relayer upon a successful execution.
+/// @dev Relayers must reference a list of L2-L1 token mappings to determine the L1 equivalent for an l2Token.
+/// @dev The decimal scheme may not align between the L1 and L2 tokens, relayers should check via off-chain logic.
+struct InputToken {
+    ERC20 l2Token;
+    uint256 amount;
+}
+
+function getRequestInputTokens(bytes32 execHash) external view returns (InputToken[] memory)
+```
+
+Get the input tokens a relayer must have to execute a request.
+
+```solidity
+/// @notice Struct containing data about the status of the request's input tokens.
+/// @param recipient The user who is entitled to take the request's input tokens.
+/// If recipient is not address(0), this means the request is no longer executable.
+/// @param isClaimed Will be true if the input tokens have been removed, false if not.
+struct InputTokenRecipientData {
+    address recipient;
+    bool isClaimed;
+}
+
+function getRequestInputTokenRecipientData(bytes32 execHash) external view returns (InputTokenRecipientData memory)
+```
+
+Get data about the status of a request's input tokens.
+
+```solidity
+function getRequestUnlockTimestamp(bytes32 execHash) external view returns (uint256)
+```
+
+Get the timestamp when a request will have its tokens unlocked, meaning the creator can withdraw tokens from the request.
+
+```solidity
+function getRequestUncle(bytes32 execHash) external view returns (bytes32)
+```
+
+Get a request's "uncle".
+
+```solidity
+function getResubmittedRequest(bytes32 execHash) external view returns (bytes32)
+```
+
+Get a request's "resubmitted" request.
+
+```solidity
+function getRequestDeathTimestamp(bytes32 execHash) external view returns (uint256)
+```
+
+Get a timestamp representing when the request will be disabled and replaced by a re-submitted request with a higher gas price.
+
+### Get the execution manager
+
+```solidity
+function L1_NovaExecutionManagerAddress() external view returns (address)
+```
+
+Get the connected execution manager.
 
 ## L1_NovaExecutionManager
 
-Users on L2 never need to interact with this contract. This contract is to facilitate the execution of requests and send messages to unlock input tokens/tip for relayers/relayers (post-execution).
+Users on L2 never need to interact with this contract. This contract is to facilitate the execution of requests and send messages to reward relayers post-execution.
 
-Strategy contracts may wish to call back into this contract to trigger a [hard revert](#trigger-hard-revert), [get the current execHash](#get-the-current-exechash) or [transfer tokens from the relayer](#transfer-tokens-from-the-relayer).
+Strategy contracts may wish to [register themselves](#register-as-strategy) or [hard revert](#trigger-a-hard-revert), [get the current execHash](#get-the-current-exechash) and [transfer tokens from relayers](#transfer-token-from-relayer) during execution.
 
-### Execute Request
+### Register as a strategy
 
 ```solidity
-function exec(uint256 nonce, address strategy, bytes memory l1calldata, address l2Recipient) public
+/// @notice Risk classifications for strategies.
+enum StrategyRiskLevel {
+    // The strategy has not been assigned a risk level.
+    // It has the equivalent abilities of a SAFE strategy,
+    // but could upgrade itself to an UNSAFE strategy at any time.
+    UNKNOWN,
+    // The strategy has registered itself as a safe strategy,
+    // meaning it cannot use transferFromRelayer or trigger a hard
+    // revert. A SAFE strategy cannot upgrade itself to become UNSAFE.
+    SAFE,
+    // The strategy has registered itself as an unsafe strategy,
+    // meaning it has access to all the functionality the execution
+    // manager provides like transferFromRelayer and the ability to hard
+    // revert. An UNSAFE strategy cannot downgrade itself to become SAFE.
+    UNSAFE
+}
+
+function registerSelfAsStrategy(StrategyRiskLevel strategyRiskLevel) external
 ```
 
-This function calls the `strategy` address with the specified `l1calldata`.
+Registers the caller as a strategy with the provided in risk level.
 
-The call to `strategy` is wrapped in a try-catch block:
+- `strategyRiskLevel`: The risk level to register as. Cannot register as `UNKNOWN`.
 
-- If the call reverts and the revert message is `__NOVA__HARD__REVERT__`, **[`exec`](#execute-request) will revert immediately (no message to L2 will be sent).**
-  - [This is called a HARD REVERT.](#execute-request)
-  - Strategy contracts should only **hard revert** if the relayer has not properly set up the execution context (like not approving the right amount input of tokens, etc)
-- If the call reverts and the revert message is empty or is not `__NOVA__HARD__REVERT__`, **[`exec`](#execute-request) will continue with sending a message to L2.**
-  - [This is called a SOFT REVERT.](#execute-request)
-  - If a strategy **soft reverts**, the `inputTokens` for the request will **not be sent** to the relayer and **only 50% of the tip** will be sent (instead of the usual 100%). The **50% tip penalty** is to prevent relayers from attempting to cause or wait for soft reverts and **act in good faith** instead.
+A strategy can only register once, and will have no way to change its risk level after registering.
 
-This function also keeps track of how much gas is consumed by the strategy and [`exec`](#execute-request) itself.
+### Execute a request
 
-Once the strategy is executed this function sends a cross domain message to call [`execCompleted`](#complete-execution-request) on the registry.
+Execute a request with a customizable recipient for the request's reward.
 
-### Trigger Hard Revert
+```solidity
+function exec(uint256 nonce, address strategy, bytes calldata l1Calldata, uint256 gasLimit, address l2Recipient, uint256 deadline) external
+```
+
+- `nonce`: The nonce assigned to the request you wish to execute.
+
+- `strategy`: The strategy provided in the request you wish to execute.
+
+- `l1Calldata`: The calldata provided in the request you wish to execute.
+
+- `gasLimit`: The gas limit provided in the request you wish to execute.
+
+- `l2Recipient`: An address on L2 you wish to receive the request's rewards (gas, tips, input tokens).
+
+- `deadline`: Timestamp after which the transaction will immediately revert.
+
+- `tx.gasprice`: This is not an argument, but an implicit variable the relayer must specify: the request's gas price. Nova requires gas prices be specified in the legacy format (pre-eip559). To specify a legacy gas price you must use a `type: 0` transaction.
+
+### Trigger a hard revert
 
 ```solidity
 function hardRevert() external
 ```
 
-Convenience function that simply runs `revert("__NOVA__HARD__REVERT__")`.
+Reverts the entire execution, preventing the relayer from being rewarded.
 
-### Get The Current ExecHash
+The execution manager will ignore hard reverts if they are triggered by a [strategy not registered as `UNSAFE`](#get-strategy-risk-level).
 
-```solidity
-function currentExecHash() external view returns (bytes32)
-```
-
-This function returns the execHash computed from the current call to [`exec`](#execute-request). Strategy contracts may wish to call this function to send messages up to L2 with and tag them with the current execHash.
-
-### Get The Current Relayer
-
-```solidity
-function currentRelayer() external view returns (address)
-```
-
-This function returns the current "relayer" (address that made the current call to [`exec`](#execute-request)). Strategy contracts may wish to call this function to ensure only a trusted party is able to execute the strategy or to release additional rewards for the relayer, etc.
-
-### Transfer Tokens From The Relayer
+### Transfer token from relayer
 
 ```solidity
 function transferFromRelayer(address token, uint256 amount) external
 ```
 
-This function transfers tokens the calling relayer (the account that called [`exec`](#execute-request)) has approved to the execution manager to the currently executing `strategy`.
+This function transfers tokens the relayer has approved to the [approval escrow](#get-the-approval-escrow) to the currently executing `strategy`.
+
+- `token`: The ER20 token to transfer to the currently executing strategy.
+- `amount`: The amount of the token to transfer to the currently executing strategy.
 
 ::: danger
-Only the currently executing `strategy` can call this function.
+Only the currently executing `strategy` can call this function. The [strategy must be registered as `UNSAFE`](#get-strategy-risk-level).
 :::
 
-This function will trigger a [HARD REVERT](#execute-request) if the relayer executing the current strategy has not approved at least `amount` of `token` to the `L1_NovaExecutionManager` (like `safeTransferFrom`).
+This function will trigger a [hard revert](#trigger-a-hard-revert) if the relayer executing the current strategy has not approved at least `amount` of `token` to the `L1_NovaExecutionManager` (like `safeTransferFrom`).
 
-## Example Integration(s)
-
-### Uniswap/Sushiswap
-
-To integrate **Uniswap/Sushiswap** we only need to write one custom contract (a Strategy contract on L1).
-
-- This strategy would have all the same functions as the Uniswap router has
-- The `to` parameter of the strategy's functions would be hijacked and not passed into the Uniswap router.
-  - The `to` param will be used as the recipient of the tokens on L2.
-  - The Uniswap router will be told to send the output tokens back to the `Nova_UniswapStrategy` contract (so it can send them up to L2 via the bridge)
-- Each of the functions would require that a relayer approve the tokens necessary for the swap to the `L1_NovaExecutionManager`
-- The function would call [`transferFromRelayer`](#transfer-tokens-from-the-relayer) to get the input tokens from the relayer and then perform the corresponding function call on the Uniswap router.
-- The function would then send the output tokens through an Optimism token bridge to the `to` address.
-
-**Here's what one of those wrapped router functions in the Strategy contract would look like:**
+### Get the approval escrow
 
 ```solidity
-function swapExactTokensForTokens(
-  uint256 amountIn,
-  uint256 amountOutMin,
-  address[] calldata path,
-  address to,
-  uint256 deadline
-) external {
-  ERC20 input = ERC20(path[0]);
-  ERC20 output = ERC20(path[path.length - 1]);
+function L1_NOVA_APPROVAL_ESCROW() external pure returns (address)
+```
 
-  // Transfer in tokens from the relayer.
-  L1_NovaExecutionManager(msg.sender).transferFromRelayer(input, amountIn);
+The address of the approval escrow the execution manager will transfer tokens from in [`transferFromRelayer`](#transfer-token-from-relayer).
 
-  // Approve the input tokens to the uniswapRouter
-  input.approve(address(uniswapRouter), amountIn);
+### Get the current execHash
 
-  // Perform the swap
-  uniswapRouter.swapExactTokensForTokens(amountIn, amountOutMin, path, address(this), deadline);
-  uint256 outputAmount = output.balanceOf(address(this));
+```solidity
+function currentExecHash() external view returns (bytes32)
+```
 
-  // Approve the output tokens to the token bridge
-  output.approve(address(optimismTokenBridge), outputAmount);
-  // Send the tokens up to L2 with the recipient being the `to` param
-  optimismTokenBridge.depositAsERC20(address(output), to, outputAmount);
+This function returns the execHash computed from the current call to [`exec`](#execute-a-request).
+
+Strategy contracts may wish to call this function to send messages up to L2 with and tag them with the current execHash.
+
+### Get the current relayer
+
+```solidity
+function currentRelayer() external view returns (address)
+```
+
+This function returns the current "relayer" (address that made the current call to [`exec`](#execute-a-request)).
+
+Strategy contracts may wish to call this function to ensure only a trusted party is able to execute the strategy or to release additional rewards for the relayer, etc.
+
+### Get strategy risk level
+
+Gets a strategy's risk level.
+
+```solidity
+/// @notice Risk classifications for strategies.
+enum StrategyRiskLevel {
+    // The strategy has not been assigned a risk level.
+    // It has the equivalent abilities of a SAFE strategy,
+    // but could upgrade itself to an UNSAFE strategy at any time.
+    UNKNOWN,
+    // The strategy has registered itself as a safe strategy,
+    // meaning it cannot use transferFromRelayer or trigger a hard
+    // revert. A SAFE strategy cannot upgrade itself to become UNSAFE.
+    SAFE,
+    // The strategy has registered itself as an unsafe strategy,
+    // meaning it has access to all the functionality the execution
+    // manager provides like transferFromRelayer and the ability to hard
+    // revert. An UNSAFE strategy cannot downgrade itself to become SAFE.
+    UNSAFE
 }
 
+function getStrategyRiskLevel(address strategy) external view returns (StrategyRiskLevel)
 ```
+
+Will be `UNKNOWN` if the strategy has not registered itself with the execution manager.

@@ -46,8 +46,7 @@ Don't hesitate to reach out to [@transmissions11](https://twitter.com/transmissi
    - `deadline`: Timestamp after which the transaction will immediately revert. The deadline should be set to the timestamp when the request was created plus [`MIN_UNLOCK_DELAY_SECONDS`](https://github.com/Rari-Capital/nova/blob/master/contracts/L2_NovaRegistry.sol#L30) for safety (as requests can be canceled afterwards).
 
    - `tx.gasprice`: This is not an argument, but an implicit variable the relayer must specify: gas price. Nova requires gas prices be specified in the legacy format (pre-eip559).
-     You can find the request's provided gas price using the [`getRequestGasPrice` function on the `L2_NovaRegistry`](https://github.com/Rari-Capital/nova/blob/master/contracts/L2_NovaRegistry.sol#L118).
-     To specify a legacy gas price you must use a `type: 0` transaction.
+     You can find the request's required gas price using the [`getRequestGasPrice` function on the `L2_NovaRegistry`](https://github.com/Rari-Capital/nova/blob/master/contracts/L2_NovaRegistry.sol#L118). To specify a legacy gas price you must use a `type: 0` transaction.
 
 8. Check if the transaction reverted.
 
