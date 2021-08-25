@@ -1,0 +1,3 @@
+# Strategy Development Guide
+
+WIP

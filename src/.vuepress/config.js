@@ -19,9 +19,26 @@ module.exports = {
     nav: [
       { text: "Fuse", link: "/fuse/" },
       { text: "Yield Aggregator", link: "/yag/" },
-      { text: "Nova", link: "/nova/" },
+      {
+        text: "Nova",
+        items: [
+          { text: "Overview", link: "/nova/" },
+          {
+            text: "Guides",
+            items: [
+              { text: "Relaying Requests", link: "/nova/guides/relaying/" },
+              {
+                text: "Developing Strategies",
+                link: "/nova/guides/strategies/"
+              }
+            ]
+          }
+        ]
+      },
+
       { text: "Deployed Contracts", link: "/contracts/" }
     ],
+
     sidebarDepth: 10,
     sidebar: "auto",
     smoothScroll: true
