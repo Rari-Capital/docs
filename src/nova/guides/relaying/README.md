@@ -7,7 +7,7 @@ Others may not require any tokens at all. Since requests vary in risk and capita
 Relaying is not as risk free as liquidations or some forms of arbitrage because payouts occur on another layer, meaning flashloans can't be used.
 However, with this additional risk comes additional reward, as relaying will be far less competitive and require more specialization.
 
-To ensure relayers do not compete in a manner harmful to each other, we are currently only whitelisting relayers who in active communication with us and each other.
+To ensure relayers do not compete in a harmful manner, we are currently only whitelisting relayers who in active communication with us and each other.
 Don't hesitate to reach out to [@transmissions11](https://twitter.com/transmissions11) if becoming a relayer interests you.
 
 ## Relaying Step-By-Step
