@@ -1,5 +1,26 @@
 # Deployed Contracts
 
+## Rari Governance
+
+[ABIs can be downloaded here.](https://github.com/Rari-Capital/rari-dApp/tree/master/src/rari-sdk/governance/abi)
+
+- RariGovernanceToken: `0xD291E7a03283640FDc51b121aC401383A46cC623`
+- RariGovernanceTokenDistributor: `0x9C0CaEb986c003417D21A7Daaf30221d61FC1043`
+- RariGovernanceTokenSushiSwapDistributor: `0x1FA69a416bCF8572577d3949b742fBB0a9CD98c7`
+- RariGovernanceTokenVesting: `0xA54B473028f4ba881F1eD6B670af4103e8F9B98a`
+- GovernorBravoDelegator: `0x91d9c2b5cf81d55a5f2ecc0fc84e62f9cd2cefd6`
+- Timelock: `0x8ace03fc45139fddba944c6a4082b604041d19fc`
+
+## Rari Treasury
+
+- Treasury: `0x10dB6Bce3F2AE1589ec91A872213DAE59697967a`
+- RGT Reserves: `0x5eA4A9a7592683bF0Bc187d6Da706c6c4770976F`
+- Marketing: `0xBF2F341Ea21AaD9f1935636258E67F06C72353dd`
+
+## Nova
+
+[See the Nova releases page.](https://github.com/Rari-Capital/nova/releases)
+
 ## Fuse
 
 ### General
@@ -37,27 +58,6 @@
 - JumpRateModel_Stables_Majors: `0xb579d2761470bba14018959d6dffcc681c09c04b`
 - JumpRateModel_Gov_Seeds: `0xcdC0a449E011249482824efFcfA05c883d36CfC7`
 - JumpRateModel_ALCX: `0x58c3e7119ec200c09b2b3a9f8ce3bd77b6b47012`
-
-## Nova
-
-[See the Nova releases page.](https://github.com/Rari-Capital/nova/releases)
-
-## Rari Treasury
-
-- Treasury: `0x10dB6Bce3F2AE1589ec91A872213DAE59697967a`
-- RGT Reserves: `0x5eA4A9a7592683bF0Bc187d6Da706c6c4770976F`
-- Marketing: `0xBF2F341Ea21AaD9f1935636258E67F06C72353dd`
-
-## Rari Governance
-
-[ABIs can be downloaded here.](https://github.com/Rari-Capital/rari-dApp/tree/master/src/rari-sdk/governance/abi)
-
-- RariGovernanceToken: `0xD291E7a03283640FDc51b121aC401383A46cC623`
-- RariGovernanceTokenDistributor: `0x9C0CaEb986c003417D21A7Daaf30221d61FC1043`
-- RariGovernanceTokenSushiSwapDistributor: `0x1FA69a416bCF8572577d3949b742fBB0a9CD98c7`
-- RariGovernanceTokenVesting: `0xA54B473028f4ba881F1eD6B670af4103e8F9B98a`
-- GovernorBravoDelegator: `0x91d9c2b5cf81d55a5f2ecc0fc84e62f9cd2cefd6`
-- Timelock: `0x8ace03fc45139fddba944c6a4082b604041d19fc`
 
 ## Rari USDC Pool
 
