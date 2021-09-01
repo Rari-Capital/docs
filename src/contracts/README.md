@@ -29,7 +29,7 @@
 
 - FusePoolDirectory: `0x835482FE0532f169024d5E9410199369aAD5C77E`
 - FusePoolLens: `0x8dA38681826f4ABBe089643D2B3fE4C6e4730493`
-- FuseSafeLiquidator: `0x41C7F2D48bde2397dFf43DadA367d2BD3527452F`
+- FuseSafeLiquidator: `0xf0f3a1494ae00b5350535b7777abb2f499fc13d4`
 - FuseFeeDistributor: `0xa731585ab05fC9f83555cf9Bff8F58ee94e18F85`
 
 ### Proxy Implementations
