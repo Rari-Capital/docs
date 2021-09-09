@@ -66,7 +66,7 @@ Rate = 37893566
 
 ETH Mantissa = 1 * 10 ^ 18 (ETH has 18 decimal places)
 
-Blocks Per Day = 4 * 60 * 24 (based on 4 blocks occurring every minute)
+Blocks Per Day = 6500 (https://ycharts.com/indicators/ethereum_blocks_per_day)
 
 Days Per Year = 365
 
@@ -78,7 +78,7 @@ Here is an example of calculating the supply and borrow APY with Web3.js JavaScr
 ```js
 const ethMantissa = 1e18;
 
-const blocksPerDay = 4 * 60 * 24;
+const blocksPerDay = 6500;
 
 const daysPerYear = 365;
 
