@@ -52,7 +52,7 @@ Don't hesitate to reach out to [@transmissions11](https://twitter.com/transmissi
 
 9. See step #4
 
-10. Approve the correct amount of each input tokens returned from [`getRequestInputTokens`](https://github.com/Rari-Capital/nova/blob/master/contracts/L2_NovaRegistry.sol#L142) to the address returned from the [`L1_NOVA_APPROVAL_ESCROW` function on the `L1_NovaExecutionManager`](https://github.com/Rari-Capital/nova/blob/master/contracts/L1_NovaExecutionManager.sol#L50). See step #5 for important details on how to determine each input token's L1 address and if you need to normalize each token's amount to use the proper decimals.
+10. Approve the correct amount of each input token returned from [`getRequestInputTokens`](https://github.com/Rari-Capital/nova/blob/master/contracts/L2_NovaRegistry.sol#L142) to the address returned from the [`L1_NOVA_APPROVAL_ESCROW` function on the `L1_NovaExecutionManager`](https://github.com/Rari-Capital/nova/blob/master/contracts/L1_NovaExecutionManager.sol#L50). See step #5 for important details on how to determine each input token's L1 address and if you need to normalize each token's amount to use the proper decimals.
 
 11. Call [`exec` on the `L1_NovaExecutionManager`](https://github.com/Rari-Capital/nova/blob/master/contracts/L1_NovaExecutionManager.sol#L132) with all the correct parameters (see step #7 for details).
 
