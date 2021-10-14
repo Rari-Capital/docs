@@ -28,7 +28,7 @@
 [ABIs can be downloaded here.](https://github.com/Rari-Capital/rari-dApp/tree/master/src/fuse-sdk/src/abi)
 
 - FusePoolDirectory: `0x835482FE0532f169024d5E9410199369aAD5C77E`
-- FusePoolLens: `0x8dA38681826f4ABBe089643D2B3fE4C6e4730493`
+- FusePoolLens: `0x6Dc585Ad66A10214Ef0502492B0CC02F0e836eec`
 - FuseSafeLiquidator: `0xf0f3a1494ae00b5350535b7777abb2f499fc13d4`
 - FuseFeeDistributor: `0xa731585ab05fC9f83555cf9Bff8F58ee94e18F85`
 
@@ -36,9 +36,9 @@
 
 [ABIs can be downloaded here.](https://github.com/Rari-Capital/rari-dApp/tree/master/src/fuse-sdk/src/contracts)
 
-- Comptroller Implementation: `0x94b2200d28932679def4a7d08596a229553a994e`
-- cERC20 Implementation: `0x67e70eeb9dd170f7b4a9ef620720c9069d5e706c`
-- cEther Implementation: `0x60884c8faad1b30b1c76100da92b76ed3af849ba`
+- Comptroller Implementation: `0xE16DB319d9dA7Ce40b666DD2E365a4b8B3C18217`
+- cERC20 Implementation: `0x67Db14E73C2Dce786B5bbBfa4D010dEab4BBFCF9`
+- cEther Implementation: `0xd77E28A1b9a9cFe1fc2EEE70E391C05d25853cbF`
 
 ### Oracles
 
