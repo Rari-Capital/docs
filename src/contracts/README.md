@@ -17,10 +17,6 @@
 - RGT Reserves: `0x5eA4A9a7592683bF0Bc187d6Da706c6c4770976F`
 - Marketing: `0xBF2F341Ea21AaD9f1935636258E67F06C72353dd`
 
-## Nova
-
-[See the Nova releases page.](https://github.com/Rari-Capital/nova/releases)
-
 ## Fuse
 
 ### General
@@ -29,6 +25,7 @@
 
 - FusePoolDirectory: `0x835482FE0532f169024d5E9410199369aAD5C77E`
 - FusePoolLens: `0x6Dc585Ad66A10214Ef0502492B0CC02F0e836eec`
+- FusePoolLensSecondary: `0xc76190E04012f26A364228Cfc41690429C44165d`
 - FuseSafeLiquidator: `0xf0f3a1494ae00b5350535b7777abb2f499fc13d4`
 - FuseFeeDistributor: `0xa731585ab05fC9f83555cf9Bff8F58ee94e18F85`
 
@@ -97,3 +94,7 @@
 - RariPoolToken: `0x0833cfcb11A5ba89FbAF73a407831c98aD2D7648`
 - RariPoolPriceConsumer: `0x96ce4C781eDF07F4e3D210c919CA4F9A7ad82a7f`
 - RariPoolProxy: `0x3F579F097F2CE8696Ae8C417582CfAFdE9Ec9966`
+
+## Nova
+
+[See the Nova releases page.](https://github.com/Rari-Capital/nova/releases)
