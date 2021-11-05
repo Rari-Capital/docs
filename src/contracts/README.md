@@ -10,11 +10,12 @@
 - RariGovernanceTokenVesting: `0xA54B473028f4ba881F1eD6B670af4103e8F9B98a`
 - RariGovernanceTokenVestingV3: `0x014b220912f6a9fce68e82fa6c2e603a7a78f436`
 - GovernorBravoDelegator: `0x91d9c2b5cf81d55a5f2ecc0fc84e62f9cd2cefd6`
-- Timelock: `0x8ace03fc45139fddba944c6a4082b604041d19fc`
+- DAO Timelock/Treasury: `0x8ace03fc45139fddba944c6a4082b604041d19fc`
 
 ## Rari Treasury
 
-- RGT Reserves: `0x5eA4A9a7592683bF0Bc187d6Da706c6c4770976F`
+- DAO Timelock/Treasury: `0x8ace03fc45139fddba944c6a4082b604041d19fc`
+- Dev Multisig: `0x5eA4A9a7592683bF0Bc187d6Da706c6c4770976F`
 - Marketing: `0xBF2F341Ea21AaD9f1935636258E67F06C72353dd`
 
 ## Fuse
