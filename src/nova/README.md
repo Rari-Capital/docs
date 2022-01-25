@@ -359,7 +359,7 @@ function exec(uint256 nonce, address strategy, bytes calldata l1Calldata, uint25
 
 - `deadline`: Timestamp after which the transaction will immediately revert.
 
-- `tx.gasprice`: This is not an argument, but an implicit variable the relayer must specify: the request's gas price. Nova requires gas prices be specified in the legacy format (pre-eip559). To specify a legacy gas price you must use a `type: 0` transaction.
+- `tx.gasprice`: This is not an argument, but an implicit variable the relayer must specify: the request's gas price. Nova requires gas prices be specified in the legacy format (pre-eip1559). To specify a legacy gas price you must use a `type: 0` transaction.
 
 ### Trigger a hard revert
 
