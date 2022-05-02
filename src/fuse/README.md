@@ -272,7 +272,7 @@ function repayBorrow(uint repayAmount) returns (uint)
 ```
 
 - `msg.sender`: The account which borrowed the asset, and shall repay the borrow.
-- `repayAmount`: The amount of the underlying borrowed asset to be repaid. A value of -1 (i.e. 2256 - 1) can be used to repay the full amount.
+- `repayAmount`: The amount of the underlying borrowed asset to be repaid. A value of -1 (i.e. 2 ** 256 - 1) can be used to repay the full amount.
 - `RETURN`: 0 on success, otherwise an [Error code](#error-codes)
 
 Before repaying an asset, users must first [approve](https://eips.ethereum.org/EIPS/eip-20#approve) the fToken to access their token balance.
@@ -315,7 +315,7 @@ function repayBorrowBehalf(address borrower, uint repayAmount) returns (uint)
 
 - `msg.sender`: The account which shall repay the borrow.
 - `borrower`: The account which borrowed the asset to be repaid.
-- `repayAmount`: The amount of the underlying borrowed asset to be repaid. A value of -1 (i.e. 2256 - 1) can be used to repay the full amount.
+- `repayAmount`: The amount of the underlying borrowed asset to be repaid. A value of -1 (i.e. 2 ** 256 - 1) can be used to repay the full amount.
 - `RETURN`: 0 on success, otherwise an [Error code](#error-codes)
 
 Before repaying an asset, users must first [approve](https://eips.ethereum.org/EIPS/eip-20#approve) the fToken to access their token balance.
